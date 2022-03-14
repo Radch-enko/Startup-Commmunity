@@ -1,0 +1,23 @@
+query Startups($after: String)
+{
+    posts(after: $after){
+        ...PageInfoResponse
+        edges{
+            node{
+                id,
+                name,
+                tagline,
+                thumbnail{
+                    url
+                }
+            }
+        }
+    }
+}
+
+fragment PageInfoResponse on PostConnection {
+    pageInfo {
+        startCursor
+        endCursor
+    }
+}
