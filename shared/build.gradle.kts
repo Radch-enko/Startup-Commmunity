@@ -22,9 +22,9 @@ kotlin {
             baseName = "shared"
         }
     }
-    
+
     sourceSets {
-        val commonMain by getting{
+        val commonMain by getting {
             dependencies {
                 //Network
                 implementation(libs.ktor.core)
@@ -32,19 +32,13 @@ kotlin {
                 // GraphQL
                 implementation(libs.bundles.apollo)
                 // Multiplatform Paging
-                implementation(libs.multiplatform.paging)
+                api(libs.multiplatform.paging)
                 //Coroutines
                 implementation(libs.kotlinx.coroutines.core)
                 //Logger
                 implementation(libs.napier)
-                //JSON
-                implementation(libs.kotlinx.serialization.json)
-                //Key-Value storage
-                implementation(libs.multiplatform.settings)
                 // DI
                 implementation(libs.kodein.di)
-                // Navigation
-                implementation(libs.bundles.voyager)
             }
         }
         val commonTest by getting {
@@ -53,7 +47,12 @@ kotlin {
                 implementation(kotlin("test-annotations-common"))
             }
         }
-        val androidMain by getting
+        val androidMain by getting {
+            dependencies {
+                implementation("com.squareup.okhttp3:okhttp:4.9.3")
+                implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
+            }
+        }
         val androidTest by getting {
             dependencies {
                 implementation(kotlin("test-junit"))

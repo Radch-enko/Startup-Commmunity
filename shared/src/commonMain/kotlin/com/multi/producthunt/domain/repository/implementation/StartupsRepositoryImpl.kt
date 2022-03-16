@@ -22,15 +22,10 @@ class StartupsRepositoryImpl(private val productHuntService: ProductHuntService)
     private val scope = MainScope()
     private val pagingConfig = PagingConfig(pageSize = 20, enablePlaceholders = false)
 
-    private val startupsPagingData: CommonFlow<PagingData<StartupDomain>>
-        get() = startupsPager.pagingData.cachedIn(
-            scope
-        ).asCommonFlow()
-
     private val startupsPager = Pager(
         clientScope = scope,
         config = pagingConfig,
-        initialKey = "",
+        initialKey = "MQ==",
         getItems = { currentKey, _ ->
             val startupsResponse = productHuntService.getStartups(currentKey)
             val items = startupsResponse.edges.map { edge -> edge.node.toDomain() }
@@ -42,6 +37,6 @@ class StartupsRepositoryImpl(private val productHuntService: ProductHuntService)
         })
 
     override fun getStartupsPagingData(): CommonFlow<PagingData<StartupDomain>> {
-        return startupsPagingData
+        return startupsPager.pagingData.cachedIn(scope).asCommonFlow()
     }
 }

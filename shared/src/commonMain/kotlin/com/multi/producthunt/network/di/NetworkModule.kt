@@ -8,6 +8,6 @@ import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 
 val networkModule = DI.Module {
-    bindSingleton { apolloClient() }
+    bindSingleton { apolloClient(instance()) }
     bindSingleton<ProductHuntService> { ProductHuntServiceImpl(instance()) }
 }
