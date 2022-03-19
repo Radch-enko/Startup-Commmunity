@@ -1,8 +1,8 @@
 package com.multi.producthunt.android.navigation
 
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
@@ -11,9 +11,8 @@ import cafe.adriel.voyager.navigator.tab.Tab
 fun RowScope.TabNavigationItem(tab: Tab) {
     val tabNavigator = LocalTabNavigator.current
 
-    BottomNavigationItem(
+    NavigationBarItem(
         selected = tabNavigator.current == tab,
         onClick = { tabNavigator.current = tab },
-        icon = { tab.icon?.let { Icon(painter = it, contentDescription = tab.title) } }
-    )
+        icon = { tab.icon?.let { Icon(painter = it, contentDescription = tab.title) } })
 }
