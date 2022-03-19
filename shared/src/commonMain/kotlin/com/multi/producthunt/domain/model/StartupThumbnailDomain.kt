@@ -1,5 +1,5 @@
 package com.multi.producthunt.domain.model
 
-data class StartupThumbnail(
+data class StartupThumbnailDomain(
     val url: String?
 )

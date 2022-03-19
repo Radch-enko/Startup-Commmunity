@@ -6,7 +6,7 @@ data class StartupDomain(
     val id: String,
     val name: String,
     val tagline: String,
-    val thumbnail: StartupThumbnail
+    val thumbnailDomain: StartupThumbnailDomain
 )
 
 fun StartupsQuery.Node.toDomain(): StartupDomain {
@@ -14,7 +14,7 @@ fun StartupsQuery.Node.toDomain(): StartupDomain {
         id = this.id,
         name = this.name,
         tagline = this.tagline,
-        thumbnail = StartupThumbnail(
+        thumbnailDomain = StartupThumbnailDomain(
             url = this.thumbnail?.url
         )
     )

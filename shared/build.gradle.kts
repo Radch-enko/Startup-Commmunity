@@ -3,9 +3,14 @@ plugins {
     kotlin("native.cocoapods")
     id("com.android.library")
     id("com.apollographql.apollo3").version("3.1.0")
+    id("dev.icerock.mobile.multiplatform-resources").version("0.18.0")
 }
 
 version = "1.0"
+
+dependencies {
+    commonMainApi(libs.multiplatform.resources)
+}
 
 kotlin {
     android()
@@ -22,9 +27,9 @@ kotlin {
             baseName = "shared"
         }
     }
-    
+
     sourceSets {
-        val commonMain by getting{
+        val commonMain by getting {
             dependencies {
                 //Network
                 implementation(libs.ktor.core)
@@ -32,19 +37,13 @@ kotlin {
                 // GraphQL
                 implementation(libs.bundles.apollo)
                 // Multiplatform Paging
-                implementation(libs.multiplatform.paging)
+                api(libs.multiplatform.paging)
                 //Coroutines
                 implementation(libs.kotlinx.coroutines.core)
                 //Logger
                 implementation(libs.napier)
-                //JSON
-                implementation(libs.kotlinx.serialization.json)
-                //Key-Value storage
-                implementation(libs.multiplatform.settings)
                 // DI
                 implementation(libs.kodein.di)
-                // Navigation
-                implementation(libs.bundles.voyager)
             }
         }
         val commonTest by getting {
@@ -53,7 +52,11 @@ kotlin {
                 implementation(kotlin("test-annotations-common"))
             }
         }
-        val androidMain by getting
+        val androidMain by getting {
+            dependencies {
+                implementation(libs.bundles.okhttp)
+            }
+        }
         val androidTest by getting {
             dependencies {
                 implementation(kotlin("test-junit"))
@@ -93,4 +96,9 @@ android {
 apollo {
     packageName.set("com.multi.producthunt")
     generateOptionalOperationVariables.set(false)
+}
+
+multiplatformResources {
+    multiplatformResourcesPackage = "com.multi.producthunt"
+    iosBaseLocalizationRegion = "en"
 }

@@ -1,12 +1,17 @@
 package com.multi.producthunt.android
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.TextView
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import cafe.adriel.voyager.navigator.Navigator
+import com.multi.producthunt.android.screen.home.HomeScreen
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        setContent {
+            Navigator(screen = HomeScreen())
+        }
     }
 }
