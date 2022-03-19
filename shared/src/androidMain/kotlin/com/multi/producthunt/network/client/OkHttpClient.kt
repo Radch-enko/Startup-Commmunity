@@ -9,7 +9,7 @@ fun getOkHttpClient(accessToken: String): OkHttpClient {
     return if (okHttpClient == null) {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
 
-        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BASIC
+        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
 
         OkHttpClient.Builder()
             .addInterceptor(httpLoggingInterceptor)

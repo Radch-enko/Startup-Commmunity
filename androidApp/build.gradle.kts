@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.voyager.androidx)
     implementation(libs.kodein.android)
     implementation(libs.paging.runtime)
+    implementation(libs.napier)
 }
 
 fun getAccessTokenFromLocalProperties(): String {

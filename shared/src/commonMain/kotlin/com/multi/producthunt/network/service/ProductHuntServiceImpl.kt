@@ -7,8 +7,7 @@ import kotlinx.coroutines.FlowPreview
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class ProductHuntServiceImpl(private val apolloClient: ApolloClient) : ProductHuntService {
-    override suspend fun getStartups(after: String): StartupsQuery.Posts {
-        val response = apolloClient.query(StartupsQuery(after)).execute()
-        return response.dataAssertNoErrors.posts
+    override suspend fun getStartups(after: String): StartupsQuery.Data {
+        return apolloClient.query(StartupsQuery(after)).execute().dataAssertNoErrors
     }
 }

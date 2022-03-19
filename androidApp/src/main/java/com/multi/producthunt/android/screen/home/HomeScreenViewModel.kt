@@ -1,14 +1,31 @@
 package com.multi.producthunt.android.screen.home
 
-import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.StateScreenModel
+import cafe.adriel.voyager.core.model.coroutineScope
 import com.kuuurt.paging.multiplatform.PagingData
-import com.multi.producthunt.domain.model.StartupDomain
-import com.multi.producthunt.domain.repository.StartupsRepository
-import com.multi.producthunt.network.util.CommonFlow
+import com.multi.producthunt.domain.usecase.GetStartupsUseCase
+import com.multi.producthunt.domain.usecase.StartupsRequestType
+import com.multi.producthunt.ui.models.StartupUI
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
-class HomeScreenViewModel(private val repository: StartupsRepository) : ScreenModel {
+class HomeScreenViewModel(private val useCase: GetStartupsUseCase) :
+    StateScreenModel<HomeScreenViewModel.HomeScreenState>(HomeScreenState.Loading) {
 
-    fun getPagingData(): CommonFlow<PagingData<StartupDomain>> {
-        return repository.getStartupsPagingData()
+    sealed class HomeScreenState {
+        object Loading : HomeScreenState()
+        class Data(val pagingList: Flow<PagingData<StartupUI>>) : HomeScreenState()
+    }
+
+    init {
+        loadData()
+    }
+
+    private fun loadData() = coroutineScope.launch {
+        mutableState.value = HomeScreenState.Loading
+
+        mutableState.value = HomeScreenState.Data(
+            pagingList = useCase.getStartupsPagingData(StartupsRequestType.TOP)
+        )
     }
 }

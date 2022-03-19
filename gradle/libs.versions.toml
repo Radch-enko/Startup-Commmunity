@@ -26,6 +26,8 @@ multiplatform-paging = "0.4.7"
 android-material = "1.4.0"
 appcompat = "1.3.1"
 
+okhttp = "4.9.3"
+
 [libraries]
 plugin-android = { module = "com.android.tools.build:gradle", version.ref = "plugin-android" }
 plugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "plugin-kotlin" }
@@ -64,9 +66,12 @@ kodein-android = { module = "org.kodein.di:kodein-di-framework-android-x", versi
 apollo-runtime = { module = "com.apollographql.apollo3:apollo-runtime", version.ref = "apollo" }
 apollo-cache = { module = "com.apollographql.apollo3:apollo-normalized-cache", version.ref = "apollo" }
 multiplatform-paging = { module = "io.github.kuuuurt:multiplatform-paging", version.ref = "multiplatform-paging" }
+okhttp-client = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+okhttp-logging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
 
 [bundles]
 plugins = ["plugin-android", "plugin-kotlin", "plugin-kotlin-serialization", "plugin-gver"]
 voyager = ["voyager-navigator", "voyager-kodein"]
 apollo = ["apollo-runtime", "apollo-cache"]
 compose = ["androidx-compose-ui", "androidx-compose-ui-tooling", "androidx-compose-foundation", "androidx-compose-material", "androidx-compose-animation", "androidx-compose-activity", "androidx-compose-paging"]
+okhttp = ["okhttp-client", "okhttp-logging"]
