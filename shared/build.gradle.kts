@@ -3,9 +3,14 @@ plugins {
     kotlin("native.cocoapods")
     id("com.android.library")
     id("com.apollographql.apollo3").version("3.1.0")
+    id("dev.icerock.mobile.multiplatform-resources").version("0.18.0")
 }
 
 version = "1.0"
+
+dependencies {
+    commonMainApi(libs.multiplatform.resources)
+}
 
 kotlin {
     android()
@@ -91,4 +96,9 @@ android {
 apollo {
     packageName.set("com.multi.producthunt")
     generateOptionalOperationVariables.set(false)
+}
+
+multiplatformResources {
+    multiplatformResourcesPackage = "com.multi.producthunt"
+    iosBaseLocalizationRegion = "en"
 }
