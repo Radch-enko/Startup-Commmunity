@@ -1,3 +1,5 @@
 <resources>
-    <string name="greeting">Hello</string>
+    <string name="home_tab_title">Home</string>
+    <string name="timeline_tab_title">Timeline</string>
+    <string name="setting_tab_title">Settings</string>
 </resources>

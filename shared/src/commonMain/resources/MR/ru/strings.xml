@@ -1,3 +1,5 @@
 <resources>
-    <string name="greeting">Привет</string>
+    <string name="home_tab_title">Главная</string>
+    <string name="timeline_tab_title">История</string>
+    <string name="setting_tab_title">Настройки</string>
 </resources>

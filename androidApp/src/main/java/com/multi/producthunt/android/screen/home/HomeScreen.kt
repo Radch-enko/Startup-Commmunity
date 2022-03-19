@@ -16,10 +16,10 @@ class HomeScreen : AndroidScreen() {
         val state by viewModel.state.collectAsState()
 
         when (state) {
-            is HomeScreenViewModel.HomeScreenState.Data -> {
-                PagingList((state as HomeScreenViewModel.HomeScreenState.Data).pagingList)
+            is HomeScreenViewModel.State.Data -> {
+                PagingList((state as HomeScreenViewModel.State.Data).pagingList)
             }
-            HomeScreenViewModel.HomeScreenState.Loading -> {
+            HomeScreenViewModel.State.Loading -> {
                 Text("Loading...")
             }
         }

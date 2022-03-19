@@ -1,4 +1,4 @@
-package com.multi.producthunt.android.screen.home
+package com.multi.producthunt.android.screen.settings
 
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
@@ -9,8 +9,8 @@ import com.multi.producthunt.ui.models.StartupUI
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-class HomeScreenViewModel(private val useCase: GetStartupsUseCase) :
-    StateScreenModel<HomeScreenViewModel.State>(State.Loading) {
+class SettingsScreenViewModel(private val useCase: GetStartupsUseCase) :
+    StateScreenModel<SettingsScreenViewModel.State>(State.Loading) {
 
     sealed class State {
         object Loading : State()

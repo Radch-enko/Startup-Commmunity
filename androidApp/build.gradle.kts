@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.kodein.android)
     implementation(libs.paging.runtime)
     implementation(libs.napier)
+    implementation(libs.bundles.coil)
 }
 
 fun getAccessTokenFromLocalProperties(): String {
