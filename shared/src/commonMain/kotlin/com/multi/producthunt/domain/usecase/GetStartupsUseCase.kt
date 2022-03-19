@@ -27,11 +27,12 @@ class GetStartupsUseCase(private val repository: StartupsRepository) {
             initialKey = "",
             getItems = { currentKey, _ ->
                 val startupsResponse = when (type) {
-                    StartupsRequestType.TOP -> repository.getTopStartups()
+                    StartupsRequestType.TOP -> repository.getTopStartups(currentKey)
                     StartupsRequestType.TIMELINE -> TODO("Setup request for TIMELINE feature")
                 }
                 val items =
                     startupsResponse.list.map { startupDomain -> startupDomain.toUI() }
+
                 PagingResult(
                     items,
                     currentKey,

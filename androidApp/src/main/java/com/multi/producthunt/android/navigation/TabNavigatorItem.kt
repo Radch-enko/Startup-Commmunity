@@ -2,6 +2,7 @@ package com.multi.producthunt.android.navigation
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
@@ -14,5 +15,8 @@ fun RowScope.TabNavigationItem(tab: Tab) {
     NavigationBarItem(
         selected = tabNavigator.current == tab,
         onClick = { tabNavigator.current = tab },
-        icon = { tab.icon?.let { Icon(painter = it, contentDescription = tab.title) } })
+        label = { Text(text = tab.title) },
+        icon = { tab.icon?.let { Icon(painter = it, contentDescription = tab.title) } },
+        alwaysShowLabel = false
+    )
 }
