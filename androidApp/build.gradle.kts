@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.paging.runtime)
     implementation(libs.napier)
     implementation(libs.bundles.coil)
+    implementation(libs.bundles.accompanist)
 }
 
 fun getAccessTokenFromLocalProperties(): String {

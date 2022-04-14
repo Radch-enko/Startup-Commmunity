@@ -2,4 +2,6 @@
     <string name="home_tab_title">Home</string>
     <string name="timeline_tab_title">Timeline</string>
     <string name="setting_tab_title">Settings</string>
+    <string name="search_project">Search projects</string>
+    <string name="something_went_wrong">Something went wrong, please try again later</string>
 </resources>

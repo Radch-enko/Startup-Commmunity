@@ -2,4 +2,6 @@
     <string name="home_tab_title">Главная</string>
     <string name="timeline_tab_title">История</string>
     <string name="setting_tab_title">Настройки</string>
+    <string name="search_project">Найти стартапы</string>
+    <string name="something_went_wrong">Что-то пошло не так, пожалуйста попробуйте позже</string>
 </resources>

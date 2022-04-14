@@ -9,7 +9,9 @@ query Startups($after: String)
                 tagline,
                 thumbnail{
                     url
-                }
+                },
+                commentsCount,
+                ...TopicsInfoResponse
             }
         }
     }
@@ -19,5 +21,15 @@ fragment PageInfoResponse on PostConnection {
     pageInfo {
         startCursor
         endCursor
+    }
+}
+
+fragment TopicsInfoResponse on Post {
+    topics(first: 2){
+        edges {
+            node {
+                name
+            }
+        }
     }
 }
