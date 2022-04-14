@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.Flow
 class GetStartupsUseCase(private val repository: StartupsRepository) {
 
     private val scope = MainScope()
-    private val pagingConfig = PagingConfig(pageSize = 20, enablePlaceholders = false)
+    private val pagingConfig = PagingConfig(pageSize = 2, enablePlaceholders = true)
 
     fun getStartupsPagingData(type: StartupsRequestType): Flow<PagingData<StartupUI>> {
         return Pager(
@@ -27,11 +27,12 @@ class GetStartupsUseCase(private val repository: StartupsRepository) {
             initialKey = "",
             getItems = { currentKey, _ ->
                 val startupsResponse = when (type) {
-                    StartupsRequestType.TOP -> repository.getTopStartups()
+                    StartupsRequestType.TOP -> repository.getTopStartups(currentKey)
                     StartupsRequestType.TIMELINE -> TODO("Setup request for TIMELINE feature")
                 }
                 val items =
                     startupsResponse.list.map { startupDomain -> startupDomain.toUI() }
+
                 PagingResult(
                     items,
                     currentKey,

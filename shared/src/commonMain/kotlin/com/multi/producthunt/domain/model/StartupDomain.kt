@@ -6,7 +6,9 @@ data class StartupDomain(
     val id: String,
     val name: String,
     val tagline: String,
-    val thumbnailDomain: StartupThumbnailDomain
+    val thumbnailDomain: StartupThumbnailDomain,
+    val commentsCount: Int,
+    val topics: List<TopicDomain>
 )
 
 fun StartupsQuery.Node.toDomain(): StartupDomain {
@@ -16,6 +18,10 @@ fun StartupsQuery.Node.toDomain(): StartupDomain {
         tagline = this.tagline,
         thumbnailDomain = StartupThumbnailDomain(
             url = this.thumbnail?.url
-        )
+        ),
+        commentsCount = this.commentsCount,
+        topics = this.topicsInfoResponse.topics.edges.map { topicEdge ->
+            TopicDomain(title = topicEdge.node.name)
+        }.toList()
     )
 }
