@@ -1,6 +1,5 @@
 package com.multi.producthunt.android.ui
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -24,15 +23,18 @@ fun StartupsList(
     pagingList: LazyPagingItems<StartupUI>,
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier = Modifier.fillMaxSize()
     ) {
         this.applyStates(pagingList)
     }
 }
 
+private val startupsRowModifier =
+    Modifier.padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
+
 private fun LazyListScope.applyStates(list: LazyPagingItems<StartupUI>) {
     this.apply {
+        this.startupsRow(list)
         when {
             list.loadState.refresh is LoadState.Error -> {
                 val e = list.loadState.refresh as LoadState.Error
@@ -53,8 +55,18 @@ private fun LazyListScope.applyStates(list: LazyPagingItems<StartupUI>) {
                 }
                 this.startupsRow(placeHolderList, placeholderVisible = true)
             }
-            list.loadState.refresh is LoadState.NotLoading -> {
-                this.startupsRow(list)
+            list.loadState.append is LoadState.Loading -> {
+                val placeHolderList = (1..2).map {
+                    StartupUI(
+                        "", "Placeholder", "Placeholder", null, 0,
+                        listOf(
+                            TopicUI("Placeholder"),
+                            TopicUI("Placeholder"),
+                            TopicUI("Placeholder")
+                        )
+                    )
+                }
+                this.startupsRow(placeHolderList, placeholderVisible = true)
             }
         }
     }
@@ -62,7 +74,7 @@ private fun LazyListScope.applyStates(list: LazyPagingItems<StartupUI>) {
 
 private fun LazyListScope.startupsRow(list: List<StartupUI>, placeholderVisible: Boolean = false) {
     this.items(list) { startup ->
-        Box(modifier = Modifier.padding(horizontal = 16.dp)) {
+        Box(modifier = startupsRowModifier) {
             StartupRow(startup, placeHolderVisible = placeholderVisible)
         }
     }
@@ -73,7 +85,7 @@ private fun LazyListScope.startupsRow(
     placeholderVisible: Boolean = false
 ) {
     this.items(list) { startup ->
-        Box(modifier = Modifier.padding(horizontal = 16.dp)) {
+        Box(modifier = startupsRowModifier) {
             if (startup != null) {
                 StartupRow(startup, placeHolderVisible = placeholderVisible)
             }

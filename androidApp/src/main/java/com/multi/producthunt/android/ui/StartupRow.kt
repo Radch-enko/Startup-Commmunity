@@ -20,6 +20,10 @@ import androidx.compose.material.icons.filled.ChatBubble
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -42,7 +46,7 @@ fun StartupRow(startup: StartupUI, placeHolderVisible: Boolean = false) {
                 .padding(16.dp),
             verticalAlignment = CenterVertically
         ) {
-            StartupImage(startup.url, placeHolderVisible)
+            StartupImage(startup.url)
             Spacer(modifier = Modifier.width(16.dp))
             Column(
                 modifier = Modifier
@@ -83,7 +87,10 @@ fun StartupRow(startup: StartupUI, placeHolderVisible: Boolean = false) {
 }
 
 @Composable
-fun StartupImage(url: String?, placeHolderVisible: Boolean = false) {
+fun StartupImage(url: String?) {
+    var imagePlaceHolderVisibility by remember {
+        mutableStateOf(true)
+    }
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
             .data(url)
@@ -93,8 +100,14 @@ fun StartupImage(url: String?, placeHolderVisible: Boolean = false) {
         contentDescription = null,
         modifier = Modifier
             .size(80.dp)
-            .placeholder(placeHolderVisible),
-        imageLoader = getImageLoader(LocalContext.current)
+            .placeholder(imagePlaceHolderVisibility),
+        onLoading = {
+            imagePlaceHolderVisibility = true
+        },
+        onSuccess = {
+            imagePlaceHolderVisibility = false
+        },
+        imageLoader = getImageLoader(LocalContext.current),
     )
 }
 
