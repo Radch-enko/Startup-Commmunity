@@ -34,7 +34,7 @@ import com.multi.producthunt.ui.models.TopicUI
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StartupRow(startup: StartupUI) {
+fun StartupRow(startup: StartupUI, placeHolderVisible: Boolean = false) {
     androidx.compose.material3.Surface(shape = Shapes.medium) {
         Row(
             modifier = Modifier
@@ -42,7 +42,7 @@ fun StartupRow(startup: StartupUI) {
                 .padding(16.dp),
             verticalAlignment = CenterVertically
         ) {
-            StartupImage(startup.url)
+            StartupImage(startup.url, placeHolderVisible)
             Spacer(modifier = Modifier.width(16.dp))
             Column(
                 modifier = Modifier
@@ -50,21 +50,32 @@ fun StartupRow(startup: StartupUI) {
                     .weight(1f)
                     .padding(8.dp)
             ) {
-                Text(text = startup.name, style = MaterialTheme.typography.titleMedium)
+                Text(
+                    text = startup.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.placeholder(placeHolderVisible)
+                )
                 Spacer(modifier = Modifier.height(16.dp))
                 MediumText(
                     text = startup.tagline,
                     style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 2
+                    maxLines = 2,
+                    modifier = Modifier.placeholder(placeHolderVisible)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                TopicsList(startup.topics)
+                TopicsList(startup.topics, placeHolderVisible)
             }
             IconButton(onClick = { /*TODO*/ }) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(Icons.Default.ChangeHistory, contentDescription = null)
+                    Icon(
+                        Icons.Default.ChangeHistory, contentDescription = null,
+                        modifier = Modifier.placeholder(placeHolderVisible)
+                    )
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text(text = "123")
+                    Text(
+                        text = "123",
+                        modifier = Modifier.placeholder(placeHolderVisible)
+                    )
                 }
             }
         }
@@ -72,7 +83,7 @@ fun StartupRow(startup: StartupUI) {
 }
 
 @Composable
-fun StartupImage(url: String?) {
+fun StartupImage(url: String?, placeHolderVisible: Boolean = false) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
             .data(url)
@@ -80,22 +91,28 @@ fun StartupImage(url: String?) {
             .build(),
         contentScale = ContentScale.Crop,
         contentDescription = null,
-        modifier = Modifier.size(80.dp),
+        modifier = Modifier
+            .size(80.dp)
+            .placeholder(placeHolderVisible),
         imageLoader = getImageLoader(LocalContext.current)
     )
 }
 
 @Composable
-fun TopicsList(topics: List<TopicUI>) {
+fun TopicsList(topics: List<TopicUI>, placeHolderVisible: Boolean = false) {
     LazyRow(content = {
         items(topics) { topic ->
-            Text(text = topic.title, style = MaterialTheme.typography.labelSmall)
+            Text(
+                text = topic.title,
+                style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier.placeholder(placeHolderVisible)
+            )
         }
     }, horizontalArrangement = Arrangement.spacedBy(16.dp))
 }
 
 @Composable
-fun CommentCount(i: Int) {
+fun CommentCount(i: Int, placeHolderVisible: Boolean = false) {
     Row {
         Icon(
             Icons.Default.ChatBubble,
@@ -103,6 +120,9 @@ fun CommentCount(i: Int) {
             modifier = Modifier.size(16.dp)
         ) // Reflect image for horizontal
         Spacer(modifier = Modifier.width(5.dp))
-        Text(text = i.toString())
+        Text(
+            text = i.toString(),
+            modifier = Modifier.placeholder(placeHolderVisible)
+        )
     }
 }

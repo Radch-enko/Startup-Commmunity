@@ -69,6 +69,7 @@ activity-compose = { module = "androidx.activity:activity-compose", version.ref 
 accompanist-insets = { module = "com.google.accompanist:accompanist-insets", version.ref = "accompanist" }
 accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "accompanist" }
 accompanist-uicontoroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
+accompanist-placeholder = { module = "com.google.accompanist:accompanist-placeholder-material", version.ref = "accompanist" }
 
 work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work-runtime-ktx" }
 kodein-di = { module = "org.kodein.di:kodein-di", version.ref = "kodein" }
@@ -89,4 +90,4 @@ apollo = ["apollo-runtime", "apollo-cache"]
 compose = ["androidx-compose-ui", "androidx-compose-ui-tooling", "androidx-compose-foundation", "androidx-compose-material", "androidx-compose-animation", "androidx-compose-activity", "androidx-compose-paging", "androidx-compose-materialyou", "androidx-compose-icons"]
 okhttp = ["okhttp-client", "okhttp-logging"]
 coil = ["coil-gif", "coil-compose"]
-accompanist = ["accompanist-insets", "accompanist-swiperefresh", "accompanist-uicontoroller"]
+accompanist = ["accompanist-insets", "accompanist-swiperefresh", "accompanist-uicontoroller", "accompanist-placeholder"]
