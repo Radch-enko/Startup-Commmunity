@@ -17,7 +17,8 @@ import com.multi.producthunt.android.navigation.HomeTab
 import com.multi.producthunt.android.navigation.SettingsTab
 import com.multi.producthunt.android.navigation.TabNavigationItem
 import com.multi.producthunt.android.navigation.TimelineTab
-import com.multi.producthunt.android.ui.theme.ProductHuntTheme
+import com.multi.producthunt.android.ui.theme.ProductHuntMaterial2
+import com.multi.producthunt.android.ui.theme.ProductHuntMaterial3
 import com.multi.producthunt.android.ui.theme.white
 import com.multi.producthunt.android.ui.theme.zircon
 
@@ -39,27 +40,31 @@ class MainActivity : ComponentActivity() {
                 )
             }
 
-            ProductHuntTheme() {
-                TabNavigator(HomeTab) {
-                    Scaffold(
-                        topBar = {
+            ProductHuntMaterial3 {
+                ProductHuntMaterial2 {
+                    TabNavigator(HomeTab) {
+                        Scaffold(
+                            topBar = {
 
-                        },
-                        content = { innerPadding ->
-                            Box(modifier = Modifier
-                                .fillMaxSize()
-                                .padding(innerPadding)) {
-                                CurrentTab()
+                            },
+                            content = { innerPadding ->
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(innerPadding)
+                                ) {
+                                    CurrentTab()
+                                }
+                            },
+                            bottomBar = {
+                                NavigationBar(containerColor = zircon, contentColor = zircon) {
+                                    TabNavigationItem(tab = HomeTab)
+                                    TabNavigationItem(tab = TimelineTab)
+                                    TabNavigationItem(tab = SettingsTab)
+                                }
                             }
-                        },
-                        bottomBar = {
-                            NavigationBar(containerColor = zircon, contentColor = zircon) {
-                                TabNavigationItem(tab = HomeTab)
-                                TabNavigationItem(tab = TimelineTab)
-                                TabNavigationItem(tab = SettingsTab)
-                            }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }

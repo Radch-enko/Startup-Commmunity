@@ -77,7 +77,7 @@ fun StartupRow(startup: StartupUI, placeHolderVisible: Boolean = false) {
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = "123",
+                        text = startup.votesCount,
                         modifier = Modifier.placeholder(placeHolderVisible)
                     )
                 }

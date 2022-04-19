@@ -13,12 +13,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.LocalDate
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class GetStartupsUseCase(private val repository: StartupsRepository) {
 
     private val scope = MainScope()
-    private val pagingConfig = PagingConfig(pageSize = 2, enablePlaceholders = true)
+    private val pagingConfig = PagingConfig(pageSize = 10, enablePlaceholders = true)
 
     fun getStartupsPagingData(type: StartupsRequestType): Flow<PagingData<StartupUI>> {
         return Pager(

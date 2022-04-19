@@ -44,6 +44,8 @@ kotlin {
                 implementation(libs.napier)
                 // DI
                 implementation(libs.kodein.di)
+                // Kotlinx Datetime
+                implementation(libs.kotlinx.datetime)
             }
         }
         val commonTest by getting {

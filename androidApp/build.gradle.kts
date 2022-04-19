@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.napier)
     implementation(libs.bundles.coil)
     implementation(libs.bundles.accompanist)
+    implementation(libs.kotlinx.datetime)
 }
 
 fun getAccessTokenFromLocalProperties(): String {
