@@ -2,16 +2,21 @@ package com.multi.producthunt.android.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -22,10 +27,16 @@ import com.multi.producthunt.ui.models.StartupUI
 @Composable
 fun StartupsList(
     pagingList: LazyPagingItems<StartupUI>,
+    scrollState: LazyListState = rememberLazyListState(),
+    firstItemPaddingTop: Dp = 0.dp,
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        state = scrollState
     ) {
+        item {
+            Spacer(modifier = Modifier.height(firstItemPaddingTop))
+        }
         this.applyStates(pagingList)
     }
 }

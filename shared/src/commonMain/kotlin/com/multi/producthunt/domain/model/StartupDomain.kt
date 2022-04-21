@@ -1,8 +1,10 @@
 package com.multi.producthunt.domain.model
 
 import com.multi.producthunt.StartupsQuery
-import com.multi.producthunt.utils.toDate
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 data class StartupDomain(
     val id: String,
@@ -30,4 +32,8 @@ fun StartupsQuery.Node.toDomain(): StartupDomain {
         featuredAt = this.featuredAt.toString().toDate(),
         votesCount = this.votesCount
     )
+}
+
+private fun String.toDate(): LocalDateTime {
+    return Instant.parse(this).toLocalDateTime(TimeZone.currentSystemDefault())
 }

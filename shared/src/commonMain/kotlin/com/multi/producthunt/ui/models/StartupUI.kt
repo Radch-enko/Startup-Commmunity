@@ -8,7 +8,7 @@ class StartupUI(
     val tagline: String,
     val url: String?,
     val topics: List<TopicUI>,
-    val featuredAt: String,
+    val featuredAt: String?,
     val votesCount: String
 ) {
     companion object {
