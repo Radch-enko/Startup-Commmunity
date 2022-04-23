@@ -46,7 +46,7 @@ class HomeScreenViewModel(
         loadData()
     }
 
-    fun sendEvent(event: Event) = coroutineScope.launch {
+    fun sendEvent(event: Event) {
         when (event) {
             is Event.Search -> mutableSearchQuery.value = event.query
             Event.Refresh -> {

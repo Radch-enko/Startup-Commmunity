@@ -56,7 +56,7 @@ class HomeScreen : AndroidScreen() {
             StartupsList(lazyStartupsList, scrollState, searchFieldHeight)
         }
 
-        ScrollableSearchField(searchQuery = searchQuery, scrollUpState) {
+        ScrollableSearchField(searchQuery = searchQuery, scrollUpState, lastScrollIndex) {
             viewModel.sendEvent(HomeScreenViewModel.Event.Search(it))
         }
     }
