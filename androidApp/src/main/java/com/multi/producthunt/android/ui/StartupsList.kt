@@ -14,8 +14,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
@@ -46,7 +48,7 @@ private val startupsRowModifier =
 
 private fun LazyListScope.applyStates(list: LazyPagingItems<StartupUI>) {
     this.apply {
-        StartupsRow(list)
+        startupsRow(list)
         when {
             list.loadState.refresh is LoadState.Error -> {
                 val e = list.loadState.refresh as LoadState.Error
@@ -56,17 +58,23 @@ private fun LazyListScope.applyStates(list: LazyPagingItems<StartupUI>) {
             }
             list.loadState.refresh is LoadState.Loading -> {
                 val placeHolderList = (1..5).map { StartupUI.Placeholder }
-                PlaceholderStartupsList(placeHolderList)
+                placeholderStartupsList(placeHolderList)
             }
             list.loadState.append is LoadState.Loading -> {
                 val placeHolderList = (1..2).map { StartupUI.Placeholder }
-                PlaceholderStartupsList(placeHolderList)
+                placeholderStartupsList(placeHolderList)
+            }
+            list.loadState.append is LoadState.Error -> {
+                val e = list.loadState.append as LoadState.Error
+                item {
+                    LoadStateAppendError(e.error.message)
+                }
             }
         }
     }
 }
 
-private fun LazyListScope.PlaceholderStartupsList(
+private fun LazyListScope.placeholderStartupsList(
     list: List<StartupUI>
 ) {
     this.items(list) { startup ->
@@ -76,7 +84,7 @@ private fun LazyListScope.PlaceholderStartupsList(
     }
 }
 
-private fun LazyListScope.StartupsRow(
+private fun LazyListScope.startupsRow(
     list: LazyPagingItems<StartupUI>
 ) {
     this.itemsIndexed(list, key = { _, item ->
@@ -116,7 +124,24 @@ fun LoadStateError(localizedMessage: String?) {
     Box(modifier = Modifier.fillMaxSize()) {
         Text(
             text = localizedMessage
-                ?: stringResource(id = MR.strings.something_went_wrong.resourceId)
+                ?: stringResource(id = MR.strings.something_went_wrong.resourceId),
+            modifier = Modifier.align(Alignment.Center),
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+fun LoadStateAppendError(localizedMessage: String?) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = localizedMessage
+                ?: stringResource(id = MR.strings.something_went_wrong.resourceId),
+            textAlign = TextAlign.Center
         )
     }
 }

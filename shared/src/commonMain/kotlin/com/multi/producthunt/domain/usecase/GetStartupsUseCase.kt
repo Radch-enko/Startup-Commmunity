@@ -19,7 +19,12 @@ import kotlinx.coroutines.flow.Flow
 class GetStartupsUseCase(private val repository: StartupsRepository) {
 
     private val scope = MainScope()
-    private val pagingConfig = PagingConfig(pageSize = 10, enablePlaceholders = true)
+    private val pagingConfig = PagingConfig(
+        pageSize = 50,
+        enablePlaceholders = false,
+        initialLoadSize = 150,
+        prefetchDistance = 150
+    )
 
     fun getStartupsPagingData(type: StartupsRequestType): Flow<PagingData<StartupUI>> {
         return Pager(
@@ -27,18 +32,22 @@ class GetStartupsUseCase(private val repository: StartupsRepository) {
             config = pagingConfig,
             initialKey = "",
             getItems = { currentKey, _ ->
-                val startupsResponse = when (type) {
-                    StartupsRequestType.TOP -> repository.getTopStartups(currentKey)
-                    StartupsRequestType.TIMELINE -> TODO("Setup request for TIMELINE feature")
-                }
-                val items =
-                    startupsResponse.list.map { startupDomain -> startupDomain.toUI() }
+                try {
+                    val startupsResponse = when (type) {
+                        StartupsRequestType.TOP -> repository.getTopStartups(currentKey)
+                        StartupsRequestType.TIMELINE -> TODO("Setup request for TIMELINE feature")
+                    }
+                    val items =
+                        startupsResponse.list.map { startupDomain -> startupDomain.toUI() }
 
-                PagingResult(
-                    items,
-                    currentKey,
-                    prevKey = { startupsResponse.start },
-                    nextKey = { startupsResponse.end })
+                    PagingResult(
+                        items,
+                        currentKey,
+                        prevKey = { startupsResponse.start },
+                        nextKey = { startupsResponse.end })
+                } catch (e: Exception) {
+                    throw e
+                }
             }).pagingData.asCommonFlow().cachedIn(scope)
     }
 

@@ -24,7 +24,7 @@ class HomeScreen : AndroidScreen() {
     private var lastScrollIndex = 0
 
     private val _scrollUp = MutableStateFlow(false)
-    val scrollUp: StateFlow<Boolean>
+    private val scrollUp: StateFlow<Boolean>
         get() = _scrollUp.asStateFlow()
 
     @Composable
@@ -53,7 +53,7 @@ class HomeScreen : AndroidScreen() {
             onRefresh = { viewModel.sendEvent(HomeScreenViewModel.Event.Refresh) },
             indicatorPadding = PaddingValues(top = searchFieldHeight)
         ) {
-            StartupsList(lazyStartupsList, scrollState, searchFieldHeight)
+            StartupsList(lazyStartupsList, firstItemPaddingTop = searchFieldHeight)
         }
 
         ScrollableSearchField(searchQuery = searchQuery, scrollUpState, lastScrollIndex) {
@@ -61,7 +61,7 @@ class HomeScreen : AndroidScreen() {
         }
     }
 
-    fun updateScrollPosition(newScrollIndex: Int) {
+    private fun updateScrollPosition(newScrollIndex: Int) {
         if (newScrollIndex == lastScrollIndex) return
 
         _scrollUp.value = newScrollIndex > lastScrollIndex

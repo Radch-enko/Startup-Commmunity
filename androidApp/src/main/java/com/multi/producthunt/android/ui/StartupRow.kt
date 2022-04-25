@@ -42,7 +42,7 @@ import com.multi.producthunt.ui.models.TopicUI
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartupRow(startup: StartupUI, placeHolderVisible: Boolean = false) {
-    androidx.compose.material3.Surface(shape = Shapes.medium) {
+    androidx.compose.material3.Surface(shape = Shapes.medium, shadowElevation = 4.dp, tonalElevation = 4.dp) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
