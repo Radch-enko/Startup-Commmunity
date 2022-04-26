@@ -15,5 +15,6 @@ fun getImageLoader(context: Context): ImageLoader {
                 add(GifDecoder.Factory())
             }
         }
+        .crossfade(true)
         .build()
 }

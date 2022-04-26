@@ -11,6 +11,8 @@ query Startups($after: String)
                     url
                 },
                 commentsCount,
+                featuredAt,
+                votesCount
                 ...TopicsInfoResponse
             }
         }

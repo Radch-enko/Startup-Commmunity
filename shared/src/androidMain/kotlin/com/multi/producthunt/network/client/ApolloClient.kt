@@ -4,12 +4,12 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.network.okHttpClient
-import com.multi.producthunt.utils.AppConfig
+import com.multi.producthunt.BuildKonfig
 
-actual fun apolloClient(appConfig: AppConfig): ApolloClient {
+actual fun apolloClient(): ApolloClient {
     return ApolloClient.Builder()
-        .serverUrl(appConfig.baseUrl)
+        .serverUrl(BuildKonfig.BASE_URL)
         .normalizedCache(MemoryCacheFactory(maxSizeBytes = 10 * 1024 * 1024))
-        .okHttpClient(getOkHttpClient(appConfig.accessToken))
+        .okHttpClient(getOkHttpClient(BuildKonfig.APP_ACCESS_TOKEN))
         .build()
 }

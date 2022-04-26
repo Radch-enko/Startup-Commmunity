@@ -5,6 +5,7 @@ import com.kuuurt.paging.multiplatform.PagingConfig
 import com.kuuurt.paging.multiplatform.PagingData
 import com.kuuurt.paging.multiplatform.PagingResult
 import com.kuuurt.paging.multiplatform.helpers.cachedIn
+import com.multi.producthunt.domain.model.toStartupUI
 import com.multi.producthunt.domain.repository.StartupsRepository
 import com.multi.producthunt.network.util.asCommonFlow
 import com.multi.producthunt.ui.models.StartupUI
@@ -18,7 +19,7 @@ import kotlinx.coroutines.flow.Flow
 class GetStartupsUseCase(private val repository: StartupsRepository) {
 
     private val scope = MainScope()
-    private val pagingConfig = PagingConfig(pageSize = 2, enablePlaceholders = true)
+    private val pagingConfig = PagingConfig(pageSize = 10, enablePlaceholders = true)
 
     fun getStartupsPagingData(type: StartupsRequestType): Flow<PagingData<StartupUI>> {
         return Pager(
@@ -38,6 +39,24 @@ class GetStartupsUseCase(private val repository: StartupsRepository) {
                     currentKey,
                     prevKey = { startupsResponse.start },
                     nextKey = { startupsResponse.end })
+            }).pagingData.asCommonFlow().cachedIn(scope)
+    }
+
+    fun getSearchableStartupsPagingData(query: String): Flow<PagingData<StartupUI>> {
+        return Pager(
+            clientScope = scope,
+            config = pagingConfig,
+            initialKey = 0,
+            getItems = { currentKey, _ ->
+                val response = repository.getSearchableStartups(query, currentKey)
+
+                val items = response.startups.map { startupDomain -> startupDomain.toStartupUI() }
+
+                PagingResult(
+                    items,
+                    currentKey,
+                    prevKey = { currentKey - 1 },
+                    nextKey = { currentKey + 1 })
             }).pagingData.asCommonFlow().cachedIn(scope)
     }
 }

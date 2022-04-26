@@ -1,9 +1,14 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import org.jetbrains.kotlin.konan.properties.Properties
+
 plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
     id("com.android.library")
     id("com.apollographql.apollo3").version("3.1.0")
     id("dev.icerock.mobile.multiplatform-resources").version("0.18.0")
+    kotlin("plugin.serialization") version "1.4.32"
+    id("com.codingfeline.buildkonfig")
 }
 
 version = "1.0"
@@ -44,6 +49,12 @@ kotlin {
                 implementation(libs.napier)
                 // DI
                 implementation(libs.kodein.di)
+                // Kotlinx Datetime
+                implementation(libs.kotlinx.datetime)
+                // Ktor
+                implementation(libs.bundles.ktor)
+                // Kotlinx Serialization
+                implementation(libs.bundles.serialization)
             }
         }
         val commonTest by getting {
@@ -55,6 +66,7 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(libs.bundles.okhttp)
+                implementation(libs.ktor.client.okhttp)
             }
         }
         val androidTest by getting {
@@ -101,4 +113,50 @@ apollo {
 multiplatformResources {
     multiplatformResourcesPackage = "com.multi.producthunt"
     iosBaseLocalizationRegion = "en"
+}
+
+buildkonfig {
+    packageName = "com.multi.producthunt"
+    // objectName = "YourAwesomeConfig"
+    // exposeObjectWithName = "YourAwesomePublicConfig"
+
+    defaultConfigs {
+
+        buildConfigField(
+            STRING,
+            "BASE_URL",
+            "https://api.producthunt.com/v2/api/graphql"
+        )
+        buildConfigField(
+            STRING,
+            "APP_ACCESS_TOKEN",
+            getAccessTokenFromLocalProperties()
+        )
+        buildConfigField(
+            STRING,
+            "ALGOLIA_SEARCH_URL",
+            "https://0h4smabbsg-dsn.algolia.net/1/indexes/"
+        )
+        buildConfigField(
+            STRING,
+            "ALGOLIA_TOKEN",
+            "9670d2d619b9d07859448d7628eea5f3"
+        )
+        buildConfigField(
+            STRING,
+            "ALGOLIA_APP_ID",
+            "0H4SMABBSG"
+        )
+        buildConfigField(
+            STRING,
+            "IMAGE_SOURCE",
+            "https://ph-files.imgix.net/"
+        )
+    }
+}
+
+fun getAccessTokenFromLocalProperties(): String {
+    val properties = Properties()
+    properties.load(project.rootProject.file("local.properties").inputStream())
+    return properties.getProperty("accessToken")
 }
