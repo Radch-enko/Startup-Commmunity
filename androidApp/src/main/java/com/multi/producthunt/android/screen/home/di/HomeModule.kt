@@ -6,5 +6,5 @@ import org.kodein.di.bindProvider
 import org.kodein.di.instance
 
 val homeModule = DI.Module(name = "home") {
-    bindProvider { HomeScreenViewModel(instance(), instance()) }
+    bindProvider { HomeScreenViewModel(instance()) }
 }

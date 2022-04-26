@@ -1,5 +1,7 @@
 package com.multi.producthunt.android.ui
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,7 +14,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChangeHistory
@@ -39,7 +42,7 @@ import com.multi.producthunt.ui.models.TopicUI
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartupRow(startup: StartupUI, placeHolderVisible: Boolean = false) {
-    androidx.compose.material3.Surface(shape = Shapes.medium) {
+    androidx.compose.material3.Surface(shape = Shapes.medium, shadowElevation = 4.dp, tonalElevation = 4.dp) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -69,20 +72,39 @@ fun StartupRow(startup: StartupUI, placeHolderVisible: Boolean = false) {
                 Spacer(modifier = Modifier.height(16.dp))
                 TopicsList(startup.topics, placeHolderVisible)
             }
-            IconButton(onClick = { /*TODO*/ }) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(
-                        Icons.Default.ChangeHistory, contentDescription = null,
-                        modifier = Modifier.placeholder(placeHolderVisible)
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = startup.votesCount,
-                        modifier = Modifier.placeholder(placeHolderVisible)
-                    )
-                }
-            }
+
+            UpvoteButton(startup.votesCount, placeHolderVisible)
         }
+    }
+}
+
+@Composable
+fun UpvoteButton(votesCount: String, placeHolderVisible: Boolean = false) {
+    var checked by remember {
+        mutableStateOf(false)
+    }
+    Column(
+        modifier = Modifier.clickable(
+            indication = null,
+            interactionSource = remember { MutableInteractionSource() }, // This is mandatory
+            onClick = { checked = !checked }),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            Icons.Default.ChangeHistory, contentDescription = null,
+            modifier = Modifier.placeholder(placeHolderVisible),
+            tint = if (checked) MaterialTheme.colorScheme.primary else LocalContentColor.current.copy(
+                alpha = LocalContentAlpha.current
+            )
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = votesCount,
+            modifier = Modifier.placeholder(placeHolderVisible),
+            color = if (checked) MaterialTheme.colorScheme.primary else LocalContentColor.current.copy(
+                alpha = LocalContentAlpha.current
+            )
+        )
     }
 }
 

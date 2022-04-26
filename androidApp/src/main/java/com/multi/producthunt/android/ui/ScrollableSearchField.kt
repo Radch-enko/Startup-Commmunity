@@ -1,5 +1,6 @@
 package com.multi.producthunt.android.ui
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,16 +18,18 @@ import androidx.compose.ui.unit.dp
 fun ScrollableSearchField(
     searchQuery: String,
     scrollUpState: State<Boolean>,
+    lastScrollIndex: Int,
     onValueChange: (String) -> Unit
 ) {
     val position by animateFloatAsState(if (scrollUpState.value) -200f else 0f)
+    val elevation by animateDpAsState(if (position > -150f && lastScrollIndex != 0) 4.dp else 0.dp)
 
     Surface(
         modifier = Modifier
             .fillMaxWidth()
             .graphicsLayer { translationY = (position) },
         color = Color.White,
-//            elevation = 4.dp
+        elevation = elevation
     ) {
         Column {
 
