@@ -2,13 +2,15 @@ import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.konan.properties.Properties
 
 plugins {
+    id("com.android.library")
+    id("com.google.devtools.ksp") version "1.6.21-1.0.5"
+    id("com.apollographql.apollo3")
+    id("dev.icerock.mobile.multiplatform-resources").version("0.18.0")
+    id("com.codingfeline.buildkonfig")
+    id("kotlinx-serialization")
+
     kotlin("multiplatform")
     kotlin("native.cocoapods")
-    id("com.android.library")
-    id("com.apollographql.apollo3").version("3.1.0")
-    id("dev.icerock.mobile.multiplatform-resources").version("0.18.0")
-    kotlin("plugin.serialization") version "1.4.32"
-    id("com.codingfeline.buildkonfig")
 }
 
 version = "1.0"
@@ -36,24 +38,14 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                //Network
-                implementation(libs.ktor.core)
-                implementation(libs.ktor.logging)
-                // GraphQL
                 implementation(libs.bundles.apollo)
-                // Multiplatform Paging
                 api(libs.multiplatform.paging)
-                //Coroutines
                 implementation(libs.kotlinx.coroutines.core)
-                //Logger
                 implementation(libs.napier)
-                // DI
                 implementation(libs.kodein.di)
-                // Kotlinx Datetime
                 implementation(libs.kotlinx.datetime)
-                // Ktor
                 implementation(libs.bundles.ktor)
-                // Kotlinx Serialization
+                implementation(libs.ktorfit)
                 implementation(libs.bundles.serialization)
             }
         }
@@ -153,6 +145,14 @@ buildkonfig {
             "https://ph-files.imgix.net/"
         )
     }
+}
+
+val ktorfitVersion = "1.0.0-beta06"
+
+dependencies {
+    implementation("org.jetbrains:annotations:22.0.0")
+    add("kspCommonMainMetadata", "de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
+    add("kspAndroid", "de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
 }
 
 fun getAccessTokenFromLocalProperties(): String {

@@ -9,7 +9,7 @@ androidx-compose-paging = "1.0.0-alpha14"
 material-you = "1.0.0-alpha07"
 paging-version = "3.1.1"
 kotlinx-coroutines = "1.6.0-native-mt"
-ktor = "2.0.0"
+ktor = "2.0.1"
 napier = "2.4.0"
 multiplatform-settings = "0.8.1"
 voyager = "1.0.0-beta16"
@@ -32,8 +32,10 @@ multiplatform-resources = "0.18.0"
 
 kotlinx-datetime = "0.3.2"
 
-kotlinx-serialization = "1.4.32"
+kotlinx-serialization = "1.6.10"
 logback = "1.2.11"
+
+ktorfitVersion = "1.0.0-beta06"
 
 [libraries]
 plugin-android = { module = "com.android.tools.build:gradle", version.ref = "plugin-android" }
@@ -51,18 +53,31 @@ androidx-compose-paging = { module = "androidx.paging:paging-compose", version.r
 androidx-compose-materialyou = { module = "androidx.compose.material3:material3", version.ref = "material-you" }
 androidx-compose-icons = { module = "androidx.compose.material:material-icons-extended", version.ref = "androidx-compose" }
 
-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging-version" }
-ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
-ktor-engine = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+#ktor-client = { module = "io.ktor:ktor-client", version.ref = "ktor" }
+#ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-client-json = { module = "io.ktor:ktor-client-json", version.ref = "ktor" }
+#ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
-logback-logging = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
-kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
-kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
-napier = { module = "io.github.aakira:napier", version.ref = "napier" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
-multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-ios = { module = "io.ktor:ktor-client-ios", version.ref = "ktor" }
+
+ktorfit = { module = "de.jensklingenberg.ktorfit:ktorfit-lib", version.ref = "ktorfitVersion" }
+
+logback-logging = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+
+
+serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktor" }
+serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+serialization-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+serialization-server-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
+
+paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging-version" }
+napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyager-kodein = { module = "cafe.adriel.voyager:voyager-kodein", version.ref = "voyager" }
 voyager-tab-navigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
@@ -82,16 +97,14 @@ kodein-android = { module = "org.kodein.di:kodein-di-framework-android-x", versi
 
 apollo-runtime = { module = "com.apollographql.apollo3:apollo-runtime", version.ref = "apollo" }
 apollo-cache = { module = "com.apollographql.apollo3:apollo-normalized-cache", version.ref = "apollo" }
+
+
+multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
 multiplatform-paging = { module = "io.github.kuuuurt:multiplatform-paging", version.ref = "multiplatform-paging" }
+multiplatform-resources = { module = "dev.icerock.moko:resources", version.ref = "multiplatform-resources" }
+
 okhttp-client = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 okhttp-logging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
-
-multiplatform-resources = { module = "dev.icerock.moko:resources", version.ref = "multiplatform-resources" }
-kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
-
-serialization = { module = "io.ktor:ktor-serialization", version.ref = "ktor" }
-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
-serialization-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 
 [bundles]
 plugins = ["plugin-android", "plugin-kotlin", "plugin-kotlin-serialization", "plugin-gver"]
@@ -101,5 +114,5 @@ compose = ["androidx-compose-ui", "androidx-compose-ui-tooling", "androidx-compo
 okhttp = ["okhttp-client", "okhttp-logging"]
 coil = ["coil-gif", "coil-compose"]
 accompanist = ["accompanist-insets", "accompanist-swiperefresh", "accompanist-uicontoroller", "accompanist-placeholder"]
-ktor = ["ktor-core", "ktor-engine", "ktor-logging", "logback-logging"]
+ktor = ["serialization-negotiation", "ktor-client-json", "ktor-logging"]
 serialization = ["serialization", "serialization-json", "serialization-negotiation"]

@@ -2,6 +2,22 @@
     <string name="home_tab_title">Home</string>
     <string name="timeline_tab_title">Timeline</string>
     <string name="setting_tab_title">Settings</string>
+    <string name="profile_tab_title">Profile</string>
     <string name="search_project">Search projects</string>
     <string name="something_went_wrong">Something went wrong, please try again later</string>
+    <string name="enter_password">Enter password</string>
+    <string name="enter_username">Enter username</string>
+    <string name="login_description">Login to vote, comment, post your ideas and much more!</string>
+    <string name="registration_description">Create account to vote, comment, post your ideas and
+        much more!
+    </string>
+    <string name="login_error">Failed. Incorrect username or password</string>
+    <string name="login">Login</string>
+    <string name="password_must_one_capital_letter">Password must contain one capital letter
+    </string>
+    <string name="password_must_one_digit">Password must contain one digit</string>
+    <string name="password_must_special_character">Password must contain one special character
+    </string>
+    <string name="password_is_empty">Password is empty</string>
+    <string name="username_is_empty">Username is empty</string>
 </resources>
