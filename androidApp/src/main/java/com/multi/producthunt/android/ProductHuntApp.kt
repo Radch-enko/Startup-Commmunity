@@ -4,12 +4,13 @@ import android.app.Application
 import com.multi.producthunt.android.screen.di.viewModelModule
 import com.multi.producthunt.domain.di.domainModule
 import com.multi.producthunt.network.di.networkModule
-import com.multi.producthunt.utils.di.utilsModule
+import com.multi.producthunt.utils.KMMPreference
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.x.androidXModule
+import org.kodein.di.bindSingleton
 
 class ProductHuntApp : Application(), DIAware {
     override lateinit var di: DI
@@ -23,8 +24,10 @@ class ProductHuntApp : Application(), DIAware {
             import(networkModule)
             import(domainModule)
             import(viewModelModule)
-            import(utilsModule)
-        }
 
+            bindSingleton {
+                KMMPreference(this@ProductHuntApp)
+            }
+        }
     }
 }

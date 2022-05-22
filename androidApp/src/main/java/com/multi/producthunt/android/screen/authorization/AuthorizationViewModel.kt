@@ -4,15 +4,17 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.multi.producthunt.domain.repository.UserRepository
 import com.multi.producthunt.network.model.ApiResult
-import com.multi.producthunt.utils.TokenManager
+import com.multi.producthunt.utils.KMMPreference
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AuthorizationViewModel(
     private val userRepository: UserRepository,
-    private val tokenManager: TokenManager,
+    private val pref: KMMPreference,
 ) : StateScreenModel<AuthenticationState>(
     AuthenticationState(
         AuthenticationMode.SIGN_IN,
@@ -22,6 +24,9 @@ class AuthorizationViewModel(
         passwordAgain = ""
     )
 ) {
+    companion object {
+        val ACCESS_TOKEN: String = "ACCESS_TOKEN"
+    }
 
     sealed class Event {
 
@@ -52,6 +57,13 @@ class AuthorizationViewModel(
 
         object ErrorDismissed : Event()
     }
+
+    sealed class Effect {
+        object AuthorizationSuccess : Effect()
+    }
+
+    private val mutableEffect = MutableSharedFlow<Effect>()
+    val effect = mutableEffect.asSharedFlow()
 
     fun sendEvent(authenticationEvent: Event) {
         when (authenticationEvent) {
@@ -185,7 +197,8 @@ class AuthorizationViewModel(
                 }
                 is ApiResult.Success -> {
                     Napier.e("Token: ${response.data?.token}")
-                    tokenManager.saveToken(response.data?.token.toString())
+                    pref.put(ACCESS_TOKEN, response.data?.token.toString())
+                    mutableEffect.emit(Effect.AuthorizationSuccess)
                 }
             }
         }

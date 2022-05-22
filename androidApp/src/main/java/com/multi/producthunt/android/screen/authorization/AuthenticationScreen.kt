@@ -6,6 +6,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,14 +17,28 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.kodein.rememberScreenModel
+import cafe.adriel.voyager.navigator.LocalNavigator
 import com.multi.producthunt.MR
+import com.multi.producthunt.android.screen.profile.ProfileScreen
 import com.multi.producthunt.android.ui.*
+import kotlinx.coroutines.flow.collectLatest
 
 class AuthenticationScreen : AndroidScreen() {
 
     @Composable
     override fun Content() {
         val viewModel = rememberScreenModel<AuthorizationViewModel>()
+        val navigator = LocalNavigator.current
+        LaunchedEffect(null) {
+            viewModel.effect.collectLatest { effect ->
+                when (effect) {
+                    AuthorizationViewModel.Effect.AuthorizationSuccess -> navigator?.replace(
+                        ProfileScreen()
+                    )
+                }
+            }
+        }
+
 
         AuthenticationContent(
             authenticationState = viewModel.state.collectAsState().value,
