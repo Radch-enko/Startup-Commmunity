@@ -2,7 +2,6 @@ package com.multi.producthunt.network.client
 
 import com.multi.producthunt.BuildKonfig
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.DEFAULT
@@ -14,7 +13,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
 object SearchClient {
-    val client = HttpClient(CIO) {
+    val client = HttpClient {
         expectSuccess = true
         install(Logging) {
             logger = Logger.DEFAULT

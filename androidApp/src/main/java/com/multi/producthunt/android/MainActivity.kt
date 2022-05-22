@@ -14,7 +14,7 @@ import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.multi.producthunt.android.navigation.HomeTab
-import com.multi.producthunt.android.navigation.SettingsTab
+import com.multi.producthunt.android.navigation.ProfileTab
 import com.multi.producthunt.android.navigation.TabNavigationItem
 import com.multi.producthunt.android.navigation.TimelineTab
 import com.multi.producthunt.android.ui.theme.ProductHuntMaterial2
@@ -60,7 +60,7 @@ class MainActivity : ComponentActivity() {
                                 NavigationBar(containerColor = zircon, contentColor = zircon) {
                                     TabNavigationItem(tab = HomeTab)
                                     TabNavigationItem(tab = TimelineTab)
-                                    TabNavigationItem(tab = SettingsTab)
+                                    TabNavigationItem(tab = ProfileTab)
                                 }
                             }
                         )

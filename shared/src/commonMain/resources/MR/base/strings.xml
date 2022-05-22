@@ -2,6 +2,44 @@
     <string name="home_tab_title">Home</string>
     <string name="timeline_tab_title">Timeline</string>
     <string name="setting_tab_title">Settings</string>
+    <string name="profile_tab_title">Profile</string>
     <string name="search_project">Search projects</string>
     <string name="something_went_wrong">Something went wrong, please try again later</string>
+    <string name="enter_password">Enter password</string>
+    <string name="enter_username">Enter username</string>
+    <string name="enter_name">Enter name</string>
+    <string name="enter_headline">Enter headline</string>
+    <string name="pick_cover_image">Pick cover image</string>
+    <string name="pick_profile_image">Pick profile image</string>
+
+    <string name="login_description">Login to vote, comment, post your ideas and much more!</string>
+    <string name="registration_description">Create account to vote, comment, post your ideas and
+        much more!
+    </string>
+    <string name="login_error">Failed. Incorrect username or password</string>
+    <string name="login">Login</string>
+    <string name="password_requirement_characters">
+        At least 8 characters
+    </string>
+
+    <string name="password_requirement_capital">
+        At least 1 upper-case letter
+    </string>
+
+    <string name="password_requirement_digit">
+        At least 1 digit
+    </string>
+    <string name="password_is_empty">Password is empty</string>
+    <string name="username_is_empty">Username is empty</string>
+    <string name="create_account">Create account</string>
+    <string name="password_requirement_satisfied">
+        %s, satisfied
+    </string>
+    <string name="password_requirement_needed">
+        %s, needed
+    </string>
+    <string name="error_action">OK</string>
+    <string name="error_title">Whoops</string>
+    <string name="password_again">Password again</string>
+    <string name="passwords_are_same">Passwords are same</string>
 </resources>

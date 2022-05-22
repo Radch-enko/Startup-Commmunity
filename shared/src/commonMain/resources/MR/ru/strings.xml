@@ -2,6 +2,41 @@
     <string name="home_tab_title">Главная</string>
     <string name="timeline_tab_title">История</string>
     <string name="setting_tab_title">Настройки</string>
+    <string name="profile_tab_title">Профиль</string>
     <string name="search_project">Найти стартапы</string>
     <string name="something_went_wrong">Что-то пошло не так, пожалуйста попробуйте позже</string>
+    <string name="enter_password">Введите пароль</string>
+    <string name="enter_username">Введите логин</string>
+    <string name="login_description">Войдите чтобы иметь возможность проголосовать за проект,
+        оставлять комментария и постить свои прокты и много другое!
+    </string>
+    <string name="registration_description">Зарегистрируйтесь чтобы иметь возможность проголосовать
+        за проект, оставлять комментария и постить свои прокты и много другое!
+    </string>
+    <string name="login_error">Неправильный логин или пароль</string>
+    <string name="login">Войти</string>
+    <string name="password_requirement_characters">
+        Как минимум 8 символов
+    </string>
+
+    <string name="password_requirement_capital">
+        Символ в верхнем регистре
+    </string>
+
+    <string name="password_requirement_digit">
+        Как минимум одна цифра
+    </string>
+    <string name="password_is_empty">Пароль не заполнен</string>
+    <string name="username_is_empty">Логин не заполнен</string>
+    <string name="create_account">Создать аккаунт</string>
+    <string name="password_requirement_satisfied">
+        %s, успешно
+    </string>
+    <string name="password_requirement_needed">
+        %s, необходимо
+    </string>
+    <string name="error_action">OK</string>
+    <string name="error_action">Ой</string>
+    <string name="password_again">Пароль снова</string>
+    <string name="passwords_are_same">Пароли совпадают</string>
 </resources>
