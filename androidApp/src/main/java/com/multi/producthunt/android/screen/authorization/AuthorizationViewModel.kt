@@ -13,7 +13,15 @@ import kotlinx.coroutines.launch
 class AuthorizationViewModel(
     private val userRepository: UserRepository,
     private val tokenManager: TokenManager,
-) : StateScreenModel<AuthenticationState>(AuthenticationState(AuthenticationMode.SIGN_IN, "", "")) {
+) : StateScreenModel<AuthenticationState>(
+    AuthenticationState(
+        AuthenticationMode.SIGN_IN,
+        name = "",
+        username = "",
+        password = "",
+        passwordAgain = ""
+    )
+) {
 
     sealed class Event {
 
@@ -23,6 +31,21 @@ class AuthorizationViewModel(
             Event()
 
         class PasswordChanged(val password: String) :
+            Event()
+
+        class NameChanged(val name: String) :
+            Event()
+
+        class HeadlineChanged(val headline: String) :
+            Event()
+
+        class CoverImageChanged(val url: String) :
+            Event()
+
+        class ProfileImageChanged(val url: String) :
+            Event()
+
+        class PasswordAgainChanged(val passwordAgain: String) :
             Event()
 
         object Authenticate : Event()
@@ -37,8 +60,13 @@ class AuthorizationViewModel(
             }
             is Event.PasswordChanged -> updatePassword(authenticationEvent.password)
             is Event.UsernameChanged -> updateUsername(authenticationEvent.username)
+            is Event.PasswordAgainChanged -> updatePasswordAgain(authenticationEvent.passwordAgain)
             Event.Authenticate -> authenticate()
             Event.ErrorDismissed -> dismissError()
+            is Event.CoverImageChanged -> updateCoverImage(authenticationEvent.url)
+            is Event.HeadlineChanged -> updateHeadline(authenticationEvent.headline)
+            is Event.NameChanged -> updateName(authenticationEvent.name)
+            is Event.ProfileImageChanged -> updateProfileImage(authenticationEvent.url)
         }
     }
 
@@ -52,9 +80,15 @@ class AuthorizationViewModel(
         } else {
             AuthenticationMode.SIGN_IN
         }
-        mutableState.value = state.value.copy(
-            authenticationMode = newAuthenticationMode
-        )
+        mutableState.update {
+            AuthenticationState(
+                name = "",
+                username = "",
+                password = "",
+                passwordAgain = "",
+                authenticationMode = newAuthenticationMode
+            )
+        }
     }
 
     private fun updateUsername(username: String) {
@@ -75,9 +109,57 @@ class AuthorizationViewModel(
         if (password.any { it.isDigit() }) {
             requirements.add(PasswordRequirements.NUMBER)
         }
+        if (password == state.value.passwordAgain) {
+            requirements.add(PasswordRequirements.PASSWORDS_ARE_SAME)
+        }
 
         mutableState.update {
             it.copy(password = password, passwordRequirements = requirements.toList())
+        }
+    }
+
+    private fun updatePasswordAgain(passwordAgain: String) {
+
+        val requirements = mutableListOf<PasswordRequirements>()
+        if (state.value.password.length > 7) {
+            requirements.add(PasswordRequirements.EIGHT_CHARACTERS)
+        }
+        if (state.value.password.any { it.isUpperCase() }) {
+            requirements.add(PasswordRequirements.CAPITAL_LETTER)
+        }
+        if (state.value.password.any { it.isDigit() }) {
+            requirements.add(PasswordRequirements.NUMBER)
+        }
+        if (passwordAgain == state.value.password) {
+            requirements.add(PasswordRequirements.PASSWORDS_ARE_SAME)
+        }
+
+        mutableState.update {
+            it.copy(passwordAgain = passwordAgain, passwordRequirements = requirements.toList())
+        }
+    }
+
+    private fun updateName(name: String) {
+        mutableState.update {
+            it.copy(name = name)
+        }
+    }
+
+    private fun updateHeadline(headline: String) {
+        mutableState.update {
+            it.copy(headline = headline)
+        }
+    }
+
+    private fun updateCoverImage(url: String) {
+        mutableState.update {
+            it.copy(coverImage = url)
+        }
+    }
+
+    private fun updateProfileImage(url: String) {
+        mutableState.update {
+            it.copy(profileImage = url)
         }
     }
 

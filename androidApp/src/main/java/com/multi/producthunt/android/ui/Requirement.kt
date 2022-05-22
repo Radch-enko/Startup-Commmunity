@@ -39,8 +39,8 @@ fun Requirement(
         )
     }
     Row(
-        modifier = Modifier
-            .padding(6.dp)
+        modifier = modifier
+            .padding(0.dp)
             .semantics(mergeDescendants = true) {
                 text = AnnotatedString(requirementStatus)
             },

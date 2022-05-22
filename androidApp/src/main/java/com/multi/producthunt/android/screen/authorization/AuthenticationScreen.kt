@@ -2,9 +2,8 @@ package com.multi.producthunt.android.screen.authorization
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -33,15 +32,6 @@ class AuthenticationScreen : AndroidScreen() {
     }
 
     @Composable
-    fun ErrorMessage(message: String) {
-        Text(
-            text = message, color = MaterialTheme.colorScheme.error,
-            modifier = Modifier.padding(8.dp)
-        )
-    }
-
-
-    @Composable
     fun AuthenticationContent(
         modifier: Modifier = Modifier,
         authenticationState: AuthenticationState,
@@ -49,9 +39,15 @@ class AuthenticationScreen : AndroidScreen() {
     ) {
 
         AuthenticationForm(
+            name = authenticationState.name,
             username = authenticationState.username,
             password = authenticationState.password,
+            passwordAgain = authenticationState.passwordAgain,
+            headline = authenticationState.headline,
+            coverImage = authenticationState.coverImage,
+            profileImage = authenticationState.profileImage,
             enableAuthentication = authenticationState.isFormValid(),
+            enableRegistration = authenticationState.isRegistrationFormValid(),
             completedPasswordRequirements = authenticationState.passwordRequirements,
             OnUsernameChanged = {
                 handleEvent(AuthorizationViewModel.Event.UsernameChanged(it))
@@ -59,6 +55,21 @@ class AuthenticationScreen : AndroidScreen() {
             authenticationMode = authenticationState.authenticationMode,
             OnPasswordChanged = {
                 handleEvent(AuthorizationViewModel.Event.PasswordChanged(it))
+            },
+            OnPasswordAgainChanged = {
+                handleEvent(AuthorizationViewModel.Event.PasswordAgainChanged(it))
+            },
+            OnNameChanged = {
+                handleEvent(AuthorizationViewModel.Event.NameChanged(it))
+            },
+            OnHeadlineChanged = {
+                handleEvent(AuthorizationViewModel.Event.HeadlineChanged(it.orEmpty()))
+            },
+            OnCoverImageChanged = {
+                handleEvent(AuthorizationViewModel.Event.CoverImageChanged(it.orEmpty()))
+            },
+            OnProfileImageChanged = {
+                handleEvent(AuthorizationViewModel.Event.ProfileImageChanged(it.orEmpty()))
             },
             onAuthenticate = {
                 handleEvent(AuthorizationViewModel.Event.Authenticate)
@@ -82,22 +93,32 @@ class AuthenticationScreen : AndroidScreen() {
 
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun AuthenticationForm(
         modifier: Modifier = Modifier,
         authenticationMode: AuthenticationMode,
+        name: String,
         username: String,
+        headline: String? = null,
+        coverImage: String? = null,
+        profileImage: String? = null,
         password: String,
+        passwordAgain: String,
         completedPasswordRequirements: List<PasswordRequirements>,
         enableAuthentication: Boolean,
+        enableRegistration: Boolean,
         OnUsernameChanged: (username: String) -> Unit,
         OnPasswordChanged: (password: String) -> Unit,
+        OnPasswordAgainChanged: (passwordAgain: String) -> Unit,
+        OnNameChanged: (name: String) -> Unit,
+        OnHeadlineChanged: (headline: String?) -> Unit,
+        OnCoverImageChanged: (coverImage: String?) -> Unit,
+        OnProfileImageChanged: (profileImage: String?) -> Unit,
         onAuthenticate: () -> Unit,
         onToggleMode: () -> Unit
     ) {
         Column(
-            modifier = modifier,
+            modifier = modifier.verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(32.dp))
@@ -106,52 +127,83 @@ class AuthenticationScreen : AndroidScreen() {
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp),
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    TextFieldDefault(
-                        modifier = modifier,
-                        value = username,
-                        label = stringResource(id = MR.strings.enter_username.resourceId),
-                        onValueChange = OnUsernameChanged
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    PasswordField(
-                        value = password, onValueChange = OnPasswordChanged, label = stringResource(
-                            id = MR.strings.enter_password.resourceId
-                        )
-                    )
+                OutlinedTextFieldDefault(
+                    modifier = modifier,
+                    value = username,
+                    label = stringResource(id = MR.strings.enter_username.resourceId),
+                    onValueChange = OnUsernameChanged
+                )
 
-                    AnimatedVisibility(
-                        visible = authenticationMode == AuthenticationMode.SIGN_UP
-                    ) {
+                AnimatedVisibility(
+                    visible = authenticationMode == AuthenticationMode.SIGN_UP
+                ) {
+                    Column {
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        OutlinedTextFieldDefault(
+                            modifier = modifier,
+                            value = name,
+                            label = stringResource(id = MR.strings.enter_name.resourceId),
+                            onValueChange = OnNameChanged
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        OutlinedTextFieldDefault(
+                            modifier = modifier,
+                            value = headline.orEmpty(),
+                            label = stringResource(id = MR.strings.enter_headline.resourceId),
+                            onValueChange = OnHeadlineChanged
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedPasswordTextField(
+                    value = password, onValueChange = OnPasswordChanged
+                )
+
+                AnimatedVisibility(
+                    visible = authenticationMode == AuthenticationMode.SIGN_UP
+                ) {
+                    Column {
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        OutlinedPasswordTextField(
+                            value = passwordAgain, onValueChange = OnPasswordAgainChanged,
+                            label = stringResource(id = MR.strings.password_again.resourceId)
+                        )
+
                         PasswordRequirements(satisfiedRequirements = completedPasswordRequirements)
                     }
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    AuthenticationButton(
-                        enableAuthentication = enableAuthentication,
-                        authenticationMode = authenticationMode,
-                        onAuthenticate = onAuthenticate
-                    )
-
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    ToggleAuthenticationMode(
-                        modifier = Modifier.fillMaxWidth(),
-                        authenticationMode = authenticationMode,
-                        toggleAuthentication = {
-                            onToggleMode()
-                        }
-                    )
                 }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                AuthenticationButton(
+                    enableAuthentication = if (authenticationMode ==
+                        AuthenticationMode.SIGN_IN
+                    ) {
+                        enableAuthentication
+                    } else {
+                        enableRegistration
+                    },
+                    authenticationMode = authenticationMode,
+                    onAuthenticate = onAuthenticate
+                )
+
+                ToggleAuthenticationMode(
+                    modifier = Modifier.fillMaxWidth(),
+                    authenticationMode = authenticationMode,
+                    toggleAuthentication = {
+                        onToggleMode()
+                    }
+                )
             }
         }
     }
@@ -180,7 +232,8 @@ class AuthenticationScreen : AndroidScreen() {
         satisfiedRequirements: List<PasswordRequirements>
     ) {
         Column(
-            modifier = modifier
+            modifier = modifier,
+            verticalArrangement = Arrangement.Center
         ) {
             PasswordRequirements.values().forEach { requirement ->
                 Requirement(

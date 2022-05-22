@@ -7,6 +7,11 @@
     <string name="something_went_wrong">Something went wrong, please try again later</string>
     <string name="enter_password">Enter password</string>
     <string name="enter_username">Enter username</string>
+    <string name="enter_name">Enter name</string>
+    <string name="enter_headline">Enter headline</string>
+    <string name="pick_cover_image">Pick cover image</string>
+    <string name="pick_profile_image">Pick profile image</string>
+
     <string name="login_description">Login to vote, comment, post your ideas and much more!</string>
     <string name="registration_description">Create account to vote, comment, post your ideas and
         much more!
@@ -35,4 +40,6 @@
     </string>
     <string name="error_action">OK</string>
     <string name="error_title">Whoops</string>
+    <string name="password_again">Password again</string>
+    <string name="passwords_are_same">Passwords are same</string>
 </resources>

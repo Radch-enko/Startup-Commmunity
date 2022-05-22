@@ -13,9 +13,13 @@ fun ButtonDefault(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean,
+    enabled: Boolean = true,
 ) {
-    Button(onClick = onClick, modifier = modifier.then(Modifier.fillMaxWidth(.5f))) {
+    Button(
+        onClick = onClick,
+        modifier = modifier.then(Modifier.fillMaxWidth(.5f)),
+        enabled = enabled
+    ) {
         Text(text = text.uppercase())
     }
 }
@@ -24,9 +28,15 @@ fun ButtonDefault(
 fun OutlinedButtonDefault(
     text: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
-    OutlinedButton(onClick, modifier.then(Modifier.fillMaxWidth(.5f)), shape = CircleShape) {
+    OutlinedButton(
+        onClick,
+        modifier.then(Modifier.fillMaxWidth(.5f)),
+        enabled = enabled,
+        shape = CircleShape
+    ) {
         Text(text = text.uppercase())
     }
 }

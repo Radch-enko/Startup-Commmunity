@@ -9,5 +9,6 @@ enum class PasswordRequirements(
 ) {
     CAPITAL_LETTER(StringDesc.Resource(MR.strings.password_requirement_capital)),
     NUMBER(StringDesc.Resource(MR.strings.password_requirement_digit)),
-    EIGHT_CHARACTERS(StringDesc.Resource(MR.strings.password_requirement_characters))
+    EIGHT_CHARACTERS(StringDesc.Resource(MR.strings.password_requirement_characters)),
+    PASSWORDS_ARE_SAME(StringDesc.Resource(MR.strings.passwords_are_same))
 }

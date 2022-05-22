@@ -37,4 +37,6 @@
     </string>
     <string name="error_action">OK</string>
     <string name="error_action">Ой</string>
+    <string name="password_again">Пароль снова</string>
+    <string name="passwords_are_same">Пароли совпадают</string>
 </resources>
