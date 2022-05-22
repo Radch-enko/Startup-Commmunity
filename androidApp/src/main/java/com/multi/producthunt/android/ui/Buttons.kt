@@ -1,9 +1,8 @@
 package com.multi.producthunt.android.ui
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,10 +13,9 @@ fun ButtonDefault(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    colors: ButtonColors = ButtonDefaults.buttonColors(),
+    enabled: Boolean,
 ) {
-    Button(onClick = onClick, modifier = modifier.then(Modifier.fillMaxWidth())) {
+    Button(onClick = onClick, modifier = modifier.then(Modifier.fillMaxWidth(.5f))) {
         Text(text = text.uppercase())
     }
 }
@@ -26,11 +24,9 @@ fun ButtonDefault(
 fun OutlinedButtonDefault(
     text: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    colors: ButtonColors = ButtonDefaults.buttonColors(),
+    modifier: Modifier = Modifier
 ) {
-    OutlinedButton(onClick = onClick) {
+    OutlinedButton(onClick, modifier.then(Modifier.fillMaxWidth(.5f)), shape = CircleShape) {
         Text(text = text.uppercase())
     }
 }

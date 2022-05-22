@@ -13,11 +13,26 @@
     </string>
     <string name="login_error">Failed. Incorrect username or password</string>
     <string name="login">Login</string>
-    <string name="password_must_one_capital_letter">Password must contain one capital letter
+    <string name="password_requirement_characters">
+        At least 8 characters
     </string>
-    <string name="password_must_one_digit">Password must contain one digit</string>
-    <string name="password_must_special_character">Password must contain one special character
+
+    <string name="password_requirement_capital">
+        At least 1 upper-case letter
+    </string>
+
+    <string name="password_requirement_digit">
+        At least 1 digit
     </string>
     <string name="password_is_empty">Password is empty</string>
     <string name="username_is_empty">Username is empty</string>
+    <string name="create_account">Create account</string>
+    <string name="password_requirement_satisfied">
+        %s, satisfied
+    </string>
+    <string name="password_requirement_needed">
+        %s, needed
+    </string>
+    <string name="error_action">OK</string>
+    <string name="error_title">Whoops</string>
 </resources>

@@ -15,12 +15,26 @@
     </string>
     <string name="login_error">Неправильный логин или пароль</string>
     <string name="login">Войти</string>
-    <string name="password_must_one_capital_letter">Пароль должен содержать символ в верхнем
-        регистре
+    <string name="password_requirement_characters">
+        Как минимум 8 символов
     </string>
-    <string name="password_must_one_digit">Пароль должен содержать цифры</string>
-    <string name="password_must_special_character">Пароль должен содержать специальные символы
+
+    <string name="password_requirement_capital">
+        Символ в верхнем регистре
+    </string>
+
+    <string name="password_requirement_digit">
+        Как минимум одна цифра
     </string>
     <string name="password_is_empty">Пароль не заполнен</string>
     <string name="username_is_empty">Логин не заполнен</string>
+    <string name="create_account">Создать аккаунт</string>
+    <string name="password_requirement_satisfied">
+        %s, успешно
+    </string>
+    <string name="password_requirement_needed">
+        %s, необходимо
+    </string>
+    <string name="error_action">OK</string>
+    <string name="error_action">Ой</string>
 </resources>

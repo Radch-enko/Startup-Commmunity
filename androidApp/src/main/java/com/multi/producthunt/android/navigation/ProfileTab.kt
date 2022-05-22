@@ -10,7 +10,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.multi.producthunt.MR
-import com.multi.producthunt.android.screen.login.LoginScreen
+import com.multi.producthunt.android.screen.authorization.AuthenticationScreen
 
 object ProfileTab : Tab {
 
@@ -31,7 +31,7 @@ object ProfileTab : Tab {
 
     @Composable
     override fun Content() {
-        Navigator(screen = LoginScreen())
+        Navigator(screen = AuthenticationScreen())
     }
 
 }

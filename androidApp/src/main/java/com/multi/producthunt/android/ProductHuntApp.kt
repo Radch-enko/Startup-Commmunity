@@ -1,10 +1,7 @@
 package com.multi.producthunt.android
 
 import android.app.Application
-import com.multi.producthunt.android.screen.home.di.homeModule
-import com.multi.producthunt.android.screen.login.di.loginModule
-import com.multi.producthunt.android.screen.settings.di.settingsModule
-import com.multi.producthunt.android.screen.timeline.di.timelineModule
+import com.multi.producthunt.android.screen.di.viewModelModule
 import com.multi.producthunt.domain.di.domainModule
 import com.multi.producthunt.network.di.networkModule
 import com.multi.producthunt.utils.di.utilsModule
@@ -22,13 +19,10 @@ class ProductHuntApp : Application(), DIAware {
         Napier.base(DebugAntilog())
 
         di = DI {
+            import(androidXModule(this@ProductHuntApp))
             import(networkModule)
             import(domainModule)
-            import(homeModule)
-            import(timelineModule)
-            import(settingsModule)
-            import(loginModule)
-            import(androidXModule(this@ProductHuntApp))
+            import(viewModelModule)
             import(utilsModule)
         }
 

@@ -2,6 +2,7 @@ package com.multi.producthunt.android.ui
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -9,15 +10,16 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import com.multi.producthunt.MR
+import androidx.compose.ui.text.input.VisualTransformation
 import com.multi.producthunt.android.ui.theme.mountainMeadow
 
 
@@ -25,27 +27,36 @@ import com.multi.producthunt.android.ui.theme.mountainMeadow
 fun TextFieldDefault(
     value: String,
     onValueChange: (String) -> Unit,
+    label: String,
     modifier: Modifier = Modifier,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions(),
+    trailingIcon: @Composable (() -> Unit)? = {
+        val clearButtonVisible = value.isNotEmpty()
+        if (clearButtonVisible) {
+            IconButton(onClick = {
+                onValueChange("")
+            }) {
+                Icon(Icons.Default.Clear, contentDescription = null)
+            }
+        }
+    },
 ) {
-    val clearButtonVisible = value.isNotEmpty()
     TextField(
         value = value, onValueChange = onValueChange, modifier = modifier.fillMaxWidth(),
-        label = { Text(stringResource(id = MR.strings.enter_username.resourceId)) },
+        label = { Text(label) },
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = MaterialTheme.colorScheme.surfaceVariant,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             cursorColor = mountainMeadow
         ),
-        trailingIcon = {
-            if (clearButtonVisible) {
-                IconButton(onClick = {
-                    onValueChange("")
-                }) {
-                    Icon(Icons.Default.Clear, contentDescription = null)
-                }
-            }
-        },
+        trailingIcon = trailingIcon,
+        visualTransformation = visualTransformation,
+        keyboardActions = keyboardActions,
+        keyboardOptions = keyboardOptions,
+        singleLine = true,
         shape = CircleShape
     )
 }
@@ -54,31 +65,28 @@ fun TextFieldDefault(
 fun PasswordField(
     value: String,
     onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    label: String
 ) {
-    val clearButtonVisible = value.isNotEmpty()
-    TextField(
+    var passwordVisible by remember {
+        mutableStateOf(false)
+    }
+    TextFieldDefault(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier.then(Modifier.fillMaxWidth()),
-        label = { Text(stringResource(id = MR.strings.enter_password.resourceId)) },
-        visualTransformation = PasswordVisualTransformation(),
+        label = label,
+        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        colors = TextFieldDefaults.textFieldColors(
-            backgroundColor = MaterialTheme.colorScheme.surfaceVariant,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            cursorColor = mountainMeadow
-        ),
         trailingIcon = {
-            if (clearButtonVisible) {
-                IconButton(onClick = {
-                    onValueChange("")
-                }) {
-                    Icon(Icons.Default.Clear, contentDescription = null)
-                }
+            val image = if (passwordVisible)
+                Icons.Filled.Visibility
+            else Icons.Filled.VisibilityOff
+
+            // Please provide localized description for accessibility services
+            val description = if (passwordVisible) "Hide password" else "Show password"
+
+            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                Icon(imageVector = image, description)
             }
-        },
-        shape = CircleShape
+        }
     )
 }
