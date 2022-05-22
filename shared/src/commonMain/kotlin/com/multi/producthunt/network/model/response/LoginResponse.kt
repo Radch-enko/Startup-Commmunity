@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-class LoginResponse(
+data class LoginResponse(
     @SerialName("access_token")
     val token: String,
     @SerialName("token_type")

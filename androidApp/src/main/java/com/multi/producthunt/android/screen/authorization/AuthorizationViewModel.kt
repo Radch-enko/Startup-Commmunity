@@ -70,7 +70,6 @@ class AuthorizationViewModel(
         }
     }
 
-
     private fun toggleAuthenticationMode() {
         val authenticationMode = state.value.authenticationMode
         val newAuthenticationMode = if (
@@ -192,8 +191,33 @@ class AuthorizationViewModel(
         }
     }
 
-    private fun signUpRequest() {
-        TODO("Not yet implemented")
+    private fun signUpRequest() = coroutineScope.launch {
+        with(state.value) {
+            userRepository.register(
+                name,
+                username,
+                headline,
+                profileImage,
+                coverImage,
+                password,
+                passwordAgain
+            ).collectLatest { response ->
+                when (response) {
+                    is ApiResult.Error -> {
+                        mutableState.update { value ->
+                            value.copy(
+                                error = response.exception,
+                            )
+                        }
+                    }
+                    is ApiResult.Success -> {
+                        Napier.e("Token: ${response.data}")
+                        signInRequest()
+                    }
+                }
+            }
+        }
+
     }
 
     private fun dismissError() {

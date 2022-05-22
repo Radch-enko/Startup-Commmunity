@@ -18,7 +18,7 @@ object KtorfitClient {
 
     val client = HttpClient {
         install(ContentNegotiation) {
-            json(Json { isLenient = true; ignoreUnknownKeys = true })
+            json(Json { isLenient = true; ignoreUnknownKeys = true; explicitNulls = true })
         }
         install(Logging) {
             logger = Logger.DEFAULT
@@ -27,7 +27,7 @@ object KtorfitClient {
     }
 
     private val ktorfit =
-        Ktorfit(baseUrl = "http://product-hunt-projects.herokuapp.com/", client).also {
+        Ktorfit(baseUrl = "https://product-hunt-projects.herokuapp.com/", client).also {
             it.addResponseConverter(ResultConverter())
         }
 

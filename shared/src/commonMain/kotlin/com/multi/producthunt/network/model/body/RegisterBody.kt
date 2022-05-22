@@ -10,11 +10,11 @@ class RegisterBody(
     @SerialName("username")
     val username: String,
     @SerialName("headline")
-    val headline: String,
+    val headline: String? = null,
     @SerialName("profileImage")
-    val profileImage: String,
+    val profileImage: String? = null,
     @SerialName("coverImage")
-    val coverImage: String,
+    val coverImage: String? = null,
     @SerialName("password")
     val password: String,
     @SerialName("password2")

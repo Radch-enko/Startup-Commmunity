@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-class RegisterResponse(
+data class RegisterResponse(
     @SerialName("id")
     val id: Int,
     @SerialName("name")
@@ -12,9 +12,9 @@ class RegisterResponse(
     @SerialName("username")
     val username: String,
     @SerialName("headline")
-    val headline: String,
+    val headline: String? = null,
     @SerialName("profileImage")
-    val profileImage: String,
+    val profileImage: String? = null,
     @SerialName("coverImage")
-    val coverImage: String,
+    val coverImage: String? = null,
 )
