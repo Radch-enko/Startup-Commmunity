@@ -38,7 +38,8 @@
     <string name="password_requirement_needed">
         %s, needed
     </string>
-    <string name="error_action">OK</string>
+    <string name="ok_button">ok</string>
+    <string name="cancel_button">Cancel</string>
     <string name="error_title">Whoops</string>
     <string name="password_again">Password again</string>
     <string name="passwords_are_same">Passwords are same</string>

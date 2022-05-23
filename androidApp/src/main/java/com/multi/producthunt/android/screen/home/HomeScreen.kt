@@ -15,27 +15,18 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.multi.producthunt.android.R
 import com.multi.producthunt.android.ui.ScrollableSearchField
 import com.multi.producthunt.android.ui.StartupsList
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 class HomeScreen : AndroidScreen() {
-
-    private var lastScrollIndex = 0
-
-    private val _scrollUp = MutableStateFlow(false)
-    private val scrollUp: StateFlow<Boolean>
-        get() = _scrollUp.asStateFlow()
 
     @Composable
     override fun Content() {
         val viewModel = rememberScreenModel<HomeScreenViewModel>()
 
-        HomeScreen(viewModel)
+        HomeScreenInner(viewModel)
     }
 
     @Composable
-    private fun HomeScreen(viewModel: HomeScreenViewModel) {
+    private fun HomeScreenInner(viewModel: HomeScreenViewModel) {
         val state by viewModel.state.collectAsState()
         val searchQuery by viewModel.searchQueryState.collectAsState()
 
@@ -44,9 +35,9 @@ class HomeScreen : AndroidScreen() {
         val searchFieldHeight = dimensionResource(id = R.dimen.searchFieldHeight)
         val scrollState = rememberLazyListState()
 
-        val scrollUpState = scrollUp.collectAsState()
+        val scrollUpState = viewModel.scrollUp.collectAsState()
 
-        updateScrollPosition(scrollState.firstVisibleItemIndex)
+        viewModel.updateScrollPosition(scrollState.firstVisibleItemIndex)
 
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing = state.isRefreshing),
@@ -56,16 +47,9 @@ class HomeScreen : AndroidScreen() {
             StartupsList(lazyStartupsList, firstItemPaddingTop = searchFieldHeight)
         }
 
-        ScrollableSearchField(searchQuery = searchQuery, scrollUpState, lastScrollIndex) {
+        ScrollableSearchField(searchQuery = searchQuery, scrollUpState, viewModel.lastScrollIndex) {
             viewModel.sendEvent(HomeScreenViewModel.Event.Search(it))
         }
-    }
-
-    private fun updateScrollPosition(newScrollIndex: Int) {
-        if (newScrollIndex == lastScrollIndex) return
-
-        _scrollUp.value = newScrollIndex > lastScrollIndex
-        lastScrollIndex = newScrollIndex
     }
 
     @Preview

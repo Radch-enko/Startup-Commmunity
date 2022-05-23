@@ -6,6 +6,7 @@ plugin-gver = "0.42.0"
 androidx-compose = "1.1.1"
 androidx-compose-activity = "1.4.0"
 androidx-compose-paging = "1.0.0-alpha14"
+androidx-compose-constraint = "1.0.0"
 material-you = "1.0.0-alpha07"
 paging-version = "3.1.1"
 kotlinx-coroutines = "1.6.0-native-mt"
@@ -52,14 +53,16 @@ androidx-compose-activity = { module = "androidx.activity:activity-compose", ver
 androidx-compose-paging = { module = "androidx.paging:paging-compose", version.ref = "androidx-compose-paging" }
 androidx-compose-materialyou = { module = "androidx.compose.material3:material3", version.ref = "material-you" }
 androidx-compose-icons = { module = "androidx.compose.material:material-icons-extended", version.ref = "androidx-compose" }
+androidx-compose-constraint = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "androidx-compose-constraint" }
 
 #ktor-client = { module = "io.ktor:ktor-client", version.ref = "ktor" }
-#ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-client-json = { module = "io.ktor:ktor-client-json", version.ref = "ktor" }
-#ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-ios = { module = "io.ktor:ktor-client-ios", version.ref = "ktor" }
+ktor-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 
 ktorfit = { module = "de.jensklingenberg.ktorfit:ktorfit-lib", version.ref = "ktorfitVersion" }
 
@@ -90,10 +93,12 @@ accompanist-insets = { module = "com.google.accompanist:accompanist-insets", ver
 accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "accompanist" }
 accompanist-uicontoroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
 accompanist-placeholder = { module = "com.google.accompanist:accompanist-placeholder-material", version.ref = "accompanist" }
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 
 work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work-runtime-ktx" }
 kodein-di = { module = "org.kodein.di:kodein-di", version.ref = "kodein" }
 kodein-android = { module = "org.kodein.di:kodein-di-framework-android-x", version.ref = "kodein" }
+kodein-compose = { module = "org.kodein.di:kodein-di-framework-compose", version.ref = "kodein" }
 
 apollo-runtime = { module = "com.apollographql.apollo3:apollo-runtime", version.ref = "apollo" }
 apollo-cache = { module = "com.apollographql.apollo3:apollo-normalized-cache", version.ref = "apollo" }
@@ -110,9 +115,9 @@ okhttp-logging = { module = "com.squareup.okhttp3:logging-interceptor", version.
 plugins = ["plugin-android", "plugin-kotlin", "plugin-kotlin-serialization", "plugin-gver"]
 voyager = ["voyager-navigator", "voyager-kodein", "voyager-tab-navigator"]
 apollo = ["apollo-runtime", "apollo-cache"]
-compose = ["androidx-compose-ui", "androidx-compose-ui-tooling", "androidx-compose-foundation", "androidx-compose-material", "androidx-compose-animation", "androidx-compose-activity", "androidx-compose-paging", "androidx-compose-materialyou", "androidx-compose-icons"]
+compose = ["androidx-compose-ui", "androidx-compose-ui-tooling", "androidx-compose-foundation", "androidx-compose-material", "androidx-compose-animation", "androidx-compose-activity", "androidx-compose-paging", "androidx-compose-materialyou", "androidx-compose-icons", "androidx-compose-constraint"]
 okhttp = ["okhttp-client", "okhttp-logging"]
 coil = ["coil-gif", "coil-compose"]
-accompanist = ["accompanist-insets", "accompanist-swiperefresh", "accompanist-uicontoroller", "accompanist-placeholder"]
-ktor = ["serialization-negotiation", "ktor-client-json", "ktor-logging"]
+accompanist = ["accompanist-insets", "accompanist-swiperefresh", "accompanist-uicontoroller", "accompanist-placeholder", "accompanist-permissions"]
+ktor = ["ktor-core", "serialization-negotiation", "ktor-client-json", "ktor-logging", "ktor-client-cio", "ktor-auth", "ktor-client-okhttp"]
 serialization = ["serialization", "serialization-json", "serialization-negotiation"]

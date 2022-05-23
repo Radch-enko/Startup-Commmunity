@@ -8,6 +8,7 @@ val blueBayoux = Color(0xFF4C597B)
 val zircon = Color(0xFFF5F8FF)
 val white = Color(0xFFFFFFFF)
 val black = Color(0xFF000000)
+val shadow = Color(0x953F3F3F)
 
 
 val md_theme_light_primary = Color(0xFF00629d)
