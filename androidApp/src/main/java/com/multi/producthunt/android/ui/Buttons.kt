@@ -28,12 +28,12 @@ fun ButtonDefault(
 fun OutlinedButtonDefault(
     text: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.fillMaxWidth(.5f),
     enabled: Boolean = true
 ) {
     OutlinedButton(
         onClick,
-        modifier.then(Modifier.fillMaxWidth(.5f)),
+        modifier,
         enabled = enabled,
         shape = CircleShape
     ) {

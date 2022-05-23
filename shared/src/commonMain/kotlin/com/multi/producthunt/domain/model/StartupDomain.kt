@@ -27,7 +27,7 @@ fun StartupsQuery.Node.toDomain(): StartupDomain {
         ),
         commentsCount = this.commentsCount,
         topics = this.topicsInfoResponse.topics.edges.map { topicEdge ->
-            TopicDomain(title = topicEdge.node.name)
+            TopicDomain(id = 1, title = topicEdge.node.name)
         }.toList(),
         featuredAt = this.featuredAt.toString().toDate(),
         votesCount = this.votesCount

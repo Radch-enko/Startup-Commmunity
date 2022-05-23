@@ -40,4 +40,12 @@
     <string name="error_action">Ой</string>
     <string name="password_again">Пароль снова</string>
     <string name="passwords_are_same">Пароли совпадают</string>
+    <string name="add_project">Добавить проект</string>
+
+    <string name="project_name">Название проекта</string>
+    <string name="project_tagline">Тэг</string>
+    <string name="project_description">Описание</string>
+    <string name="project_thumbnail">Миниатюра</string>
+    <string name="project_media">Изображения</string>
+    <string name="project_topics">Темы</string>
 </resources>

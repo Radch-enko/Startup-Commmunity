@@ -101,6 +101,7 @@ fun OutlinedTextFieldDefault(
     readOnly: Boolean = false,
     textStyle: TextStyle = LocalTextStyle.current,
     label: String,
+    singleLine: Boolean = true,
     trailingIcon: @Composable (() -> Unit)? = {
         val clearButtonVisible = value.isNotEmpty()
         if (clearButtonVisible) {
@@ -127,7 +128,7 @@ fun OutlinedTextFieldDefault(
         visualTransformation = visualTransformation,
         keyboardActions = keyboardActions,
         keyboardOptions = keyboardOptions,
-        singleLine = true,
+        singleLine = singleLine,
         shape = Shapes.medium
     )
 }

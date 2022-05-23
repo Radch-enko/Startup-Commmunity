@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.core.lifecycle.LifecycleEffect
 import cafe.adriel.voyager.kodein.rememberScreenModel
+import cafe.adriel.voyager.navigator.LocalNavigator
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.insets.statusBarsPadding
@@ -34,6 +35,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.multi.producthunt.MR
+import com.multi.producthunt.android.screen.addproject.AddProjectScreen
 import com.multi.producthunt.android.ui.*
 import com.multi.producthunt.android.ui.theme.shadow
 import java.io.InputStream
@@ -222,6 +224,15 @@ class ProfileScreen : AndroidScreen() {
                                 dialogVisibility = !dialogVisibility
                             }
                         }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                        val navigator = LocalNavigator.current?.parent?.parent
+                        OutlinedButtonDefault(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = MR.strings.add_project.resourceId),
+                            onClick = {
+                                navigator?.push(AddProjectScreen())
+                            })
                     }
 
                     IconButton(

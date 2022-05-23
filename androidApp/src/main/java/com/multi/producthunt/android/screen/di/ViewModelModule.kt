@@ -1,5 +1,6 @@
 package com.multi.producthunt.android.screen.di
 
+import com.multi.producthunt.android.screen.addproject.AddProjectViewModel
 import com.multi.producthunt.android.screen.authorization.AuthorizationViewModel
 import com.multi.producthunt.android.screen.home.HomeScreenViewModel
 import com.multi.producthunt.android.screen.profile.ProfileScreenViewModel
@@ -15,4 +16,5 @@ val viewModelModule = DI.Module("viewModelModule") {
     bindProvider { SettingsScreenViewModel(instance()) }
     bindProvider { AuthorizationViewModel(instance(), instance()) }
     bindProvider { ProfileScreenViewModel(instance(), instance()) }
+    bindProvider { AddProjectViewModel(instance(), instance(), instance()) }
 }

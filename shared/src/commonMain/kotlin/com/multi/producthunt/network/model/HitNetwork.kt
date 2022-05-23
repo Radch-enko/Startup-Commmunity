@@ -31,7 +31,7 @@ fun HitNetwork.toDomain(): HitDomain {
         this.tagline,
         this.thumbnailImageUuid,
         ThumbnailDomain(this.thumbnailNetwork?.imageUrl),
-        this.topicNetworks.map { TopicDomain(it.name) },
+        this.topicNetworks.map { TopicDomain(it.id, it.name) },
         this.voteCount
     )
 }
