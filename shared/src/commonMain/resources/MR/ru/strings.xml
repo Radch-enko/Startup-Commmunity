@@ -35,7 +35,8 @@
     <string name="password_requirement_needed">
         %s, необходимо
     </string>
-    <string name="error_action">OK</string>
+    <string name="ok_button">OK</string>
+    <string name="cancel_button">Отмена</string>
     <string name="error_action">Ой</string>
     <string name="password_again">Пароль снова</string>
     <string name="passwords_are_same">Пароли совпадают</string>

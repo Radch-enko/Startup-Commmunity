@@ -5,8 +5,6 @@ data class AuthenticationState(
     val name: String,
     val username: String,
     val headline: String? = null,
-    val coverImage: String? = null,
-    val profileImage: String? = null,
     val password: String,
     val passwordAgain: String,
     val passwordRequirements: List<PasswordRequirements> = emptyList(),

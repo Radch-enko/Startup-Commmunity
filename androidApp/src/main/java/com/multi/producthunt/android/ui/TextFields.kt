@@ -19,6 +19,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.multi.producthunt.MR
 import com.multi.producthunt.android.ui.theme.Shapes
 import com.multi.producthunt.android.ui.theme.mountainMeadow
@@ -29,7 +30,7 @@ fun TextFieldDefault(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.fillMaxWidth().navigationBarsWithImePadding(),
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions(),
@@ -45,7 +46,7 @@ fun TextFieldDefault(
     },
 ) {
     TextField(
-        value = value, onValueChange = onValueChange, modifier = modifier.fillMaxWidth(),
+        value = value, onValueChange = onValueChange, modifier = modifier,
         label = { Text(label) },
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = MaterialTheme.colorScheme.surfaceVariant,

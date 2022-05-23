@@ -7,13 +7,7 @@ import com.multi.producthunt.domain.usecase.GetStartupsUseCase
 import com.multi.producthunt.domain.usecase.StartupsRequestType
 import com.multi.producthunt.ui.models.StartupUI
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
@@ -36,6 +30,11 @@ class HomeScreenViewModel(
         object Refresh : Event()
     }
 
+    var lastScrollIndex = 0
+    val _scrollUp = MutableStateFlow(false)
+    val scrollUp: StateFlow<Boolean>
+        get() = _scrollUp.asStateFlow()
+
     private val mutableSearchQuery = MutableStateFlow("")
     val searchQueryState = mutableSearchQuery.asStateFlow()
 
@@ -52,6 +51,13 @@ class HomeScreenViewModel(
                 loadData()
             }
         }
+    }
+
+    fun updateScrollPosition(newScrollIndex: Int) {
+        if (newScrollIndex == lastScrollIndex) return
+
+        _scrollUp.value = newScrollIndex > lastScrollIndex
+        lastScrollIndex = newScrollIndex
     }
 
 

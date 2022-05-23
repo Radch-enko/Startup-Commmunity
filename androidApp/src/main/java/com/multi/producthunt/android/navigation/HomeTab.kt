@@ -1,14 +1,17 @@
 package com.multi.producthunt.android.navigation
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.stringResource
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import com.google.accompanist.insets.statusBarsPadding
 import com.multi.producthunt.MR
 import com.multi.producthunt.android.screen.home.HomeScreen
 
@@ -31,7 +34,9 @@ object HomeTab : Tab {
 
     @Composable
     override fun Content() {
-        Navigator(screen = HomeScreen())
+        Box(modifier = Modifier.statusBarsPadding()){
+            Navigator(screen = HomeScreen())
+        }
     }
 
 }

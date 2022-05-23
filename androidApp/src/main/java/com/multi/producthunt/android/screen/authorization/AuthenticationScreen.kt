@@ -52,49 +52,45 @@ class AuthenticationScreen : AndroidScreen() {
         authenticationState: AuthenticationState,
         handleEvent: (event: AuthorizationViewModel.Event) -> Unit
     ) {
+        if (authenticationState.isLoading){
+            ProgressBar()
+        }else{
+            AuthenticationForm(
+                name = authenticationState.name,
+                username = authenticationState.username,
+                password = authenticationState.password,
+                passwordAgain = authenticationState.passwordAgain,
+                headline = authenticationState.headline,
+                enableAuthentication = authenticationState.isFormValid(),
+                enableRegistration = authenticationState.isRegistrationFormValid(),
+                completedPasswordRequirements = authenticationState.passwordRequirements,
+                OnUsernameChanged = {
+                    handleEvent(AuthorizationViewModel.Event.UsernameChanged(it))
+                },
+                authenticationMode = authenticationState.authenticationMode,
+                OnPasswordChanged = {
+                    handleEvent(AuthorizationViewModel.Event.PasswordChanged(it))
+                },
+                OnPasswordAgainChanged = {
+                    handleEvent(AuthorizationViewModel.Event.PasswordAgainChanged(it))
+                },
+                OnNameChanged = {
+                    handleEvent(AuthorizationViewModel.Event.NameChanged(it))
+                },
+                OnHeadlineChanged = {
+                    handleEvent(AuthorizationViewModel.Event.HeadlineChanged(it.orEmpty()))
+                },
+                onAuthenticate = {
+                    handleEvent(AuthorizationViewModel.Event.Authenticate)
+                },
+                onToggleMode = {
+                    handleEvent(
+                        AuthorizationViewModel.Event.ToggleMode
+                    )
+                }
+            )
+        }
 
-        AuthenticationForm(
-            name = authenticationState.name,
-            username = authenticationState.username,
-            password = authenticationState.password,
-            passwordAgain = authenticationState.passwordAgain,
-            headline = authenticationState.headline,
-            coverImage = authenticationState.coverImage,
-            profileImage = authenticationState.profileImage,
-            enableAuthentication = authenticationState.isFormValid(),
-            enableRegistration = authenticationState.isRegistrationFormValid(),
-            completedPasswordRequirements = authenticationState.passwordRequirements,
-            OnUsernameChanged = {
-                handleEvent(AuthorizationViewModel.Event.UsernameChanged(it))
-            },
-            authenticationMode = authenticationState.authenticationMode,
-            OnPasswordChanged = {
-                handleEvent(AuthorizationViewModel.Event.PasswordChanged(it))
-            },
-            OnPasswordAgainChanged = {
-                handleEvent(AuthorizationViewModel.Event.PasswordAgainChanged(it))
-            },
-            OnNameChanged = {
-                handleEvent(AuthorizationViewModel.Event.NameChanged(it))
-            },
-            OnHeadlineChanged = {
-                handleEvent(AuthorizationViewModel.Event.HeadlineChanged(it.orEmpty()))
-            },
-            OnCoverImageChanged = {
-                handleEvent(AuthorizationViewModel.Event.CoverImageChanged(it.orEmpty()))
-            },
-            OnProfileImageChanged = {
-                handleEvent(AuthorizationViewModel.Event.ProfileImageChanged(it.orEmpty()))
-            },
-            onAuthenticate = {
-                handleEvent(AuthorizationViewModel.Event.Authenticate)
-            },
-            onToggleMode = {
-                handleEvent(
-                    AuthorizationViewModel.Event.ToggleMode
-                )
-            }
-        )
         authenticationState.error?.let { error ->
             ErrorDialog(
                 error = error,
@@ -115,8 +111,6 @@ class AuthenticationScreen : AndroidScreen() {
         name: String,
         username: String,
         headline: String? = null,
-        coverImage: String? = null,
-        profileImage: String? = null,
         password: String,
         passwordAgain: String,
         completedPasswordRequirements: List<PasswordRequirements>,
@@ -127,8 +121,6 @@ class AuthenticationScreen : AndroidScreen() {
         OnPasswordAgainChanged: (passwordAgain: String) -> Unit,
         OnNameChanged: (name: String) -> Unit,
         OnHeadlineChanged: (headline: String?) -> Unit,
-        OnCoverImageChanged: (coverImage: String?) -> Unit,
-        OnProfileImageChanged: (profileImage: String?) -> Unit,
         onAuthenticate: () -> Unit,
         onToggleMode: () -> Unit
     ) {

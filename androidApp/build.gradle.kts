@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.bundles.voyager)
     implementation(libs.voyager.androidx)
     implementation(libs.kodein.android)
+    implementation(libs.kodein.compose)
     implementation(libs.paging.runtime)
     implementation(libs.napier)
     implementation(libs.bundles.coil)

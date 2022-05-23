@@ -10,8 +10,10 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material3.NavigationBar
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
+import androidx.core.view.WindowCompat
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
+import com.google.accompanist.insets.*
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.multi.producthunt.android.navigation.HomeTab
 import com.multi.producthunt.android.navigation.ProfileTab
@@ -29,6 +31,8 @@ class MainActivity : ComponentActivity() {
 
             val systemUiController = rememberSystemUiController()
 
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+
             SideEffect {
                 systemUiController.setNavigationBarColor(
                     color = zircon,
@@ -42,28 +46,35 @@ class MainActivity : ComponentActivity() {
 
             ProductHuntMaterial3 {
                 ProductHuntMaterial2 {
-                    TabNavigator(HomeTab) {
-                        Scaffold(
-                            topBar = {
+                    ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
+                        TabNavigator(HomeTab) {
+                            Scaffold(
+                                topBar = {
 
-                            },
-                            content = { innerPadding ->
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(innerPadding)
-                                ) {
-                                    CurrentTab()
+                                },
+                                content = { innerPadding ->
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .imePadding()
+                                    ) {
+                                        CurrentTab()
+                                    }
+                                },
+                                bottomBar = {
+                                    NavigationBar(
+                                        containerColor = zircon,
+                                        contentColor = zircon,
+                                        modifier = Modifier.navigationBarsPadding()
+                                    ) {
+                                        TabNavigationItem(tab = HomeTab)
+                                        TabNavigationItem(tab = TimelineTab)
+                                        TabNavigationItem(tab = ProfileTab)
+                                    }
                                 }
-                            },
-                            bottomBar = {
-                                NavigationBar(containerColor = zircon, contentColor = zircon) {
-                                    TabNavigationItem(tab = HomeTab)
-                                    TabNavigationItem(tab = TimelineTab)
-                                    TabNavigationItem(tab = ProfileTab)
-                                }
-                            }
-                        )
+
+                            )
+                        }
                     }
                 }
             }

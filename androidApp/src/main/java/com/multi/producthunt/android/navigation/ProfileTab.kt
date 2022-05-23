@@ -11,6 +11,9 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.multi.producthunt.MR
 import com.multi.producthunt.android.screen.authorization.AuthenticationScreen
+import com.multi.producthunt.android.screen.profile.ProfileScreen
+import com.multi.producthunt.utils.KMMPreference
+import org.kodein.di.compose.rememberInstance
 
 object ProfileTab : Tab {
 
@@ -31,7 +34,14 @@ object ProfileTab : Tab {
 
     @Composable
     override fun Content() {
-        Navigator(screen = AuthenticationScreen())
+        val pref: KMMPreference by rememberInstance()
+        val launchScreen = if (pref.getString("ACCESS_TOKEN").isNullOrBlank()) {
+            AuthenticationScreen()
+        } else {
+            ProfileScreen()
+        }
+        Navigator(screen = launchScreen)
     }
+
 
 }

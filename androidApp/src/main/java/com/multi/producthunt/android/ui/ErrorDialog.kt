@@ -36,8 +36,8 @@ fun ErrorDialog(
                 ) {
                     Text(
                         text = stringResource(
-                            id = MR.strings.error_action.resourceId
-                        )
+                            id = MR.strings.ok_button.resourceId
+                        ).uppercase()
                     )
                 }
             }

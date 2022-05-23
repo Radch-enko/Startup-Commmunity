@@ -75,10 +75,8 @@ class AuthorizationViewModel(
             is Event.PasswordAgainChanged -> updatePasswordAgain(authenticationEvent.passwordAgain)
             Event.Authenticate -> authenticate()
             Event.ErrorDismissed -> dismissError()
-            is Event.CoverImageChanged -> updateCoverImage(authenticationEvent.url)
             is Event.HeadlineChanged -> updateHeadline(authenticationEvent.headline)
             is Event.NameChanged -> updateName(authenticationEvent.name)
-            is Event.ProfileImageChanged -> updateProfileImage(authenticationEvent.url)
         }
     }
 
@@ -162,18 +160,6 @@ class AuthorizationViewModel(
         }
     }
 
-    private fun updateCoverImage(url: String) {
-        mutableState.update {
-            it.copy(coverImage = url)
-        }
-    }
-
-    private fun updateProfileImage(url: String) {
-        mutableState.update {
-            it.copy(profileImage = url)
-        }
-    }
-
     private fun authenticate() {
         mutableState.update {
             it.copy(isLoading = true)
@@ -196,7 +182,6 @@ class AuthorizationViewModel(
                     }
                 }
                 is ApiResult.Success -> {
-                    Napier.e("Token: ${response.data?.token}")
                     pref.put(ACCESS_TOKEN, response.data?.token.toString())
                     mutableEffect.emit(Effect.AuthorizationSuccess)
                 }
@@ -207,13 +192,11 @@ class AuthorizationViewModel(
     private fun signUpRequest() = coroutineScope.launch {
         with(state.value) {
             userRepository.register(
-                name,
-                username,
-                headline,
-                profileImage,
-                coverImage,
-                password,
-                passwordAgain
+                name = name,
+                username = username,
+                headline = headline,
+                password = password,
+                password2 = passwordAgain
             ).collectLatest { response ->
                 when (response) {
                     is ApiResult.Error -> {
@@ -224,7 +207,7 @@ class AuthorizationViewModel(
                         }
                     }
                     is ApiResult.Success -> {
-                        Napier.e("Token: ${response.data}")
+                        Napier.e("User: ${response.data}")
                         signInRequest()
                     }
                 }
