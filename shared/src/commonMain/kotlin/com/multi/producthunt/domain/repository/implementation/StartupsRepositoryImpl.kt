@@ -52,7 +52,7 @@ class StartupsRepositoryImpl(
         tagline: String,
         description: String,
         thumbnail: ByteArray?,
-        media: List<ByteArray>,
+        media: List<ByteArray?>,
         topics: List<Int>
     ): Flow<ApiResult<ProjectDomain>> {
         return service.addProject(AddProjectBody(

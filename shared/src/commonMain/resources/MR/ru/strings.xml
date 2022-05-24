@@ -48,4 +48,6 @@
     <string name="project_thumbnail">Миниатюра</string>
     <string name="project_media">Изображения</string>
     <string name="project_topics">Темы</string>
+
+    <string name="upload_medias">Загрузить изображения</string>
 </resources>

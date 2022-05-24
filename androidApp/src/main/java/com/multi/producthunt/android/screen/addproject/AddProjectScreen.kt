@@ -1,16 +1,26 @@
 package com.multi.producthunt.android.screen.addproject
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -20,6 +30,7 @@ import cafe.adriel.voyager.kodein.rememberScreenModel
 import com.google.accompanist.insets.imePadding
 import com.google.accompanist.insets.statusBarsPadding
 import com.multi.producthunt.MR
+import com.multi.producthunt.android.R
 import com.multi.producthunt.android.ui.*
 import com.multi.producthunt.ui.models.SelectableTopicUI
 
@@ -28,7 +39,7 @@ class AddProjectScreen : AndroidScreen() {
     @Composable
     override fun Content() {
         val viewModel = rememberScreenModel<AddProjectViewModel>()
-        val state by viewModel.state.collectAsState()
+        val state = viewModel.state.collectAsState().value
 
         Box(
             modifier = Modifier
@@ -73,18 +84,42 @@ class AddProjectScreen : AndroidScreen() {
         name: String,
         tagline: String,
         description: String,
-        thumbnail: ByteArray?,
-        media: List<ByteArray> = emptyList(),
-        topics: List<SelectableTopicUI> = emptyList(),
-        handleEvent: (event: AddProjectViewModel.Event) -> Unit
+        thumbnail: Uri?,
+        media: List<Uri>,
+        topics: List<SelectableTopicUI>,
+        handleEvent: (event: AddProjectViewModel.Event) -> Unit,
     ) {
+        val context = LocalContext.current
+        val launcherForProjectAvatarImage = rememberLauncherForActivityResult(
+            contract =
+            ActivityResultContracts.GetContent()
+        ) { uri: Uri? ->
+            uri?.let {
+                handleEvent(AddProjectViewModel.Event.ThumnailChanged(uri))
+            }
+        }
+
+        val launcherMultipleImages = rememberLauncherForActivityResult(
+            contract =
+            ActivityResultContracts.GetMultipleContents()
+        ) { list ->
+            list.forEach { uri ->
+                handleEvent(AddProjectViewModel.Event.MediaChanged(uri))
+            }
+        }
 
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize(),
         ) {
 
             AddProjectTitle(modifier = Modifier.align(CenterHorizontally))
             Spacer(modifier = Modifier.height(16.dp))
+
+            PickProjectAvatar(
+                modifier = Modifier.align(CenterHorizontally),
+                image = thumbnail
+            ) { launcherForProjectAvatarImage.launch("image/*") }
 
 
             OutlinedTextFieldDefault(
@@ -125,6 +160,91 @@ class AddProjectScreen : AndroidScreen() {
             TopicsSelector(
                 topics,
                 onToggle = { handleEvent(AddProjectViewModel.Event.TopicChanged(it)) })
+
+            MediasPicker(media, onAddImages = {
+                launcherMultipleImages.launch("image/*")
+            }, onDelete = {
+                handleEvent(AddProjectViewModel.Event.MediaChanged(it))
+            })
+        }
+    }
+
+    @Composable
+    fun MediasPicker(
+        mediasList: List<Uri>,
+        onAddImages: () -> Unit,
+        onDelete: (uri: Uri) -> Unit
+    ) {
+        Column {
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            ButtonDefault(
+                text = stringResource(id = MR.strings.upload_medias.resourceId),
+                onClick = onAddImages
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                itemsIndexed(mediasList) { index, item ->
+                    MediaPickerImage(item, onDelete = onDelete)
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun MediaPickerImage(image: Uri, onDelete: (uri: Uri) -> Unit) {
+        Surface(
+            modifier = Modifier
+                .size(70.dp)
+                .clip(
+                    RoundedCornerShape(16.dp)
+                )
+                .border(
+                    BorderStroke(
+                        width = 3.dp,
+                        color = MaterialTheme.colorScheme.primary,
+                    ),
+                    shape = RoundedCornerShape(16.dp)
+                )
+        ) {
+            Image(
+                bitmap = image.toImageBitmap(LocalContext.current), contentDescription = null,
+                contentScale = ContentScale.Crop
+            )
+            IconButton(onClick = { onDelete(image) }) {
+                Icon(Icons.Filled.Delete, contentDescription = null, tint = Color.White)
+            }
+        }
+    }
+
+    @Composable
+    fun PickProjectAvatar(modifier: Modifier, image: Uri?, onClick: () -> Unit) {
+        val commonModifier = modifier
+            .size(100.dp)
+            .clip(CircleShape)
+            .border(2.dp, Color.DarkGray, CircleShape)
+            .background(MaterialTheme.colorScheme.primary)
+            .clickable {
+                onClick()
+            }
+
+        if (image != null) {
+            Image(
+                bitmap = image.toImageBitmap(LocalContext.current),
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds,
+                modifier = commonModifier,
+            )
+        } else {
+            Image(
+                painter = painterResource(id = R.drawable.no_image_icon),
+                contentDescription = null,
+                contentScale = ContentScale.Inside,
+                modifier = commonModifier,
+            )
         }
     }
 
@@ -138,7 +258,13 @@ class AddProjectScreen : AndroidScreen() {
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(topics) { topicUI ->
-                CustomChip(selected = topicUI.selected, text = topicUI.title, onToggle = { onToggle(topicUI) })
+                var selected by remember {
+                    mutableStateOf(topicUI.selected)
+                }
+                CustomChip(selected = selected, text = topicUI.title, onToggle = {
+                    onToggle(topicUI)
+                    selected = !selected
+                })
             }
         }
     }

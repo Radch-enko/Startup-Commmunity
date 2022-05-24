@@ -14,7 +14,7 @@ data class AddProjectBody(
     @SerialName("thumbnail")
     val thumbnail: ByteArray? = null,
     @SerialName("media")
-    val media: List<ByteArray> = emptyList(),
+    val media: List<ByteArray?> = emptyList(),
     @SerialName("topics")
     val topics: List<TopicBody> = emptyList()
 )

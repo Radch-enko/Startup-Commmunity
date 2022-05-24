@@ -1,7 +1,10 @@
 package com.multi.producthunt.android.screen.addproject
 
+import android.content.Context
+import android.net.Uri
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
+import com.multi.producthunt.android.ui.toByteArray
 import com.multi.producthunt.domain.repository.StartupsRepository
 import com.multi.producthunt.domain.repository.TopicsRepository
 import com.multi.producthunt.network.model.ApiResult
@@ -17,7 +20,8 @@ import kotlinx.coroutines.launch
 class AddProjectViewModel(
     private val startupsRepository: StartupsRepository,
     private val topicsRepository: TopicsRepository,
-    private val kmmPreference: KMMPreference
+    private val kmmPreference: KMMPreference,
+    private val context: Context
 ) :
     StateScreenModel<AddProjectState>(
         AddProjectState()
@@ -31,13 +35,13 @@ class AddProjectViewModel(
         class TaglineChanged(val tagline: String) :
             Event()
 
-        class ThumnailChanged(val thumbnail: ByteArray) :
+        class ThumnailChanged(val thumbnail: Uri?) :
             Event()
 
         class DescriptionChanged(val description: String) :
             Event()
 
-        class MediaChanged(val mediaList: List<ByteArray>) :
+        class MediaChanged(val media: Uri) :
             Event()
 
         class TopicChanged(val topic: SelectableTopicUI) :
@@ -80,7 +84,7 @@ class AddProjectViewModel(
         when (event) {
             Event.AddProject -> addProject()
             Event.ErrorDismissed -> dismissError()
-            is Event.MediaChanged -> updatedMedia(event.mediaList)
+            is Event.MediaChanged -> updatedMedia(event.media)
             is Event.NameChanged -> updateName(event.name)
             is Event.TaglineChanged -> updateTagline(event.tagline)
             is Event.ThumnailChanged -> updateThumbnail(event.thumbnail)
@@ -100,27 +104,29 @@ class AddProjectViewModel(
             kmmPreference.getString("ACCESS_TOKEN"),
             name = state.value.name,
             tagline = state.value.tagline,
-            thumbnail = state.value.thumbnail,
+            thumbnail = state.value.thumbnail?.toByteArray(context),
             description = state.value.description,
-            media = state.value.media,
+            media = state.value.media.map { it.toByteArray(context) },
             topics = state.value.topics.map {
                 it.id
             }
         )
     }
 
-    private fun updateTopics(topic: SelectableTopicUI) {
+    private fun updateTopics(topic: SelectableTopicUI) = coroutineScope.launch {
+        val list = mutableState.value.topics.map { selectableTopic ->
+            if (selectableTopic.id == topic.id) {
+                selectableTopic.selected = !topic.selected
+            }
+            selectableTopic
+        }
+
         mutableState.update {
-            it.copy(topics = it.topics.map { selectableTopic ->
-                if (selectableTopic.id == topic.id) {
-                    selectableTopic.selected = !topic.selected
-                }
-                selectableTopic
-            })
+            it.copy(topics = list.toList())
         }
     }
 
-    private fun updateThumbnail(thumbnail: ByteArray) {
+    private fun updateThumbnail(thumbnail: Uri?) {
         mutableState.update {
             it.copy(thumbnail = thumbnail)
         }
@@ -138,9 +144,16 @@ class AddProjectViewModel(
         }
     }
 
-    private fun updatedMedia(list: List<ByteArray>) {
+    private fun updatedMedia(media: Uri) {
+        val medias = mutableState.value.media.toMutableList()
+        if (medias.contains(media)) {
+            medias.remove(media)
+        } else {
+            medias.add(media)
+        }
+
         mutableState.update {
-            it.copy(media = list)
+            it.copy(media = medias)
         }
     }
 

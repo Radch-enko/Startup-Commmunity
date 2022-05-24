@@ -18,7 +18,7 @@ interface StartupsRepository {
         tagline: String,
         description: String,
         thumbnail: ByteArray? = null,
-        media: List<ByteArray> = emptyList(),
+        media: List<ByteArray?> = emptyList(),
         topics: List<Int>
     ): Flow<ApiResult<ProjectDomain>>
 }

@@ -16,5 +16,5 @@ val viewModelModule = DI.Module("viewModelModule") {
     bindProvider { SettingsScreenViewModel(instance()) }
     bindProvider { AuthorizationViewModel(instance(), instance()) }
     bindProvider { ProfileScreenViewModel(instance(), instance()) }
-    bindProvider { AddProjectViewModel(instance(), instance(), instance()) }
+    bindProvider { AddProjectViewModel(instance(), instance(), instance(), instance()) }
 }

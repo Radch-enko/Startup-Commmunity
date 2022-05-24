@@ -51,4 +51,6 @@
     <string name="project_thumbnail">Thumbnail</string>
     <string name="project_media">Media</string>
     <string name="project_topics">Topics</string>
+
+    <string name="upload_medias">Upload images</string>
 </resources>
