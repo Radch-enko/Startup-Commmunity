@@ -12,9 +12,9 @@ data class ProjectResponse(
     @SerialName("tagline")
     val tagline: String,
     @SerialName("thumbnail")
-    val thumbnail: String,
+    val thumbnail: String? = null,
     @SerialName("media")
-    val media: List<Media>,
+    val media: List<Media?> = emptyList(),
     @SerialName("createdDate")
     val createdDate: String,
     @SerialName("isVoted")

@@ -3,9 +3,7 @@ package com.multi.producthunt.domain.repository
 import com.multi.producthunt.domain.model.PostsDomain
 import com.multi.producthunt.domain.model.ProjectDomain
 import com.multi.producthunt.domain.model.SearchableStartupsDomain
-import com.multi.producthunt.domain.model.TopicDomain
 import com.multi.producthunt.network.model.ApiResult
-import com.multi.producthunt.ui.models.TopicUI
 import kotlinx.coroutines.flow.Flow
 
 interface StartupsRepository {
@@ -17,8 +15,8 @@ interface StartupsRepository {
         name: String,
         tagline: String,
         description: String,
-        thumbnail: ByteArray? = null,
-        media: List<ByteArray?> = emptyList(),
+        thumbnail: String? = null,
+        media: List<String?> = emptyList(),
         topics: List<Int>
     ): Flow<ApiResult<ProjectDomain>>
 }

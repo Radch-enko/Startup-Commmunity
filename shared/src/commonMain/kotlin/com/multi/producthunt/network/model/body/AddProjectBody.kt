@@ -12,9 +12,9 @@ data class AddProjectBody(
     @SerialName("description")
     val description: String,
     @SerialName("thumbnail")
-    val thumbnail: ByteArray? = null,
+    val thumbnail: String? = null,
     @SerialName("media")
-    val media: List<ByteArray?> = emptyList(),
+    val media: List<String> = emptyList(),
     @SerialName("topics")
     val topics: List<TopicBody> = emptyList()
 )

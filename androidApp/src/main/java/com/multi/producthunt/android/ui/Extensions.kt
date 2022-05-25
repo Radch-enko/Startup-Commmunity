@@ -5,6 +5,7 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Base64
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import java.io.InputStream
@@ -29,4 +30,8 @@ fun Uri.toByteArray(context: Context): ByteArray? {
         context.contentResolver.openInputStream(this)
 
     return inputStream?.readBytes()
+}
+
+fun ByteArray.toBase64(): String {
+    return "data:image/jpeg;base64," + Base64.encodeToString(this, Base64.DEFAULT)
 }

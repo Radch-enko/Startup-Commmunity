@@ -11,7 +11,7 @@ interface UserRepository {
     fun register(
         name: String,
         username: String,
-        headline: String? = null,
+        headline: String?,
         password: String,
         password2: String,
     ): Flow<ApiResult<UserResponse>>
@@ -19,18 +19,10 @@ interface UserRepository {
     fun me(token: String?): Flow<ApiResult<UserDomain>>
 
     fun updateUser(
-        token: String?,
+        token: String? = null,
         name: String? = null,
         headline: String? = null,
-    ): Flow<ApiResult<UserDomain>>
-
-    fun uploadProfileImage(
-        token: String?,
-        profileImage: ByteArray? = null
-    ): Flow<ApiResult<UserDomain>>
-
-    fun uploadCoverImage(
-        token: String?,
-        coverImage: ByteArray? = null
+        profileImage: String? = null,
+        coverImage: String? = null,
     ): Flow<ApiResult<UserDomain>>
 }

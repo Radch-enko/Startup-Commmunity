@@ -14,6 +14,7 @@ import com.multi.producthunt.network.service.ProjectsApiService
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.util.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -51,20 +52,18 @@ class StartupsRepositoryImpl(
         name: String,
         tagline: String,
         description: String,
-        thumbnail: ByteArray?,
-        media: List<ByteArray?>,
+        thumbnail: String?,
+        media: List<String?>,
         topics: List<Int>
     ): Flow<ApiResult<ProjectDomain>> {
         return service.addProject(AddProjectBody(
             name = name,
             tagline = tagline,
-            thumbnail = thumbnail,
             description = description,
-            media = media,
-            topics = topics.map {
-                TopicBody(it)
-            }
-        ), token.orEmpty()).toDomain()
+            thumbnail = thumbnail,
+            media = media.filterNotNull(),
+            topics = topics.map { TopicBody(it) }
+        ), "Bearer " + token.orEmpty()).toDomain()
     }
 }
 

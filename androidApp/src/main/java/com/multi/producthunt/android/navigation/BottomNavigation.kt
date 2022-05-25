@@ -38,8 +38,6 @@ fun BottomNavigation() {
             },
             bottomBar = {
                 NavigationBar(
-                    containerColor = zircon,
-                    contentColor = zircon,
                     modifier = Modifier.navigationBarsPadding()
                 ) {
                     TabNavigationItem(tab = HomeTab)

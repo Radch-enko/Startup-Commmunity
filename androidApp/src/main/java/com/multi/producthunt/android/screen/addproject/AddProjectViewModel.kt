@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
+import com.multi.producthunt.android.ui.toBase64
 import com.multi.producthunt.android.ui.toByteArray
 import com.multi.producthunt.domain.repository.StartupsRepository
 import com.multi.producthunt.domain.repository.TopicsRepository
@@ -11,10 +12,8 @@ import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.ui.models.SelectableTopicUI
 import com.multi.producthunt.ui.models.toSelectableUI
 import com.multi.producthunt.utils.KMMPreference
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
+import io.github.aakira.napier.Napier
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class AddProjectViewModel(
@@ -42,6 +41,9 @@ class AddProjectViewModel(
             Event()
 
         class MediaChanged(val media: Uri) :
+            Event()
+
+        class MediaDeleted(val media: Uri) :
             Event()
 
         class TopicChanged(val topic: SelectableTopicUI) :
@@ -90,6 +92,7 @@ class AddProjectViewModel(
             is Event.ThumnailChanged -> updateThumbnail(event.thumbnail)
             is Event.TopicChanged -> updateTopics(event.topic)
             is Event.DescriptionChanged -> updateDescription(event.description)
+            is Event.MediaDeleted -> deleteMedia(event.media)
         }
     }
 
@@ -100,20 +103,43 @@ class AddProjectViewModel(
     }
 
     private fun addProject() = coroutineScope.launch {
-        startupsRepository.addProject(
-            kmmPreference.getString("ACCESS_TOKEN"),
-            name = state.value.name,
-            tagline = state.value.tagline,
-            thumbnail = state.value.thumbnail?.toByteArray(context),
-            description = state.value.description,
-            media = state.value.media.map { it.toByteArray(context) },
-            topics = state.value.topics.map {
-                it.id
+        try {
+            startupsRepository.addProject(
+                token = kmmPreference.getString("ACCESS_TOKEN"),
+                name = state.value.name,
+                tagline = state.value.tagline,
+                thumbnail = state.value.thumbnail?.toByteArray(context)?.toBase64(),
+                description = state.value.description,
+                media = state.value.media.map { it.toByteArray(context)?.toBase64() },
+                topics = state.value.topics.filter { it.selected }.map {
+                    it.id
+                }
+            ).catch { collector ->
+                mutableState.update {
+                    it.copy(error = collector.localizedMessage)
+                }
+            }.collectLatest { response ->
+                when (response) {
+                    is ApiResult.Error -> {
+                        mutableState.update {
+                            it.copy(error = response.exception)
+                        }
+                    }
+                    is ApiResult.Success -> {
+                        mutableEffect.emit(Effect.Success)
+                    }
+                }
             }
-        )
+        } catch (e: Exception) {
+            Napier.e("AddProject", e)
+            mutableState.update {
+                it.copy(error = e.localizedMessage)
+            }
+        }
+
     }
 
-    private fun updateTopics(topic: SelectableTopicUI) = coroutineScope.launch {
+    private fun updateTopics(topic: SelectableTopicUI) {
         val list = mutableState.value.topics.map { selectableTopic ->
             if (selectableTopic.id == topic.id) {
                 selectableTopic.selected = !topic.selected
@@ -146,11 +172,16 @@ class AddProjectViewModel(
 
     private fun updatedMedia(media: Uri) {
         val medias = mutableState.value.media.toMutableList()
-        if (medias.contains(media)) {
-            medias.remove(media)
-        } else {
-            medias.add(media)
+        medias.add(media)
+
+        mutableState.update {
+            it.copy(media = medias)
         }
+    }
+
+    private fun deleteMedia(media: Uri) {
+        val medias = mutableState.value.media.toMutableList()
+        medias.remove(media)
 
         mutableState.update {
             it.copy(media = medias)

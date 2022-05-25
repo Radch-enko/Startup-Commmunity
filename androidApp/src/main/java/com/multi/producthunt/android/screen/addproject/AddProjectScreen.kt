@@ -1,6 +1,8 @@
 package com.multi.producthunt.android.screen.addproject
 
+import android.Manifest
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
@@ -29,10 +31,13 @@ import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.kodein.rememberScreenModel
 import com.google.accompanist.insets.imePadding
 import com.google.accompanist.insets.statusBarsPadding
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.multi.producthunt.MR
 import com.multi.producthunt.android.R
 import com.multi.producthunt.android.ui.*
 import com.multi.producthunt.ui.models.SelectableTopicUI
+import kotlinx.coroutines.flow.collectLatest
 
 class AddProjectScreen : AndroidScreen() {
 
@@ -40,6 +45,17 @@ class AddProjectScreen : AndroidScreen() {
     override fun Content() {
         val viewModel = rememberScreenModel<AddProjectViewModel>()
         val state = viewModel.state.collectAsState().value
+        val context = LocalContext.current
+
+        LaunchedEffect(key1 = null, block = {
+            viewModel.effect.collectLatest { effect ->
+                when (effect) {
+                    AddProjectViewModel.Effect.Success -> {
+                        Toast.makeText(context, "Success project added!", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+        })
 
         Box(
             modifier = Modifier
@@ -79,17 +95,17 @@ class AddProjectScreen : AndroidScreen() {
         }
     }
 
+    @OptIn(ExperimentalPermissionsApi::class)
     @Composable
     fun AddProjectForm(
         name: String,
         tagline: String,
         description: String,
         thumbnail: Uri?,
-        media: List<Uri>,
+        media: List<Uri?>,
         topics: List<SelectableTopicUI>,
         handleEvent: (event: AddProjectViewModel.Event) -> Unit,
     ) {
-        val context = LocalContext.current
         val launcherForProjectAvatarImage = rememberLauncherForActivityResult(
             contract =
             ActivityResultContracts.GetContent()
@@ -108,18 +124,29 @@ class AddProjectScreen : AndroidScreen() {
             }
         }
 
+        val storagePermissions = rememberMultiplePermissionsState(
+            listOf(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+            )
+        )
+
         Column(
             modifier = Modifier
                 .fillMaxSize(),
         ) {
-
-            AddProjectTitle(modifier = Modifier.align(CenterHorizontally))
             Spacer(modifier = Modifier.height(16.dp))
 
             PickProjectAvatar(
                 modifier = Modifier.align(CenterHorizontally),
                 image = thumbnail
-            ) { launcherForProjectAvatarImage.launch("image/*") }
+            ) {
+                if (storagePermissions.allPermissionsGranted) {
+                    launcherForProjectAvatarImage.launch("image/*")
+                } else {
+                    storagePermissions.launchMultiplePermissionRequest()
+                }
+            }
 
 
             OutlinedTextFieldDefault(
@@ -162,16 +189,26 @@ class AddProjectScreen : AndroidScreen() {
                 onToggle = { handleEvent(AddProjectViewModel.Event.TopicChanged(it)) })
 
             MediasPicker(media, onAddImages = {
-                launcherMultipleImages.launch("image/*")
+                if (storagePermissions.allPermissionsGranted) {
+                    launcherMultipleImages.launch("image/*")
+                } else {
+                    storagePermissions.launchMultiplePermissionRequest()
+                }
             }, onDelete = {
-                handleEvent(AddProjectViewModel.Event.MediaChanged(it))
+                handleEvent(AddProjectViewModel.Event.MediaDeleted(it))
             })
+
+            ButtonDefault(
+                text = stringResource(id = MR.strings.add_project.resourceId),
+                onClick = { handleEvent(AddProjectViewModel.Event.AddProject) },
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 
     @Composable
     fun MediasPicker(
-        mediasList: List<Uri>,
+        mediasList: List<Uri?>,
         onAddImages: () -> Unit,
         onDelete: (uri: Uri) -> Unit
     ) {
@@ -179,7 +216,7 @@ class AddProjectScreen : AndroidScreen() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            ButtonDefault(
+            OutlinedButtonDefault(
                 text = stringResource(id = MR.strings.upload_medias.resourceId),
                 onClick = onAddImages
             )
@@ -188,7 +225,9 @@ class AddProjectScreen : AndroidScreen() {
 
             LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 itemsIndexed(mediasList) { index, item ->
-                    MediaPickerImage(item, onDelete = onDelete)
+                    if (item != null) {
+                        MediaPickerImage(item, onDelete = onDelete)
+                    }
                 }
             }
         }
@@ -196,6 +235,7 @@ class AddProjectScreen : AndroidScreen() {
 
     @Composable
     fun MediaPickerImage(image: Uri, onDelete: (uri: Uri) -> Unit) {
+        val context = LocalContext.current
         Surface(
             modifier = Modifier
                 .size(70.dp)
@@ -210,8 +250,11 @@ class AddProjectScreen : AndroidScreen() {
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
+            val savedImage by remember {
+                mutableStateOf(image.toImageBitmap(context))
+            }
             Image(
-                bitmap = image.toImageBitmap(LocalContext.current), contentDescription = null,
+                bitmap = savedImage, contentDescription = null,
                 contentScale = ContentScale.Crop
             )
             IconButton(onClick = { onDelete(image) }) {
@@ -232,10 +275,14 @@ class AddProjectScreen : AndroidScreen() {
             }
 
         if (image != null) {
+            val context = LocalContext.current
+            var savedImage by remember {
+                mutableStateOf(image.toImageBitmap(context))
+            }
             Image(
-                bitmap = image.toImageBitmap(LocalContext.current),
+                bitmap = savedImage,
                 contentDescription = null,
-                contentScale = ContentScale.FillBounds,
+                contentScale = ContentScale.Crop,
                 modifier = commonModifier,
             )
         } else {

@@ -8,5 +8,9 @@ data class UpdateUserBody(
     @SerialName("name")
     val name: String? = null,
     @SerialName("headline")
-    val headline: String? = null
+    val headline: String? = null,
+    @SerialName("profileImage")
+    val profileImage: String? = null,
+    @SerialName("coverImage")
+    val coverImage: String? = null,
 )
