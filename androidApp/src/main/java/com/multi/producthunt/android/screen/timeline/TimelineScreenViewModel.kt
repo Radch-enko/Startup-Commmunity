@@ -4,8 +4,7 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.kuuurt.paging.multiplatform.PagingData
 import com.multi.producthunt.domain.usecase.GetStartupsUseCase
-import com.multi.producthunt.domain.usecase.StartupsRequestType
-import com.multi.producthunt.ui.models.StartupUI
+import com.multi.producthunt.ui.models.ProjectUI
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -14,7 +13,7 @@ class TimelineScreenViewModel(private val useCase: GetStartupsUseCase) :
 
     sealed class State {
         object Loading : State()
-        class Data(val pagingList: Flow<PagingData<StartupUI>>) : State()
+        class Data(val pagingList: Flow<PagingData<ProjectUI>>) : State()
     }
 
     init {
@@ -25,7 +24,7 @@ class TimelineScreenViewModel(private val useCase: GetStartupsUseCase) :
         mutableState.value = State.Loading
 
         mutableState.value = State.Data(
-            pagingList = useCase.getStartupsPagingData(StartupsRequestType.TOP)
+            pagingList = useCase.getStartupsPagingData()
         )
     }
 }

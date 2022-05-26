@@ -1,10 +1,8 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
-import org.jetbrains.kotlin.konan.properties.Properties
 
 plugins {
     id("com.android.library")
     id("com.google.devtools.ksp") version "1.6.21-1.0.5"
-    id("com.apollographql.apollo3")
     id("dev.icerock.mobile.multiplatform-resources").version("0.18.0")
     id("com.codingfeline.buildkonfig")
     id("kotlinx-serialization")
@@ -38,7 +36,6 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(libs.bundles.apollo)
                 api(libs.multiplatform.paging)
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.napier)
@@ -97,11 +94,6 @@ android {
     }
 }
 
-apollo {
-    packageName.set("com.multi.producthunt")
-    generateOptionalOperationVariables.set(false)
-}
-
 multiplatformResources {
     multiplatformResourcesPackage = "com.multi.producthunt"
     iosBaseLocalizationRegion = "en"
@@ -109,35 +101,12 @@ multiplatformResources {
 
 buildkonfig {
     packageName = "com.multi.producthunt"
-    // objectName = "YourAwesomeConfig"
-    // exposeObjectWithName = "YourAwesomePublicConfig"
 
     defaultConfigs {
-
         buildConfigField(
             STRING,
             "BASE_URL",
-            "https://api.producthunt.com/v2/api/graphql"
-        )
-        buildConfigField(
-            STRING,
-            "APP_ACCESS_TOKEN",
-            getAccessTokenFromLocalProperties()
-        )
-        buildConfigField(
-            STRING,
-            "ALGOLIA_SEARCH_URL",
-            "https://0h4smabbsg-dsn.algolia.net/1/indexes/"
-        )
-        buildConfigField(
-            STRING,
-            "ALGOLIA_TOKEN",
-            "9670d2d619b9d07859448d7628eea5f3"
-        )
-        buildConfigField(
-            STRING,
-            "ALGOLIA_APP_ID",
-            "0H4SMABBSG"
+            "https://product-hunt-projects.herokuapp.com/"
         )
         buildConfigField(
             STRING,
@@ -153,10 +122,4 @@ dependencies {
     implementation("org.jetbrains:annotations:22.0.0")
     add("kspCommonMainMetadata", "de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
     add("kspAndroid", "de.jensklingenberg.ktorfit:ktorfit-ksp:$ktorfitVersion")
-}
-
-fun getAccessTokenFromLocalProperties(): String {
-    val properties = Properties()
-    properties.load(project.rootProject.file("local.properties").inputStream())
-    return properties.getProperty("accessToken")
 }

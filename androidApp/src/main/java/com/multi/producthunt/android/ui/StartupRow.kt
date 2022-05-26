@@ -12,7 +12,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChangeHistory
 import androidx.compose.material.icons.filled.ChatBubble
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,11 +23,11 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.multi.producthunt.android.ui.theme.Shapes
-import com.multi.producthunt.ui.models.StartupUI
+import com.multi.producthunt.ui.models.ProjectUI
 import com.multi.producthunt.ui.models.TopicUI
 
 @Composable
-fun StartupRow(startup: StartupUI, placeHolderVisible: Boolean = false) {
+fun StartupRow(startup: ProjectUI, placeHolderVisible: Boolean = false) {
     androidx.compose.material3.Surface(
         shape = Shapes.medium,
         shadowElevation = 4.dp,
