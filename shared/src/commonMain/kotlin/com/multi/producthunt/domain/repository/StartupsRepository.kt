@@ -18,6 +18,7 @@ interface StartupsRepository {
     fun getProjects(
         cursor: Int,
         pageSize: Int?,
+        day: String?,
         token: String?
     ): Flow<ApiResult<List<ProjectDomain>>>
 }

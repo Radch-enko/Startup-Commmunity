@@ -1,33 +1,102 @@
 package com.multi.producthunt.android.screen.timeline
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.paging.compose.collectAsLazyPagingItems
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.kodein.rememberScreenModel
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.multi.producthunt.MR
+import com.multi.producthunt.android.ui.StartupsList
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.datetime.date.DatePickerDefaults
+import com.vanpra.composematerialdialogs.datetime.date.datepicker
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.datetime.toKotlinLocalDate
+import kotlin.reflect.KFunction1
 
 class TimelineScreen : AndroidScreen() {
     @Composable
     override fun Content() {
         val viewModel = rememberScreenModel<TimelineScreenViewModel>()
-        val state by viewModel.state.collectAsState()
 
-//        when (state) {
-//            is TimelineScreenViewModel.State.Data -> {
-//                PagingList((state as TimelineScreenViewModel.State.Data).pagingList)
-//            }
-//            TimelineScreenViewModel.State.Loading -> {
-//                Text("Loading...")
-//            }
-//        }
-        Box(modifier = Modifier.fillMaxSize()) {
-            Text("Timeline screen", modifier = Modifier.align(Alignment.Center))
+        TimelineScreenInner(
+            state = viewModel.state.collectAsState().value,
+            handleEvent = viewModel::sendEvent
+        )
+
+
+        val dialogState = rememberMaterialDialogState()
+
+        MaterialDialog(
+            dialogState = dialogState,
+            buttons = {
+                positiveButton(stringResource(id = MR.strings.ok_button.resourceId))
+                negativeButton(stringResource(id = MR.strings.cancel_button.resourceId))
+            },
+            shape = CutCornerShape(16.dp),
+            backgroundColor = MaterialTheme.colorScheme.background,
+
+            ) {
+            datepicker(
+                colors = DatePickerDefaults.colors(
+                    headerBackgroundColor = MaterialTheme.colorScheme.primary,
+                    dateActiveBackgroundColor = MaterialTheme.colorScheme.secondary
+                )
+            ) { date ->
+                viewModel.sendEvent(TimelineScreenViewModel.Event.DatePicked(date.toKotlinLocalDate()))
+            }
+        }
+
+        LaunchedEffect(key1 = null, block = {
+            viewModel.effect.collectLatest { effect ->
+                when (effect) {
+                    TimelineScreenViewModel.Effect.ShowPicker -> dialogState.show()
+                }
+            }
+        })
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun TimelineScreenInner(
+        state: TimelineScreenViewModel.State,
+        handleEvent: KFunction1<TimelineScreenViewModel.Event, Unit>
+    ) {
+        Scaffold(
+            topBar = {
+                SmallTopAppBar(title = {
+                    Text(text = state.title)
+                })
+            },
+            floatingActionButton = {
+                ExtendedFloatingActionButton(text = {
+                    Text(text = stringResource(id = MR.strings.select_date.resourceId))
+                }, onClick = {
+                    handleEvent(TimelineScreenViewModel.Event.TogglePicker)
+                }, icon = {
+                    Icon(Icons.Filled.DateRange, null)
+                })
+            }) { innerPadding ->
+            SwipeRefresh(
+                state = rememberSwipeRefreshState(isRefreshing = state.isRefreshing),
+                onRefresh = { handleEvent(TimelineScreenViewModel.Event.Refresh) },
+                modifier = Modifier.padding(innerPadding)
+            ) {
+                StartupsList(state.pagingList.collectAsLazyPagingItems())
+            }
         }
     }
 

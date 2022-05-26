@@ -8,7 +8,8 @@ class ProjectUI(
     val tagline: String,
     val url: String?,
     val topics: List<TopicUI>,
-    val votesCount: String
+    val votesCount: String,
+    val isVoted: Boolean = false
 ) {
     companion object {
         val Placeholder = ProjectUI(
@@ -20,7 +21,8 @@ class ProjectUI(
                 TopicUI(0, "Placeholder"),
                 TopicUI(0, "Placeholder"),
             ),
-            votesCount = "123"
+            votesCount = "123",
+            false
         )
     }
 }
@@ -32,6 +34,7 @@ fun ProjectDomain.toUI(): ProjectUI {
         tagline,
         thumbnail,
         this.topics.map { topicDomain -> TopicUI(topicDomain.id, topicDomain.title) }.take(2),
-        votesCount = this.votesCount.toString()
+        votesCount = this.votesCount.toString(),
+        isVoted = isVoted
     )
 }

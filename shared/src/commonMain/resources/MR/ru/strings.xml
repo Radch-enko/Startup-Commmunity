@@ -50,4 +50,7 @@
     <string name="project_topics">Темы</string>
 
     <string name="upload_medias">Загрузить изображения</string>
+
+    <string name="select_date">Выбрать дату</string>
+    <string name="no_items_message">Нет проектов</string>
 </resources>
