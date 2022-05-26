@@ -53,4 +53,7 @@
     <string name="project_topics">Topics</string>
 
     <string name="upload_medias">Upload images</string>
+
+    <string name="select_date">Select date</string>
+    <string name="no_items_message">No items</string>
 </resources>

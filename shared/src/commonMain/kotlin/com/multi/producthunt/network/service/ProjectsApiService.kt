@@ -31,6 +31,15 @@ interface ProjectsApiService {
         @Header("Authorization") token: String
     ): Flow<ApiResult<List<ProjectResponse>>>
 
+    @Headers(["Content-Type: application/json"])
+    @GET("projects")
+    fun getProjectsByDay(
+        @Query("cursor") cursor: Int,
+        @Query("page_size") pageSize: Int,
+        @Query("day") day: String,
+        @Header("Authorization") token: String
+    ): Flow<ApiResult<List<ProjectResponse>>>
+
     // UsersFlow
     @Headers(["Content-Type: application/json"])
     @POST("users/login")
@@ -50,7 +59,6 @@ interface ProjectsApiService {
         @Body body: UpdateUserBody,
         @Header("Authorization") token: String
     ): Flow<ApiResult<UserResponse>>
-
 
     // Other
     @GET("topics")

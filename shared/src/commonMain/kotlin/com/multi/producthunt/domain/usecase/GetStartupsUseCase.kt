@@ -16,6 +16,10 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.single
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class GetStartupsUseCase(
@@ -33,15 +37,25 @@ class GetStartupsUseCase(
 
     private val token = kmmPreference.getString("ACCESS_TOKEN")
 
-    fun getStartupsPagingData(query: String = ""): Flow<PagingData<ProjectUI>> {
+    fun getStartupsPagingData(
+        query: String = "", date: LocalDate?
+    ): Flow<PagingData<ProjectUI>> {
         return Pager(
             clientScope = scope,
             config = pagingConfig,
             initialKey = 0,
             getItems = { currentKey, size ->
 
+                val day =
+                    if (date != null) "${date.year}-${date.monthNumber}-${date.dayOfMonth}" else null
+
                 val items =
-                    repository.getProjects(cursor = currentKey, pageSize = size, token = token)
+                    repository.getProjects(
+                        cursor = currentKey,
+                        pageSize = size,
+                        day = day,
+                        token = token
+                    )
                         .single().map { projectsDomains ->
                             projectsDomains.map { domain ->
                                 domain.toUI()

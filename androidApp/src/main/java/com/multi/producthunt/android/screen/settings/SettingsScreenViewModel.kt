@@ -22,9 +22,6 @@ class SettingsScreenViewModel(private val useCase: GetStartupsUseCase) :
 
     private fun loadData() = coroutineScope.launch {
         mutableState.value = State.Loading
-
-        mutableState.value = State.Data(
-            pagingList = useCase.getStartupsPagingData()
-        )
+        
     }
 }

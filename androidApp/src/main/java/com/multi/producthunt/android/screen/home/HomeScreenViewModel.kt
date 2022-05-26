@@ -76,7 +76,7 @@ class HomeScreenViewModel(
                 mutableState.update {
                     it.copy(
                         isRefreshing = false,
-                        pagingList = useCase.getStartupsPagingData(query)
+                        pagingList = useCase.getStartupsPagingData(query, null)
                     )
                 }
             }

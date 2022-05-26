@@ -63,15 +63,15 @@ fun StartupRow(startup: ProjectUI, placeHolderVisible: Boolean = false) {
                 TopicsList(startup.topics, placeHolderVisible)
             }
 
-            UpvoteButton(startup.votesCount, placeHolderVisible)
+            UpvoteButton(startup.votesCount, startup.isVoted, placeHolderVisible)
         }
     }
 }
 
 @Composable
-fun UpvoteButton(votesCount: String, placeHolderVisible: Boolean = false) {
+fun UpvoteButton(votesCount: String, checked: Boolean, placeHolderVisible: Boolean = false) {
     var checked by remember {
-        mutableStateOf(false)
+        mutableStateOf(checked)
     }
     Column(
         modifier = Modifier.clickable(

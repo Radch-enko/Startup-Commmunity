@@ -8,6 +8,7 @@ import android.provider.MediaStore
 import android.util.Base64
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import kotlinx.datetime.LocalDate
 import java.io.InputStream
 
 fun Uri.toImageBitmap(context: Context): ImageBitmap {
@@ -34,4 +35,8 @@ fun Uri.toByteArray(context: Context): ByteArray? {
 
 fun ByteArray.toBase64(): String {
     return "data:image/jpeg;base64," + Base64.encodeToString(this, Base64.DEFAULT)
+}
+
+fun LocalDate.toTitle(): String {
+    return "${this.dayOfMonth} ${this.month.name} ${this.year}"
 }

@@ -37,14 +37,25 @@ class StartupsRepositoryImpl(
     override fun getProjects(
         cursor: Int,
         pageSize: Int?,
+        day: String?,
         token: String?
     ): Flow<ApiResult<List<ProjectDomain>>> {
-        return service.getProjects(
-            cursor = cursor,
-            pageSize = pageSize ?: 10,
-            token = "Bearer " + token.orEmpty()
-        ).asCommonFlow()
-            .toDomain()
+        return if (day == null) {
+            service.getProjects(
+                cursor = cursor,
+                pageSize = pageSize ?: 10,
+                token = "Bearer " + token.orEmpty()
+            ).asCommonFlow()
+                .toDomain()
+        } else {
+            service.getProjectsByDay(
+                cursor = cursor,
+                pageSize = pageSize ?: 10,
+                day = day,
+                token = "Bearer " + token.orEmpty()
+            ).asCommonFlow()
+                .toDomain()
+        }
     }
 }
 
