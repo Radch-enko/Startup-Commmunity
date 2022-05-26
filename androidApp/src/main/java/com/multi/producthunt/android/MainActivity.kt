@@ -3,22 +3,12 @@ package com.multi.producthunt.android
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Scaffold
-import androidx.compose.material3.NavigationBar
 import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
-import cafe.adriel.voyager.navigator.tab.CurrentTab
-import cafe.adriel.voyager.navigator.tab.TabNavigator
-import com.google.accompanist.insets.*
+import cafe.adriel.voyager.navigator.Navigator
+import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.multi.producthunt.android.navigation.HomeTab
-import com.multi.producthunt.android.navigation.ProfileTab
-import com.multi.producthunt.android.navigation.TabNavigationItem
-import com.multi.producthunt.android.navigation.TimelineTab
+import com.multi.producthunt.android.navigation.BottomNavigationScreen
 import com.multi.producthunt.android.ui.theme.ProductHuntMaterial2
 import com.multi.producthunt.android.ui.theme.ProductHuntMaterial3
 import com.multi.producthunt.android.ui.theme.white
@@ -47,34 +37,7 @@ class MainActivity : ComponentActivity() {
             ProductHuntMaterial3 {
                 ProductHuntMaterial2 {
                     ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
-                        TabNavigator(HomeTab) {
-                            Scaffold(
-                                topBar = {
-
-                                },
-                                content = { innerPadding ->
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .imePadding()
-                                    ) {
-                                        CurrentTab()
-                                    }
-                                },
-                                bottomBar = {
-                                    NavigationBar(
-                                        containerColor = zircon,
-                                        contentColor = zircon,
-                                        modifier = Modifier.navigationBarsPadding()
-                                    ) {
-                                        TabNavigationItem(tab = HomeTab)
-                                        TabNavigationItem(tab = TimelineTab)
-                                        TabNavigationItem(tab = ProfileTab)
-                                    }
-                                }
-
-                            )
-                        }
+                        Navigator(screen = BottomNavigationScreen())
                     }
                 }
             }

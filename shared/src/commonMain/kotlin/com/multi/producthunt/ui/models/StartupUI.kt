@@ -18,9 +18,9 @@ class StartupUI(
             tagline = "placeholder",
             url = "placeholder",
             topics = listOf(
-                TopicUI("Placeholder"),
-                TopicUI("Placeholder"),
-                TopicUI("Placeholder")
+                TopicUI(0, "Placeholder"),
+                TopicUI(0, "Placeholder"),
+                TopicUI(0, "Placeholder")
             ),
             featuredAt = "placeholder",
             votesCount = "123"
@@ -35,7 +35,7 @@ fun StartupDomain.toUI(): StartupUI {
         name,
         tagline,
         thumbnailDomain.url,
-        this.topics.map { topicDomain -> TopicUI(topicDomain.title) },
+        this.topics.map { topicDomain -> TopicUI(topicDomain.id, topicDomain.title) },
         featuredAt = "${date.month.name.uppercaseFirstSymbol()} ${date.dayOfMonth}th",
         votesCount = this.votesCount.toString()
     )

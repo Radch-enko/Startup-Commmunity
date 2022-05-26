@@ -24,7 +24,7 @@ fun HitDomain.toStartupUI(): StartupUI {
         } else {
             BuildKonfig.IMAGE_SOURCE + this.thumbnailImageUuid
         },
-        this.topicDomain.map { topic -> TopicUI(topic.title) }.subList(0, 1),
+        this.topicDomain.map { topic -> TopicUI(topic.id, topic.title) }.subList(0, 1),
         null,
         this.voteCount.toString()
     )

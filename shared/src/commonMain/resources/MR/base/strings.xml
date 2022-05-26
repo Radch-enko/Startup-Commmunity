@@ -43,4 +43,14 @@
     <string name="error_title">Whoops</string>
     <string name="password_again">Password again</string>
     <string name="passwords_are_same">Passwords are same</string>
+    <string name="add_project">Add new projects</string>
+
+    <string name="project_name">Name</string>
+    <string name="project_tagline">Tagline</string>
+    <string name="project_description">Description</string>
+    <string name="project_thumbnail">Thumbnail</string>
+    <string name="project_media">Media</string>
+    <string name="project_topics">Topics</string>
+
+    <string name="upload_medias">Upload images</string>
 </resources>

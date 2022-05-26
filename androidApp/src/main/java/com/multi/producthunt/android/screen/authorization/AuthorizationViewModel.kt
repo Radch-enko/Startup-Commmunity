@@ -44,12 +44,6 @@ class AuthorizationViewModel(
         class HeadlineChanged(val headline: String) :
             Event()
 
-        class CoverImageChanged(val url: String) :
-            Event()
-
-        class ProfileImageChanged(val url: String) :
-            Event()
-
         class PasswordAgainChanged(val passwordAgain: String) :
             Event()
 

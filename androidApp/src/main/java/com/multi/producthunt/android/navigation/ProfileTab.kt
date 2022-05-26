@@ -42,6 +42,4 @@ object ProfileTab : Tab {
         }
         Navigator(screen = launchScreen)
     }
-
-
 }

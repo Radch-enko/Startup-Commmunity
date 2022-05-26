@@ -18,7 +18,6 @@ class ProductHuntApp : Application(), DIAware {
     override fun onCreate() {
         super.onCreate()
         Napier.base(DebugAntilog())
-
         di = DI {
             import(androidXModule(this@ProductHuntApp))
             import(networkModule)
