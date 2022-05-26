@@ -4,8 +4,7 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.kuuurt.paging.multiplatform.PagingData
 import com.multi.producthunt.domain.usecase.GetStartupsUseCase
-import com.multi.producthunt.domain.usecase.StartupsRequestType
-import com.multi.producthunt.ui.models.StartupUI
+import com.multi.producthunt.ui.models.ProjectUI
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -18,7 +17,7 @@ class HomeScreenViewModel(
 
     data class State(
         val isRefreshing: Boolean = false,
-        val pagingList: Flow<PagingData<StartupUI>> = emptyFlow()
+        val pagingList: Flow<PagingData<ProjectUI>> = emptyFlow()
     ) {
         companion object {
             val Empty = State()
@@ -40,7 +39,16 @@ class HomeScreenViewModel(
 
     init {
         mutableState.update { it.copy(isRefreshing = true) }
+        collectQuery()
         loadData()
+    }
+
+    private fun collectQuery() = coroutineScope.launch {
+        searchQueryState.collectLatest {
+            mutableState.update {
+                it.copy(isRefreshing = true)
+            }
+        }
     }
 
     fun sendEvent(event: Event) {
@@ -62,23 +70,15 @@ class HomeScreenViewModel(
 
 
     private fun loadData() = coroutineScope.launch {
-        mutableSearchQuery.debounce(1L).collectLatest { query ->
-
-            if (query.isNotBlank()) {
+        mutableSearchQuery.distinctUntilChanged(areEquivalent = { old, new -> old == new })
+            .debounce(800)
+            .collectLatest { query ->
                 mutableState.update {
                     it.copy(
                         isRefreshing = false,
-                        pagingList = useCase.getSearchableStartupsPagingData(query)
-                    )
-                }
-            } else {
-                mutableState.update {
-                    it.copy(
-                        isRefreshing = false,
-                        pagingList = useCase.getStartupsPagingData(StartupsRequestType.TOP)
+                        pagingList = useCase.getStartupsPagingData(query)
                     )
                 }
             }
-        }
     }
 }

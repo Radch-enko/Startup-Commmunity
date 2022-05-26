@@ -11,6 +11,8 @@ data class ProjectResponse(
     val name: String,
     @SerialName("tagline")
     val tagline: String,
+    @SerialName("description")
+    val description: String,
     @SerialName("thumbnail")
     val thumbnail: String? = null,
     @SerialName("media")
@@ -21,8 +23,6 @@ data class ProjectResponse(
     val isVoted: Boolean,
     @SerialName("topics")
     val topics: List<Topic>,
-    @SerialName("voters")
-    val voters: List<UserResponse>,
     @SerialName("votesCount")
     val votesCount: Int
 )

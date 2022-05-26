@@ -24,11 +24,11 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import com.multi.producthunt.MR
-import com.multi.producthunt.ui.models.StartupUI
+import com.multi.producthunt.ui.models.ProjectUI
 
 @Composable
 fun StartupsList(
-    pagingList: LazyPagingItems<StartupUI>,
+    pagingList: LazyPagingItems<ProjectUI>,
     scrollState: LazyListState = rememberLazyListState(),
     firstItemPaddingTop: Dp = 0.dp,
 ) {
@@ -46,7 +46,7 @@ fun StartupsList(
 private val startupsRowModifier =
     Modifier.padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
 
-private fun LazyListScope.applyStates(list: LazyPagingItems<StartupUI>) {
+private fun LazyListScope.applyStates(list: LazyPagingItems<ProjectUI>) {
     this.apply {
         startupsRow(list)
         when {
@@ -57,11 +57,11 @@ private fun LazyListScope.applyStates(list: LazyPagingItems<StartupUI>) {
                 }
             }
             list.loadState.refresh is LoadState.Loading -> {
-                val placeHolderList = (1..5).map { StartupUI.Placeholder }
+                val placeHolderList = (1..5).map { ProjectUI.Placeholder }
                 placeholderStartupsList(placeHolderList)
             }
             list.loadState.append is LoadState.Loading -> {
-                val placeHolderList = (1..2).map { StartupUI.Placeholder }
+                val placeHolderList = (1..2).map { ProjectUI.Placeholder }
                 placeholderStartupsList(placeHolderList)
             }
             list.loadState.append is LoadState.Error -> {
@@ -75,7 +75,7 @@ private fun LazyListScope.applyStates(list: LazyPagingItems<StartupUI>) {
 }
 
 private fun LazyListScope.placeholderStartupsList(
-    list: List<StartupUI>
+    list: List<ProjectUI>
 ) {
     this.items(list) { startup ->
         Box(modifier = startupsRowModifier) {
@@ -85,32 +85,12 @@ private fun LazyListScope.placeholderStartupsList(
 }
 
 private fun LazyListScope.startupsRow(
-    list: LazyPagingItems<StartupUI>
+    list: LazyPagingItems<ProjectUI>
 ) {
     this.itemsIndexed(list, key = { _, item ->
         item.id
     }
-    ) { index, startup ->
-        val curDate = startup?.featuredAt
-        var prevDate = curDate
-        if (index != 0) {
-            prevDate = list[index - 1]?.featuredAt
-        } else {
-            if (curDate != null) {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Title(text = curDate)
-                }
-            }
-        }
-
-        if (prevDate != curDate) {
-            if (curDate != null) {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Title(text = curDate)
-                }
-            }
-        }
-
+    ) { _, startup ->
         Box(modifier = startupsRowModifier) {
             if (startup != null) {
                 StartupRow(startup)

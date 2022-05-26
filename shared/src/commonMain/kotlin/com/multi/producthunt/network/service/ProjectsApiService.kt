@@ -14,6 +14,24 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProjectsApiService {
 
+    // ProjectsFlow
+
+    @Headers(["Content-Type: application/json"])
+    @POST("projects/create")
+    fun addProject(
+        @Body body: AddProjectBody,
+        @Header("Authorization") token: String
+    ): Flow<ApiResult<ProjectResponse>>
+
+    @Headers(["Content-Type: application/json"])
+    @GET("projects")
+    fun getProjects(
+        @Query("cursor") cursor: Int,
+        @Query("page_size") pageSize: Int,
+        @Header("Authorization") token: String
+    ): Flow<ApiResult<List<ProjectResponse>>>
+
+    // UsersFlow
     @Headers(["Content-Type: application/json"])
     @POST("users/login")
     fun login(@Body body: LoginBody): Flow<ApiResult<LoginResponse>>
@@ -33,13 +51,8 @@ interface ProjectsApiService {
         @Header("Authorization") token: String
     ): Flow<ApiResult<UserResponse>>
 
-    @Headers(["Content-Type: application/json"])
-    @POST("projects/create")
-    fun addProject(
-        @Body body: AddProjectBody,
-        @Header("Authorization") token: String
-    ): Flow<ApiResult<ProjectResponse>>
 
+    // Other
     @GET("topics")
     fun getTopics(): Flow<ApiResult<List<TopicResponse>>>
 }

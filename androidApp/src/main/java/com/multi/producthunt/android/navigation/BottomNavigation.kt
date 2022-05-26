@@ -2,6 +2,7 @@ package com.multi.producthunt.android.navigation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.NavigationBar
 import androidx.compose.runtime.Composable
@@ -11,9 +12,8 @@ import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.google.accompanist.insets.imePadding
 import com.google.accompanist.insets.navigationBarsPadding
-import com.multi.producthunt.android.ui.theme.zircon
 
-class BottomNavigationScreen: AndroidScreen(){
+class BottomNavigationScreen : AndroidScreen() {
     @Composable
     override fun Content() {
         BottomNavigation()
@@ -31,6 +31,7 @@ fun BottomNavigation() {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
+                        .padding(innerPadding)
                         .imePadding()
                 ) {
                     CurrentTab()
