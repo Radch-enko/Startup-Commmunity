@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
@@ -44,6 +45,7 @@ fun TextFieldDefault(
             }
         }
     },
+    shape: Shape = CircleShape
 ) {
     TextField(
         value = value, onValueChange = onValueChange, modifier = modifier,
@@ -59,7 +61,7 @@ fun TextFieldDefault(
         keyboardActions = keyboardActions,
         keyboardOptions = keyboardOptions,
         singleLine = true,
-        shape = CircleShape
+        shape = shape
     )
 }
 

@@ -10,9 +10,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.paging.compose.collectAsLazyPagingItems
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.kodein.rememberScreenModel
+import cafe.adriel.voyager.navigator.LocalNavigator
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.multi.producthunt.android.R
+import com.multi.producthunt.android.screen.detail.DetailProjectScreen
 import com.multi.producthunt.android.ui.ScrollableSearchField
 import com.multi.producthunt.android.ui.StartupsList
 
@@ -29,7 +31,7 @@ class HomeScreen : AndroidScreen() {
     private fun HomeScreenInner(viewModel: HomeScreenViewModel) {
         val state by viewModel.state.collectAsState()
         val searchQuery by viewModel.searchQueryState.collectAsState()
-
+        val navigator = LocalNavigator.current?.parent?.parent
         val lazyStartupsList = state.pagingList.collectAsLazyPagingItems()
 
         val searchFieldHeight = dimensionResource(id = R.dimen.searchFieldHeight)
@@ -44,7 +46,9 @@ class HomeScreen : AndroidScreen() {
             onRefresh = { viewModel.sendEvent(HomeScreenViewModel.Event.Refresh) },
             indicatorPadding = PaddingValues(top = searchFieldHeight)
         ) {
-            StartupsList(lazyStartupsList, firstItemPaddingTop = searchFieldHeight)
+            StartupsList(lazyStartupsList, firstItemPaddingTop = searchFieldHeight, onProjectClick = { id ->
+                navigator?.push(DetailProjectScreen(id))
+            })
         }
 
         ScrollableSearchField(searchQuery = searchQuery, scrollUpState, viewModel.lastScrollIndex) {

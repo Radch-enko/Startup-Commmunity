@@ -53,4 +53,18 @@
 
     <string name="select_date">Выбрать дату</string>
     <string name="no_items_message">Нет проектов</string>
+
+    <string name="vote">Голос</string>
+    <string name="visit">Подробнее</string>
+
+    <string name="discussion">Обсуждение</string>
+
+    <string name="maker_indicator">Глава</string>
+    <string name="hunter_indicator">Хантер</string>
+
+    <string name="enter_comment">Оставьте комментарий</string>
+
+    <string name="no_comments">Комментариев нет. Будьте первыми!</string>
+
+    <string name="delete_vote">Убрать голос</string>
 </resources>

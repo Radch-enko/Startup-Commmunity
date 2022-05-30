@@ -5,6 +5,7 @@ import com.multi.producthunt.domain.model.toDomain
 import com.multi.producthunt.domain.repository.StartupsRepository
 import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.network.model.body.AddProjectBody
+import com.multi.producthunt.network.model.body.CreateCommentBody
 import com.multi.producthunt.network.model.body.TopicBody
 import com.multi.producthunt.network.service.ProjectsApiService
 import com.multi.producthunt.network.util.asCommonFlow
@@ -56,6 +57,22 @@ class StartupsRepositoryImpl(
             ).asCommonFlow()
                 .toDomain()
         }
+    }
+
+    override fun getProjectById(projectId: Int, token: String?): Flow<ApiResult<ProjectDomain>> {
+        return service.getProjectById(projectId, token = "Bearer " + token.orEmpty()).toDomain()
+    }
+
+    override fun commentForProject(
+        projectId: Int,
+        text: String,
+        token: String?
+    ): Flow<ApiResult<ProjectDomain>> {
+        return service.commentForProject(
+            CreateCommentBody(projectId, text),
+            token = "Bearer " + token.orEmpty()
+        )
+            .toDomain()
     }
 }
 

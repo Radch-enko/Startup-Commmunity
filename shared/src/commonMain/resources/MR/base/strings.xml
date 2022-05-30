@@ -56,4 +56,18 @@
 
     <string name="select_date">Select date</string>
     <string name="no_items_message">No items</string>
+
+    <string name="vote">Vote</string>
+    <string name="visit">Visit</string>
+
+    <string name="discussion">Discussion</string>
+
+    <string name="maker_indicator">Maker</string>
+    <string name="hunter_indicator">Maker</string>
+
+    <string name="enter_comment">Enter comment</string>
+
+    <string name="no_comments">No comments. Be the first!</string>
+
+    <string name="delete_vote">unvote</string>
 </resources>

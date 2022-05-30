@@ -21,6 +21,7 @@ fun StartupsList(
     pagingList: LazyPagingItems<ProjectUI>,
     scrollState: LazyListState = rememberLazyListState(),
     firstItemPaddingTop: Dp = 0.dp,
+    onProjectClick: (id: Int) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -29,16 +30,19 @@ fun StartupsList(
         item {
             Spacer(modifier = Modifier.height(firstItemPaddingTop))
         }
-        this.applyStates(pagingList)
+        this.applyStates(pagingList, onProjectClick)
     }
 }
 
 private val startupsRowModifier =
     Modifier.padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
 
-private fun LazyListScope.applyStates(list: LazyPagingItems<ProjectUI>) {
+private fun LazyListScope.applyStates(
+    list: LazyPagingItems<ProjectUI>,
+    onProjectClick: (id: Int) -> Unit
+) {
     this.apply {
-        startupsRow(list)
+        startupsRow(list, onProjectClick)
         when {
             list.loadState.refresh is LoadState.Error -> {
                 val e = list.loadState.refresh as LoadState.Error
@@ -80,12 +84,13 @@ private fun LazyListScope.placeholderStartupsList(
 }
 
 private fun LazyListScope.startupsRow(
-    list: LazyPagingItems<ProjectUI>
+    list: LazyPagingItems<ProjectUI>,
+    onProjectClick: (id: Int) -> Unit
 ) {
     this.items(list) { startup ->
         Box(modifier = startupsRowModifier) {
             if (startup != null) {
-                StartupRow(startup)
+                StartupRow(startup, onProjectClick = onProjectClick)
             }
         }
     }
