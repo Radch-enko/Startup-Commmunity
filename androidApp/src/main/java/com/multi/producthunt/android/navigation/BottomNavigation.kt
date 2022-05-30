@@ -31,8 +31,6 @@ fun BottomNavigation() {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(innerPadding)
-                        .imePadding()
                 ) {
                     CurrentTab()
                 }

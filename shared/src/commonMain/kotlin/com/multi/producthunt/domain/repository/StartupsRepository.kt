@@ -2,6 +2,7 @@ package com.multi.producthunt.domain.repository
 
 import com.multi.producthunt.domain.model.ProjectDomain
 import com.multi.producthunt.network.model.ApiResult
+import com.multi.producthunt.network.model.response.VoteResponse
 import kotlinx.coroutines.flow.Flow
 
 interface StartupsRepository {
@@ -21,4 +22,9 @@ interface StartupsRepository {
         day: String?,
         token: String?
     ): Flow<ApiResult<List<ProjectDomain>>>
+
+    fun voteProject(
+        projectId: Int,
+        token: String?
+    ): Flow<ApiResult<VoteResponse>>
 }

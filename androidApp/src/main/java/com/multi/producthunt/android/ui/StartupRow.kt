@@ -27,7 +27,8 @@ import com.multi.producthunt.ui.models.ProjectUI
 import com.multi.producthunt.ui.models.TopicUI
 
 @Composable
-fun StartupRow(startup: ProjectUI, placeHolderVisible: Boolean = false) {
+fun StartupRow(startup: ProjectUI, placeHolderVisible: Boolean = false,
+               onUpvoteClicked: () -> Unit) {
     androidx.compose.material3.Surface(
         shape = Shapes.medium,
         shadowElevation = 4.dp,
@@ -63,35 +64,53 @@ fun StartupRow(startup: ProjectUI, placeHolderVisible: Boolean = false) {
                 TopicsList(startup.topics, placeHolderVisible)
             }
 
-            UpvoteButton(startup.votesCount, startup.isVoted, placeHolderVisible)
+            UpvoteButton(startup.votesCount, startup.isVoted, placeHolderVisible, onUpvoteClicked = onUpvoteClicked)
         }
     }
 }
 
 @Composable
-fun UpvoteButton(votesCount: String, checked: Boolean, placeHolderVisible: Boolean = false) {
-    var checked by remember {
+fun UpvoteButton(
+    votesCount: Int,
+    checked: Boolean,
+    placeHolderVisible: Boolean = false,
+    onUpvoteClicked: () -> Unit
+) {
+    var voteChecked by remember {
         mutableStateOf(checked)
+    }
+    var count by remember {
+        mutableStateOf(votesCount)
     }
     Column(
         modifier = Modifier.clickable(
             indication = null,
-            interactionSource = remember { MutableInteractionSource() }, // This is mandatory
-            onClick = { checked = !checked }),
+            interactionSource = remember { MutableInteractionSource() }
+        ) // This is mandatory
+        {
+            onUpvoteClicked()
+            voteChecked = !voteChecked
+
+            if (voteChecked) {
+                count++
+            } else {
+                count--
+            }
+        },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
             Icons.Default.ChangeHistory, contentDescription = null,
             modifier = Modifier.placeholder(placeHolderVisible),
-            tint = if (checked) MaterialTheme.colorScheme.primary else LocalContentColor.current.copy(
+            tint = if (voteChecked) MaterialTheme.colorScheme.primary else LocalContentColor.current.copy(
                 alpha = LocalContentAlpha.current
             )
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = votesCount,
+            text = count.toString(),
             modifier = Modifier.placeholder(placeHolderVisible),
-            color = if (checked) MaterialTheme.colorScheme.primary else LocalContentColor.current.copy(
+            color = if (voteChecked) MaterialTheme.colorScheme.primary else LocalContentColor.current.copy(
                 alpha = LocalContentAlpha.current
             )
         )

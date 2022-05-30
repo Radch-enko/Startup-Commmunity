@@ -5,10 +5,7 @@ import com.multi.producthunt.network.model.body.AddProjectBody
 import com.multi.producthunt.network.model.body.LoginBody
 import com.multi.producthunt.network.model.body.RegisterBody
 import com.multi.producthunt.network.model.body.UpdateUserBody
-import com.multi.producthunt.network.model.response.LoginResponse
-import com.multi.producthunt.network.model.response.ProjectResponse
-import com.multi.producthunt.network.model.response.TopicResponse
-import com.multi.producthunt.network.model.response.UserResponse
+import com.multi.producthunt.network.model.response.*
 import de.jensklingenberg.ktorfit.http.*
 import kotlinx.coroutines.flow.Flow
 
@@ -39,6 +36,13 @@ interface ProjectsApiService {
         @Query("day") day: String,
         @Header("Authorization") token: String
     ): Flow<ApiResult<List<ProjectResponse>>>
+
+    @Headers(["Content-Type: application/json"])
+    @GET("projects/{project_id}/vote")
+    fun voteForProject(
+        @Path("project_id") projectId: Int,
+        @Header("Authorization") token: String
+    ): Flow<ApiResult<VoteResponse>>
 
     // UsersFlow
     @Headers(["Content-Type: application/json"])

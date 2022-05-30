@@ -11,8 +11,8 @@ import org.kodein.di.bindProvider
 import org.kodein.di.instance
 
 val viewModelModule = DI.Module("viewModelModule") {
-    bindProvider { HomeScreenViewModel(instance()) }
-    bindProvider { TimelineScreenViewModel(instance()) }
+    bindProvider { HomeScreenViewModel(instance(), instance()) }
+    bindProvider { TimelineScreenViewModel(instance(), instance()) }
     bindProvider { SettingsScreenViewModel(instance()) }
     bindProvider { AuthorizationViewModel(instance(), instance()) }
     bindProvider { ProfileScreenViewModel(instance(), instance()) }

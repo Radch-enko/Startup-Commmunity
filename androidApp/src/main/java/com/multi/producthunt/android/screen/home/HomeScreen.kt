@@ -44,7 +44,9 @@ class HomeScreen : AndroidScreen() {
             onRefresh = { viewModel.sendEvent(HomeScreenViewModel.Event.Refresh) },
             indicatorPadding = PaddingValues(top = searchFieldHeight)
         ) {
-            StartupsList(lazyStartupsList, firstItemPaddingTop = searchFieldHeight)
+            StartupsList(lazyStartupsList, firstItemPaddingTop = searchFieldHeight, onUpvoteClicked = {
+                viewModel.sendEvent(HomeScreenViewModel.Event.Vote(it))
+            })
         }
 
         ScrollableSearchField(searchQuery = searchQuery, scrollUpState, viewModel.lastScrollIndex) {

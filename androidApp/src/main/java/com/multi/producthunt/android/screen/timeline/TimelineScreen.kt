@@ -95,7 +95,9 @@ class TimelineScreen : AndroidScreen() {
                 onRefresh = { handleEvent(TimelineScreenViewModel.Event.Refresh) },
                 modifier = Modifier.padding(innerPadding)
             ) {
-                StartupsList(state.pagingList.collectAsLazyPagingItems())
+                StartupsList(
+                    state.pagingList.collectAsLazyPagingItems(),
+                    onUpvoteClicked = { handleEvent(TimelineScreenViewModel.Event.Vote(it)) })
             }
         }
     }
