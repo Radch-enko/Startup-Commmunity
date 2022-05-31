@@ -173,13 +173,13 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
                         val context = LocalContext.current
                         ProjectButtons(
                             detailProjectUI.votesCount,
-                            detailProjectUI.isVoted,
-                            !detailProjectUI.ownerLink.isNullOrEmpty(),
+                            voted = detailProjectUI.isVoted,
+                            visitEnable = !detailProjectUI.ownerLink.isNullOrEmpty(),
                             onVisitClick = {
                                 handleEvent(DetailProjectViewModel.Event.OnVisitClick(context = context))
                             },
                             onVoteClick = {
-
+                                handleEvent(DetailProjectViewModel.Event.OnVoteClick)
                             }
                         )
 
@@ -319,7 +319,7 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
             mutableStateOf(voted)
         }
 
-        val isVotedText = if (checked) MR.strings.vote else MR.strings.delete_vote
+        val isVotedText = if (checked) MR.strings.delete_vote else MR.strings.vote
 
         Row(modifier = Modifier.fillMaxWidth()) {
             OutlinedButtonDefault(
@@ -331,13 +331,14 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
             ButtonDefault(
                 text = stringResource(id = isVotedText.resourceId) + " $votes",
                 onClick = {
+                    onVoteClick()
                     checked = !checked
                     if (checked) {
-                        votes--
-                    } else {
                         votes++
+                    } else {
+                        votes--
                     }
-                    onVoteClick()
+
                 }, modifier = Modifier.weight(1f)
             )
         }

@@ -106,7 +106,7 @@ class TimelineScreen : AndroidScreen() {
             ) {
                 StartupsList(state.pagingList.collectAsLazyPagingItems(), onProjectClick = { id ->
                     navigator?.push(DetailProjectScreen(id))
-                })
+                }, onUpvoteClicked = { handleEvent(TimelineScreenViewModel.Event.Vote(it)) })
             }
         }
     }

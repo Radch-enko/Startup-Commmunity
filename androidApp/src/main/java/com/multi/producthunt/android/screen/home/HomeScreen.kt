@@ -51,7 +51,7 @@ class HomeScreen : AndroidScreen() {
                 firstItemPaddingTop = searchFieldHeight,
                 onProjectClick = { id ->
                     navigator?.push(DetailProjectScreen(id))
-                })
+                }, onUpvoteClicked = { viewModel.sendEvent(HomeScreenViewModel.Event.Vote(it)) })
         }
 
         ScrollableSearchField(searchQuery = searchQuery, scrollUpState, viewModel.lastScrollIndex) {

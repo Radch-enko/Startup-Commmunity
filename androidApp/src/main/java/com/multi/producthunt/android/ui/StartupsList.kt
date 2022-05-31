@@ -30,6 +30,7 @@ fun StartupsList(
     pagingList: LazyPagingItems<ProjectUI>,
     scrollState: LazyListState = rememberLazyListState(),
     firstItemPaddingTop: Dp = 0.dp,
+    onUpvoteClicked: (projectId: Int) -> Unit,
     onProjectClick: (id: Int) -> Unit,
 ) {
     LazyColumn(
@@ -41,7 +42,7 @@ fun StartupsList(
         item {
             Spacer(modifier = Modifier.height(firstItemPaddingTop))
         }
-        this.applyStates(pagingList, onProjectClick)
+        this.applyStates(pagingList, onUpvoteClicked = onUpvoteClicked, onProjectClick =onProjectClick)
     }
 }
 
@@ -50,10 +51,11 @@ private val startupsRowModifier =
 
 private fun LazyListScope.applyStates(
     list: LazyPagingItems<ProjectUI>,
-    onProjectClick: (id: Int) -> Unit
+    onProjectClick: (id: Int) -> Unit,
+    onUpvoteClicked: (projectId: Int) -> Unit
 ) {
     this.apply {
-        startupsRow(list, onProjectClick)
+        startupsRow(list, onUpvoteClicked = onUpvoteClicked, onProjectClick =onProjectClick)
         when {
             list.loadState.refresh is LoadState.Error -> {
                 val e = list.loadState.refresh as LoadState.Error
@@ -89,19 +91,20 @@ private fun LazyListScope.placeholderStartupsList(
 ) {
     this.items(list) { startup ->
         Box(modifier = startupsRowModifier) {
-            StartupRow(startup, placeHolderVisible = true)
+            StartupRow(startup, placeHolderVisible = true, onUpvoteClicked = {})
         }
     }
 }
 
 private fun LazyListScope.startupsRow(
     list: LazyPagingItems<ProjectUI>,
+    onUpvoteClicked: (projectId: Int) -> Unit,
     onProjectClick: (id: Int) -> Unit
 ) {
     this.items(list) { startup ->
         Box(modifier = startupsRowModifier) {
             if (startup != null) {
-                StartupRow(startup, onProjectClick = onProjectClick)
+                StartupRow(startup, onUpvoteClicked = { onUpvoteClicked(startup.id) }, onProjectClick = onProjectClick)
             }
         }
     }

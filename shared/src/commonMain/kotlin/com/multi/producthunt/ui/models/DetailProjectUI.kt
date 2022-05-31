@@ -44,7 +44,7 @@ fun ProjectDomain.toDetailUI(): DetailProjectUI {
         description,
         thumbnail,
         media.mapNotNull { it?.url },
-        isVoted,
+        isVoted = isVoted,
         topics.map { TopicUI(it.id, it.title) },
         votesCount = votesCount,
         ownerLink,

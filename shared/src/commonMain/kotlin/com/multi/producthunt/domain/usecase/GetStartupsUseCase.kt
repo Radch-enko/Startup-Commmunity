@@ -6,7 +6,9 @@ import com.kuuurt.paging.multiplatform.PagingData
 import com.kuuurt.paging.multiplatform.PagingResult
 import com.kuuurt.paging.multiplatform.helpers.cachedIn
 import com.multi.producthunt.domain.repository.StartupsRepository
+import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.network.model.map
+import com.multi.producthunt.network.model.response.VoteResponse
 import com.multi.producthunt.network.util.asCommonFlow
 import com.multi.producthunt.ui.models.ProjectUI
 import com.multi.producthunt.ui.models.toUI
@@ -16,10 +18,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.single
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class GetStartupsUseCase(
@@ -69,5 +68,9 @@ class GetStartupsUseCase(
                     nextKey = { currentKey + size } // Key for next page. Use `items` or `currentKey` to get it depending on the pagination strategy
                 )
             }).pagingData.asCommonFlow().cachedIn(scope)
+    }
+
+    fun voteProject(projectId: Int, token: String?): Flow<ApiResult<VoteResponse>> {
+        return repository.voteProject(projectId, token = token)
     }
 }

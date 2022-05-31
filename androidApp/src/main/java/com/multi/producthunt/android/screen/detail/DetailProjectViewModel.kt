@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat.startActivity
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.multi.producthunt.domain.repository.StartupsRepository
+import com.multi.producthunt.domain.usecase.GetStartupsUseCase
 import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.ui.models.DetailProjectUI
 import com.multi.producthunt.ui.models.toDetailUI
@@ -22,6 +23,7 @@ import kotlinx.coroutines.launch
 class DetailProjectViewModel(
     private val id: Int,
     private val startupsRepository: StartupsRepository,
+    private val useCase: GetStartupsUseCase,
     kmmPreference: KMMPreference
 ) :
     StateScreenModel<DetailProjectViewModel.State>(State(DetailProjectUI.Empty)) {
@@ -58,7 +60,10 @@ class DetailProjectViewModel(
         when (event) {
             is Event.OnCommentChange -> changeComment(event.comment)
             is Event.OnVisitClick -> doVisit(event.context)
-            Event.Retry -> loadDate(id)
+            Event.Retry -> {
+                mutableState.update { it.copy(error = null) }
+                loadDate(id)
+            }
             Event.OnVoteClick -> doVote()
             Event.SendComment -> sendComment()
         }
@@ -87,7 +92,18 @@ class DetailProjectViewModel(
     }
 
     private fun doVote() = coroutineScope.launch {
-        // TODO vote for a project
+        useCase.voteProject(
+            state.value.detailProjectUI.id,
+            token
+        ).collectLatest { response ->
+            when (response) {
+                is ApiResult.Error -> {
+                    mutableState.update {
+                        it.copy(error = response.exception)
+                    }
+                }
+            }
+        }
     }
 
     private fun doVisit(context: Context) {
@@ -95,7 +111,7 @@ class DetailProjectViewModel(
             val i = Intent(Intent.ACTION_VIEW)
             i.data = Uri.parse(state.value.detailProjectUI.ownerLink)
             startActivity(context, i, null)
-        }catch (e: Exception){
+        } catch (e: Exception) {
             Napier.e("DoVisitByLink", e)
         }
     }
