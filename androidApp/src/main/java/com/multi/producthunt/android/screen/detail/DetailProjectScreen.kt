@@ -53,7 +53,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.Color.Companion.Transparent
-import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.androidx.AndroidScreen
@@ -170,11 +170,13 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
 
                         Spacer(modifier = Modifier.height(32.dp))
 
+                        val context = LocalContext.current
                         ProjectButtons(
                             detailProjectUI.votesCount,
                             detailProjectUI.isVoted,
+                            !detailProjectUI.ownerLink.isNullOrEmpty(),
                             onVisitClick = {
-
+                                handleEvent(DetailProjectViewModel.Event.OnVisitClick(context = context))
                             },
                             onVoteClick = {
 
@@ -201,7 +203,7 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
                             .fillMaxWidth(),
                         shadowElevation = 16.dp,
                         shape = CutCornerShape(topStart = 16.dp, topEnd = 16.dp),
-                        color = White
+                        color = MaterialTheme.colorScheme.background
                     ) {
                         Column(
                             modifier = Modifier
@@ -305,6 +307,7 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
     fun ProjectButtons(
         votesCount: Int,
         voted: Boolean,
+        visitEnable: Boolean,
         onVisitClick: () -> Unit,
         onVoteClick: () -> Unit
     ) {
@@ -321,7 +324,8 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
         Row(modifier = Modifier.fillMaxWidth()) {
             OutlinedButtonDefault(
                 text = stringResource(id = MR.strings.visit.resourceId),
-                onClick = onVisitClick, icon = Icons.Filled.Link, modifier = Modifier.weight(1f)
+                onClick = onVisitClick, icon = Icons.Filled.Link, modifier = Modifier.weight(1f),
+                enabled = visitEnable
             )
             Spacer(modifier = Modifier.width(32.dp))
             ButtonDefault(

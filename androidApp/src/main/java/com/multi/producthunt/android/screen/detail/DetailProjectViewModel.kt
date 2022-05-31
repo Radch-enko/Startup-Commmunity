@@ -1,5 +1,9 @@
 package com.multi.producthunt.android.screen.detail
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import androidx.core.content.ContextCompat.startActivity
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.multi.producthunt.domain.repository.StartupsRepository
@@ -7,11 +11,13 @@ import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.ui.models.DetailProjectUI
 import com.multi.producthunt.ui.models.toDetailUI
 import com.multi.producthunt.utils.KMMPreference
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+
 
 class DetailProjectViewModel(
     private val id: Int,
@@ -30,7 +36,7 @@ class DetailProjectViewModel(
     sealed class Event {
         object Retry : Event()
         class OnCommentChange(val comment: String) : Event()
-        object OnVisitClick : Event()
+        class OnVisitClick(val context: Context) : Event()
         object OnVoteClick : Event()
         object SendComment : Event()
     }
@@ -51,8 +57,8 @@ class DetailProjectViewModel(
     fun sendEvent(event: Event) {
         when (event) {
             is Event.OnCommentChange -> changeComment(event.comment)
+            is Event.OnVisitClick -> doVisit(event.context)
             Event.Retry -> loadDate(id)
-            Event.OnVisitClick -> doVisit()
             Event.OnVoteClick -> doVote()
             Event.SendComment -> sendComment()
         }
@@ -84,8 +90,14 @@ class DetailProjectViewModel(
         // TODO vote for a project
     }
 
-    private fun doVisit() = coroutineScope.launch {
-        // TODO open browser
+    private fun doVisit(context: Context) {
+        try {
+            val i = Intent(Intent.ACTION_VIEW)
+            i.data = Uri.parse(state.value.detailProjectUI.ownerLink)
+            startActivity(context, i, null)
+        }catch (e: Exception){
+            Napier.e("DoVisitByLink", e)
+        }
     }
 
     private fun changeComment(comment: String) {
