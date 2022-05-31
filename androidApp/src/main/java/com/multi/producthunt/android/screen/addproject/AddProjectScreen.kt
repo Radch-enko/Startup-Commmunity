@@ -54,6 +54,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.androidx.AndroidScreen
+import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.kodein.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import coil.compose.rememberImagePainter
@@ -72,11 +73,11 @@ import com.multi.producthunt.android.ui.TitleMedium
 import com.multi.producthunt.ui.models.SelectableTopicUI
 import kotlinx.coroutines.flow.collectLatest
 
-class AddProjectScreen : AndroidScreen() {
+class AddProjectScreen(private val projectToRedact: Int = 0) : AndroidScreen() {
 
     @Composable
     override fun Content() {
-        val viewModel = rememberScreenModel<AddProjectViewModel>()
+        val viewModel: AddProjectViewModel = rememberScreenModel(arg = projectToRedact)
         val state = viewModel.state.collectAsState().value
         val context = LocalContext.current
         val navigator = LocalNavigator.current

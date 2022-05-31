@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.kuuurt.paging.multiplatform.PagingData
 import com.multi.producthunt.android.ui.toTitle
+import com.multi.producthunt.domain.usecase.AuthorizationUseCase
 import com.multi.producthunt.domain.usecase.GetStartupsUseCase
 import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.ui.models.ProjectUI
@@ -21,7 +22,8 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
 class TimelineScreenViewModel(
-    private val useCase: GetStartupsUseCase
+    private val useCase: GetStartupsUseCase,
+    private val authorizationUseCase: AuthorizationUseCase
 ) :
     StateScreenModel<TimelineScreenViewModel.State>(State.Empty) {
 
@@ -33,7 +35,8 @@ class TimelineScreenViewModel(
         val title: String = "",
         val isRefreshing: Boolean = false,
         val error: String? = null,
-        val pagingList: Flow<PagingData<ProjectUI>> = emptyFlow()
+        val pagingList: Flow<PagingData<ProjectUI>> = emptyFlow(),
+        val isAuthorized: Boolean = false
     ) {
         companion object {
             val Empty = State()
@@ -108,7 +111,8 @@ class TimelineScreenViewModel(
             it.copy(
                 isRefreshing = false,
                 title = date.toTitle(),
-                pagingList = useCase.getStartupsPagingData(date = date)
+                pagingList = useCase.getStartupsPagingData(date = date),
+                isAuthorized = authorizationUseCase.isAuthorized()
             )
         }
     }

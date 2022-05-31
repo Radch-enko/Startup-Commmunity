@@ -68,4 +68,6 @@
     <string name="no_comments">Комментариев нет. Будьте первыми!</string>
 
     <string name="delete_vote">Убрать голос</string>
+
+    <string name="logout">Выйти</string>
 </resources>

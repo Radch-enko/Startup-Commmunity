@@ -3,6 +3,7 @@ package com.multi.producthunt.android.screen.home
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.kuuurt.paging.multiplatform.PagingData
+import com.multi.producthunt.domain.usecase.AuthorizationUseCase
 import com.multi.producthunt.domain.usecase.GetStartupsUseCase
 import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.ui.models.ProjectUI
@@ -20,14 +21,16 @@ import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
 class HomeScreenViewModel(
-    private val useCase: GetStartupsUseCase
+    private val useCase: GetStartupsUseCase,
+    private val authorizationUseCase: AuthorizationUseCase
 ) :
     StateScreenModel<HomeScreenViewModel.State>(State.Empty) {
 
     data class State(
         val isRefreshing: Boolean = false,
         val error: String? = null,
-        val pagingList: Flow<PagingData<ProjectUI>> = emptyFlow()
+        val pagingList: Flow<PagingData<ProjectUI>> = emptyFlow(),
+        val isAuthorized: Boolean = false
     ) {
         companion object {
             val Empty = State()
@@ -102,7 +105,8 @@ class HomeScreenViewModel(
                 mutableState.update {
                     it.copy(
                         isRefreshing = false,
-                        pagingList = useCase.getStartupsPagingData(query, null)
+                        pagingList = useCase.getStartupsPagingData(query, null),
+                        isAuthorized = authorizationUseCase.isAuthorized()
                     )
                 }
             }

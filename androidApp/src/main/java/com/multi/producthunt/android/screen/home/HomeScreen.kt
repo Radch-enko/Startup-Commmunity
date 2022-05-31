@@ -14,6 +14,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.multi.producthunt.android.R
+import com.multi.producthunt.android.screen.authorization.AuthenticationScreen
 import com.multi.producthunt.android.screen.detail.DetailProjectScreen
 import com.multi.producthunt.android.ui.ScrollableSearchField
 import com.multi.producthunt.android.ui.StartupsList
@@ -51,7 +52,15 @@ class HomeScreen : AndroidScreen() {
                 firstItemPaddingTop = searchFieldHeight,
                 onProjectClick = { id ->
                     navigator?.push(DetailProjectScreen(id))
-                }, onUpvoteClicked = { viewModel.sendEvent(HomeScreenViewModel.Event.Vote(it)) })
+                }, onUpvoteClicked = {
+                    if (state.isAuthorized) {
+                        viewModel.sendEvent(HomeScreenViewModel.Event.Vote(it))
+                    } else {
+                        navigator?.push(AuthenticationScreen(onSuccessAuthenticate = { localNavigator->
+                            localNavigator?.pop()
+                        }))
+                    }
+                })
         }
 
         ScrollableSearchField(searchQuery = searchQuery, scrollUpState, viewModel.lastScrollIndex) {

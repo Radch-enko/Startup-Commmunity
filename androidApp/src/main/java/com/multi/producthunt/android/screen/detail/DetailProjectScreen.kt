@@ -65,6 +65,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.multi.producthunt.MR
 import com.multi.producthunt.android.R
+import com.multi.producthunt.android.screen.authorization.AuthenticationScreen
 import com.multi.producthunt.android.ui.ButtonDefault
 import com.multi.producthunt.android.ui.DefaultTopAppBar
 import com.multi.producthunt.android.ui.ErrorDialog
@@ -96,7 +97,8 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
                     state.detailProjectUI,
                     handleEvent = viewModel::sendEvent,
                     state.comment,
-                    scroll
+                    scroll,
+                    state.isAuthorized
                 )
             }
         }
@@ -145,7 +147,8 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
         detailProjectUI: DetailProjectUI,
         handleEvent: (DetailProjectViewModel.Event) -> Unit,
         comment: String,
-        scroll: LazyListState
+        scroll: LazyListState,
+        authorized: Boolean
     ) {
         val navigator = LocalNavigator.current
         Scaffold(modifier = Modifier, topBar = {
@@ -198,7 +201,16 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
                                     )
                                 },
                                 onVoteClick = {
-                                    handleEvent(DetailProjectViewModel.Event.OnVoteClick)
+                                    if (authorized) {
+                                        handleEvent(DetailProjectViewModel.Event.OnVoteClick)
+                                    } else {
+                                        navigator?.push(
+                                            AuthenticationScreen(
+                                                onSuccessAuthenticate = { localNavigator ->
+                                                    localNavigator?.pop()
+                                                })
+                                        )
+                                    }
                                 }
                             )
 
@@ -259,7 +271,13 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
                     )
                 }, label = stringResource(id = MR.strings.enter_comment.resourceId),
                 onCommentSend = {
-                    handleEvent(DetailProjectViewModel.Event.SendComment)
+                    if (authorized) {
+                        handleEvent(DetailProjectViewModel.Event.SendComment)
+                    } else {
+                        navigator?.push(AuthenticationScreen(onSuccessAuthenticate = { localNavigator ->
+                            localNavigator?.pop()
+                        }))
+                    }
                 }
             )
         }, containerColor = MaterialTheme.colorScheme.surface

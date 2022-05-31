@@ -3,6 +3,7 @@ package com.multi.producthunt.android.screen.authorization
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.multi.producthunt.domain.repository.UserRepository
+import com.multi.producthunt.domain.usecase.AuthorizationUseCase
 import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.utils.KMMPreference
 import io.github.aakira.napier.Napier
@@ -24,9 +25,6 @@ class AuthorizationViewModel(
         passwordAgain = ""
     )
 ) {
-    companion object {
-        val ACCESS_TOKEN: String = "ACCESS_TOKEN"
-    }
 
     sealed class Event {
 
@@ -176,7 +174,7 @@ class AuthorizationViewModel(
                     }
                 }
                 is ApiResult.Success -> {
-                    pref.put(ACCESS_TOKEN, response.data?.token.toString())
+                    pref.put(AuthorizationUseCase.ACCESS_TOKEN, response._data.token)
                     mutableEffect.emit(Effect.AuthorizationSuccess)
                 }
             }

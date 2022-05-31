@@ -16,6 +16,6 @@ import io.ktor.client.plugins.logging.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 
-expect class KtorfitClient{
+expect class KtorfitClient(kmmPreference: KMMPreference){
     fun getService(): ProjectsApiService
 }

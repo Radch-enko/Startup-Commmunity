@@ -25,6 +25,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.multi.producthunt.MR
+import com.multi.producthunt.android.screen.authorization.AuthenticationScreen
 import com.multi.producthunt.android.screen.detail.DetailProjectScreen
 import com.multi.producthunt.android.ui.StartupsList
 import com.vanpra.composematerialdialogs.MaterialDialog
@@ -106,7 +107,15 @@ class TimelineScreen : AndroidScreen() {
             ) {
                 StartupsList(state.pagingList.collectAsLazyPagingItems(), onProjectClick = { id ->
                     navigator?.push(DetailProjectScreen(id))
-                }, onUpvoteClicked = { handleEvent(TimelineScreenViewModel.Event.Vote(it)) })
+                }, onUpvoteClicked = {
+                    if (state.isAuthorized) {
+                        handleEvent(TimelineScreenViewModel.Event.Vote(it))
+                    } else {
+                        navigator?.push(AuthenticationScreen(onSuccessAuthenticate = { localNavigator ->
+                            localNavigator?.pop()
+                        }))
+                    }
+                })
             }
         }
     }

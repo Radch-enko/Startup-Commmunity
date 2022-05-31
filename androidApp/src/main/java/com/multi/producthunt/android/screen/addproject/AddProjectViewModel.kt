@@ -2,6 +2,7 @@ package com.multi.producthunt.android.screen.addproject
 
 import android.content.Context
 import android.net.Uri
+import androidx.core.net.toUri
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.multi.producthunt.android.ui.toBase64
@@ -20,9 +21,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AddProjectViewModel(
+    projectToRedact: Int,
     private val startupsRepository: StartupsRepository,
     private val topicsRepository: TopicsRepository,
-    private val context: Context
+    private val context: Context,
 ) :
     StateScreenModel<AddProjectState>(
         AddProjectState()
@@ -69,6 +71,37 @@ class AddProjectViewModel(
 
     init {
         loadTopics()
+
+        if (projectToRedact != 0) {
+            loadProjectToRedact(projectToRedact)
+        }
+    }
+
+    private fun loadProjectToRedact(projectToRedact: Int) = coroutineScope.launch {
+        mutableState.update {
+            it.copy(isLoading = true)
+        }
+
+        startupsRepository.getProjectById(projectToRedact).collectLatest { response ->
+            when (response) {
+                is ApiResult.Error -> mutableState.update { it.copy(error = response.exception) }
+                is ApiResult.Success -> {
+                    with(response._data) {
+                        mutableState.update {
+                            it.copy(
+                                isLoading = false,
+                                name = name,
+                                tagline = tagline,
+                                description = description,
+                                ownerLink = ownerLink.orEmpty(),
+                                thumbnail = thumbnail?.toUri(),
+                                media = media.mapNotNull { media -> media?.url?.toUri() },
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun loadTopics() = coroutineScope.launch {

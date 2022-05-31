@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat.startActivity
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.multi.producthunt.domain.repository.StartupsRepository
+import com.multi.producthunt.domain.usecase.AuthorizationUseCase
 import com.multi.producthunt.domain.usecase.GetStartupsUseCase
 import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.ui.models.DetailProjectUI
@@ -22,7 +23,8 @@ import kotlinx.coroutines.launch
 class DetailProjectViewModel(
     private val id: Int,
     private val startupsRepository: StartupsRepository,
-    private val useCase: GetStartupsUseCase
+    private val useCase: GetStartupsUseCase,
+    private val authorizationUseCase: AuthorizationUseCase
 ) :
     StateScreenModel<DetailProjectViewModel.State>(State(DetailProjectUI.Empty)) {
 
@@ -30,7 +32,8 @@ class DetailProjectViewModel(
         val detailProjectUI: DetailProjectUI,
         val isLoading: Boolean = true,
         val error: String? = null,
-        val comment: String = ""
+        val comment: String = "",
+        val isAuthorized: Boolean = false,
     )
 
     sealed class Event {
@@ -126,7 +129,11 @@ class DetailProjectViewModel(
                 is ApiResult.Error -> mutableState.update { it.copy(error = response.exception) }
                 is ApiResult.Success -> {
                     mutableState.update {
-                        it.copy(detailProjectUI = response._data.toDetailUI(), isLoading = false)
+                        it.copy(
+                            detailProjectUI = response._data.toDetailUI(),
+                            isLoading = false,
+                            isAuthorized = authorizationUseCase.isAuthorized()
+                        )
                     }
                 }
             }

@@ -6,6 +6,7 @@ import com.multi.producthunt.domain.repository.UserRepository
 import com.multi.producthunt.domain.repository.implementation.StartupsRepositoryImpl
 import com.multi.producthunt.domain.repository.implementation.TopicsRepositoryImpl
 import com.multi.producthunt.domain.repository.implementation.UserRepositoryImpl
+import com.multi.producthunt.domain.usecase.AuthorizationUseCase
 import com.multi.producthunt.domain.usecase.GetStartupsUseCase
 import org.kodein.di.DI
 import org.kodein.di.bindSingleton
@@ -16,4 +17,5 @@ val domainModule = DI.Module {
     bindSingleton { GetStartupsUseCase(instance()) }
     bindSingleton<UserRepository> { UserRepositoryImpl(instance()) }
     bindSingleton<TopicsRepository> { TopicsRepositoryImpl(instance()) }
+    bindSingleton<AuthorizationUseCase> { AuthorizationUseCase(instance()) }
 }
