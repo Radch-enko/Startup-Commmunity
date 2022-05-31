@@ -1,5 +1,6 @@
 package com.multi.producthunt.android.screen.detail
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -13,15 +14,19 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.OutlinedTextField
+import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Link
@@ -47,13 +52,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Gray
+import androidx.compose.ui.graphics.Color.Companion.Transparent
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.androidx.AndroidScreen
+import cafe.adriel.voyager.core.lifecycle.LifecycleEffect
 import cafe.adriel.voyager.kodein.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
-import com.google.accompanist.insets.navigationBarsWithImePadding
-import com.google.accompanist.insets.statusBarsPadding
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.multi.producthunt.MR
 import com.multi.producthunt.android.ui.ButtonDefault
 import com.multi.producthunt.android.ui.DefaultTopAppBar
@@ -63,7 +70,7 @@ import com.multi.producthunt.android.ui.MediumText
 import com.multi.producthunt.android.ui.OutlinedButtonDefault
 import com.multi.producthunt.android.ui.ProgressBar
 import com.multi.producthunt.android.ui.TitleMedium
-import com.multi.producthunt.android.ui.theme.mountainMeadow
+import com.multi.producthunt.android.ui.theme.white
 import com.multi.producthunt.ui.models.DetailProjectUI
 import com.multi.producthunt.ui.models.TopicUI
 import com.multi.producthunt.ui.models.UiComment
@@ -108,6 +115,25 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
                 }
             }
         })
+
+        val systemUiController = rememberSystemUiController()
+
+        val color = MaterialTheme.colorScheme.secondaryContainer
+
+        LifecycleEffect(
+            onStarted = {
+                systemUiController.setNavigationBarColor(
+                    color = color,
+                    darkIcons = true
+                )
+            },
+            onDisposed = {
+                systemUiController.setNavigationBarColor(
+                    color = white,
+                    darkIcons = true
+                )
+            }
+        )
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -119,14 +145,17 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
         scroll: LazyListState
     ) {
         val navigator = LocalNavigator.current
-        Scaffold(modifier = Modifier
-            .navigationBarsWithImePadding(), topBar = {
+        Scaffold(modifier = Modifier, topBar = {
             DefaultTopAppBar(
                 modifier = Modifier.statusBarsPadding(),
                 title = null,
                 onBack = { navigator?.pop() })
         }, content = { innerPadding ->
-            LazyColumn(contentPadding = innerPadding, state = scroll) {
+            LazyColumn(
+                contentPadding = innerPadding,
+                state = scroll,
+                modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+            ) {
                 item {
                     DetailProjectMedia(detailProjectUI.media)
                 }
@@ -163,27 +192,45 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
 
                     ProjectTopicsInfo(detailProjectUI.topics)
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(32.dp))
                 }
 
                 item {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        TitleMedium(text = stringResource(id = MR.strings.discussion.resourceId))
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        shadowElevation = 16.dp,
+                        shape = CutCornerShape(topStart = 16.dp, topEnd = 16.dp),
+                        color = White
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(16.dp)
+                        ) {
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                            TitleMedium(text = stringResource(id = MR.strings.discussion.resourceId))
 
-                        if (detailProjectUI.comments.isEmpty()) {
-                            MediumText(text = stringResource(id = MR.strings.no_comments.resourceId))
-                        } else {
-                            ProjectComments(detailProjectUI.comments, onCommentatorClick = {})
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            if (detailProjectUI.comments.isEmpty()) {
+                                MediumText(text = stringResource(id = MR.strings.no_comments.resourceId))
+                            } else {
+                                ProjectComments(
+                                    detailProjectUI.comments,
+                                    detailProjectUI.makerId,
+                                    onCommentatorClick = {})
+                            }
                         }
                     }
+
                 }
             }
         }, bottomBar = {
             CommentTextField(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .navigationBarsPadding()
+                    .imePadding(),
                 text = comment,
                 onValueChanged = {
                     handleEvent(
@@ -206,19 +253,21 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
         onValueChanged: (String) -> Unit,
         onCommentSend: () -> Unit,
     ) {
-        OutlinedTextField(
+        TextField(
             modifier = modifier,
             value = text,
             onValueChange = onValueChanged,
-            label = {
-                Text(text = label)
-            },
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
-                focusedIndicatorColor = Gray,
-                unfocusedIndicatorColor = Gray,
-                cursorColor = mountainMeadow
+                focusedIndicatorColor = Transparent,
+                unfocusedIndicatorColor = Transparent,
+                focusedLabelColor = Transparent,
+                disabledLabelColor = Transparent,
+                unfocusedLabelColor = Transparent,
             ),
+            placeholder = {
+                Text(text = label)
+            },
             trailingIcon = {
                 IconButton(onClick = onCommentSend, enabled = text.isNotEmpty()) {
                     Icon(Icons.Filled.Send, contentDescription = null)
@@ -327,14 +376,18 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
     }
 
     @Composable
-    fun ProjectComments(comments: List<UiComment>, onCommentatorClick: (id: Int) -> Unit) {
+    fun ProjectComments(
+        comments: List<UiComment>,
+        makerId: Int,
+        onCommentatorClick: (id: Int) -> Unit
+    ) {
         comments.forEach { uiComment ->
             Comment(
                 uiComment.text,
                 uiComment.user.avatar,
                 uiComment.user.name,
                 uiComment.user.headline.orEmpty(),
-                uiComment.user.isMaker,
+                makerId == uiComment.user.id,
                 uiComment.createdAt,
                 onCommentatorClick = {
                     onCommentatorClick(uiComment.user.id)
@@ -362,7 +415,7 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
                                 childComment.user.avatar,
                                 childComment.user.name,
                                 childComment.user.headline.orEmpty(),
-                                childComment.user.isMaker,
+                                makerId == uiComment.user.id,
                                 childComment.createdAt,
                                 onCommentatorClick = {}
                             )
@@ -382,7 +435,7 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
         userName: String,
         userHeadLine: String,
         isMaker: Boolean,
-        createdAt: String,
+        createdAt: String?,
         onCommentatorClick: () -> Unit
     ) {
         Column(modifier = Modifier.padding(top = 20.dp)) {
@@ -399,9 +452,11 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
     }
 
     @Composable
-    fun CommentButtons(createdAt: String) {
+    fun CommentButtons(createdAt: String?) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-            MediumText(text = createdAt)
+            if (createdAt != null) {
+                MediumText(text = createdAt, style = typography.bodySmall)
+            }
         }
     }
 
@@ -417,11 +472,17 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
             onCommentatorClick()
         }) {
 
+            val makerModifier = if (isMaker) Modifier.border(
+                2.dp,
+                MaterialTheme.colorScheme.primary,
+                CircleShape
+            ) else Modifier.border(2.dp, Color.LightGray, CircleShape)
+
             LoadableImage(
                 link = avatar, modifier = Modifier
                     .size(50.dp)
                     .clip(CircleShape)
-                    .border(if (isMaker) 2.dp else 0.dp, Color.Green, CircleShape)
+                    .then(makerModifier)
             )
 
             Column(modifier = Modifier.padding(start = 10.dp)) {

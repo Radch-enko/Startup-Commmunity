@@ -19,7 +19,8 @@ data class ProjectDomain(
     val topics: List<TopicDomain>,
     val votesCount: Int,
     val ownerLink: String?,
-    val comments: List<CommentDomain>
+    val comments: List<CommentDomain>,
+    val makerId: Int
 )
 
 fun Flow<ApiResult<ProjectResponse>>.toDomain(): Flow<ApiResult<ProjectDomain>> {
@@ -54,6 +55,7 @@ fun ProjectResponse.toDomain(): ProjectDomain {
         ownerLink = this.ownerLink,
         comments = this.comments.map {
             CommentDomain(it.text, it.user.toDomain(), it.createdDate)
-        }
+        },
+        makerId = this.makerId
     )
 }

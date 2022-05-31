@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.SideEffect
 import androidx.core.view.WindowCompat
 import cafe.adriel.voyager.navigator.Navigator
-import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.multi.producthunt.android.navigation.BottomNavigationScreen
 import com.multi.producthunt.android.ui.theme.ProductHuntMaterial2
@@ -36,9 +35,7 @@ class MainActivity : ComponentActivity() {
 
             ProductHuntMaterial3 {
                 ProductHuntMaterial2 {
-                    ProvideWindowInsets(windowInsetsAnimationsEnabled = true) {
-                        Navigator(screen = BottomNavigationScreen())
-                    }
+                    Navigator(screen = BottomNavigationScreen())
                 }
             }
         }

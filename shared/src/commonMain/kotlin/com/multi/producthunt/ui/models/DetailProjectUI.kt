@@ -1,6 +1,8 @@
 package com.multi.producthunt.ui.models
 
 import com.multi.producthunt.domain.model.ProjectDomain
+import io.github.aakira.napier.Napier
+import kotlinx.datetime.toLocalDateTime
 
 data class DetailProjectUI(
     val id: Int,
@@ -13,7 +15,8 @@ data class DetailProjectUI(
     val topics: List<TopicUI>,
     val votesCount: Int,
     val ownerLink: String?,
-    val comments: List<UiComment>
+    val comments: List<UiComment>,
+    val makerId: Int
 ) {
     companion object {
         val Empty = DetailProjectUI(
@@ -27,7 +30,8 @@ data class DetailProjectUI(
             emptyList(),
             0,
             null,
-            emptyList()
+            emptyList(),
+            0
         )
     }
 }
@@ -47,16 +51,31 @@ fun ProjectDomain.toDetailUI(): DetailProjectUI {
         comments.map {
             UiComment(
                 it.text,
-                createdAt = it.createdDate,
+                createdAt = it.createdDate.toCommentDate(),
                 user = UiUserCard(
                     it.user.id,
                     avatar = it.user.profileImage,
                     name = it.user.name,
-                    headline = it.user.headline,
-                    isMaker = false
+                    headline = it.user.headline
                 ),
                 childComments = emptyList()
             )
-        }
+        },
+        makerId = makerId
     )
+}
+
+private fun String.toCommentDate(): String? {
+    return try {
+        val localDateTime = this.substringBefore(".").toLocalDateTime()
+
+        "${localDateTime.dayOfMonth} ${localDateTime.month.name[0]}${
+            localDateTime.month.name.substring(
+                1
+            ).lowercase()
+        }"
+    } catch (e: Exception) {
+        Napier.e("CommentDateCast", e)
+        null
+    }
 }

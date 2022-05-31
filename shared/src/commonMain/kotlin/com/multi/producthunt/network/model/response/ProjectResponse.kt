@@ -28,5 +28,7 @@ data class ProjectResponse(
     @SerialName("ownerLink")
     val ownerLink: String?,
     @SerialName("comments")
-    val comments: List<CommentResponse>
+    val comments: List<CommentResponse>,
+    @SerialName("maker")
+    val makerId: Int
 )

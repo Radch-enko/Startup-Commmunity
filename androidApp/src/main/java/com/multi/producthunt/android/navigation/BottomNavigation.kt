@@ -1,7 +1,13 @@
 package com.multi.producthunt.android.navigation
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.isImeVisible
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.NavigationBar
@@ -10,8 +16,6 @@ import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
-import com.google.accompanist.insets.imePadding
-import com.google.accompanist.insets.navigationBarsPadding
 
 class BottomNavigationScreen : AndroidScreen() {
     @Composable
@@ -20,19 +24,22 @@ class BottomNavigationScreen : AndroidScreen() {
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun BottomNavigation() {
     TabNavigator(HomeTab) {
         Scaffold(
-            topBar = {
-
-            },
+            topBar = {},
             content = { innerPadding ->
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(innerPadding)
-                        .imePadding()
+                        .padding(
+                            bottom = if (WindowInsets.isImeVisible) WindowInsets.ime
+                                .asPaddingValues()
+                                .calculateBottomPadding()
+                            else innerPadding.calculateBottomPadding()
+                        )
                 ) {
                     CurrentTab()
                 }
@@ -45,8 +52,8 @@ fun BottomNavigation() {
                     TabNavigationItem(tab = TimelineTab)
                     TabNavigationItem(tab = ProfileTab)
                 }
-            }
-
+            },
+            modifier = Modifier
         )
     }
 }
