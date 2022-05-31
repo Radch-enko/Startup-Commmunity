@@ -3,9 +3,12 @@ package com.multi.producthunt.android.screen.timeline
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.kuuurt.paging.multiplatform.PagingData
+import com.multi.producthunt.android.screen.home.HomeScreenViewModel
 import com.multi.producthunt.android.ui.toTitle
 import com.multi.producthunt.domain.usecase.GetStartupsUseCase
+import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.ui.models.ProjectUI
+import com.multi.producthunt.utils.KMMPreference
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -14,7 +17,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-class TimelineScreenViewModel(private val useCase: GetStartupsUseCase) :
+class TimelineScreenViewModel(private val useCase: GetStartupsUseCase, private val kmmPreference: KMMPreference) :
     StateScreenModel<TimelineScreenViewModel.State>(State.Empty) {
 
     private val currentDate = Clock.System.now().toLocalDateTime(
@@ -25,6 +28,7 @@ class TimelineScreenViewModel(private val useCase: GetStartupsUseCase) :
         val title: String = "",
         val isRefreshing: Boolean = false,
         val isPickerVisible: Boolean = false,
+        val error: String? = null,
         val pagingList: Flow<PagingData<ProjectUI>> = emptyFlow()
     ) {
         companion object {
@@ -35,7 +39,8 @@ class TimelineScreenViewModel(private val useCase: GetStartupsUseCase) :
     sealed class Event {
         class DatePicked(val date: LocalDate) : Event()
         object Refresh : Event()
-        object TogglePicker : TimelineScreenViewModel.Event()
+        object TogglePicker : Event()
+        class Vote(val projectId: Int) : Event()
     }
 
     sealed class Effect {
@@ -63,6 +68,22 @@ class TimelineScreenViewModel(private val useCase: GetStartupsUseCase) :
             }
             Event.TogglePicker -> togglePicker()
             is Event.DatePicked -> loadData(event.date)
+            is Event.Vote -> voteProject(event.projectId)
+        }
+    }
+
+    private fun voteProject(projectId: Int) = coroutineScope.launch {
+        useCase.voteProject(
+            projectId,
+            kmmPreference.getString("ACCESS_TOKEN")
+        ).collectLatest { response ->
+            when (response) {
+                is ApiResult.Error -> {
+                    mutableState.update {
+                        it.copy(error = response.exception)
+                    }
+                }
+            }
         }
     }
 

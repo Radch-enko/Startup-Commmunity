@@ -17,6 +17,8 @@ import de.jensklingenberg.ktorfit.http.Headers
 import de.jensklingenberg.ktorfit.http.POST
 import de.jensklingenberg.ktorfit.http.Path
 import de.jensklingenberg.ktorfit.http.Query
+import com.multi.producthunt.network.model.response.*
+import de.jensklingenberg.ktorfit.http.*
 import kotlinx.coroutines.flow.Flow
 
 interface ProjectsApiService {
@@ -59,6 +61,13 @@ interface ProjectsApiService {
         @Query("day") day: String,
         @Header("Authorization") token: String
     ): Flow<ApiResult<List<ProjectResponse>>>
+
+    @Headers(["Content-Type: application/json"])
+    @GET("projects/{project_id}/vote")
+    fun voteForProject(
+        @Path("project_id") projectId: Int,
+        @Header("Authorization") token: String
+    ): Flow<ApiResult<VoteResponse>>
 
     // UsersFlow
     @Headers(["Content-Type: application/json"])
