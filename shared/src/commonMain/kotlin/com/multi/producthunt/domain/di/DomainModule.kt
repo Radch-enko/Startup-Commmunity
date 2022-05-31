@@ -13,7 +13,7 @@ import org.kodein.di.instance
 
 val domainModule = DI.Module {
     bindSingleton<StartupsRepository> { StartupsRepositoryImpl(instance()) }
-    bindSingleton { GetStartupsUseCase(instance(), instance()) }
+    bindSingleton { GetStartupsUseCase(instance()) }
     bindSingleton<UserRepository> { UserRepositoryImpl(instance()) }
     bindSingleton<TopicsRepository> { TopicsRepositoryImpl(instance()) }
 }

@@ -3,31 +3,35 @@ package com.multi.producthunt.android.screen.timeline
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.kuuurt.paging.multiplatform.PagingData
-import com.multi.producthunt.android.screen.home.HomeScreenViewModel
 import com.multi.producthunt.android.ui.toTitle
 import com.multi.producthunt.domain.usecase.GetStartupsUseCase
 import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.ui.models.ProjectUI
-import com.multi.producthunt.utils.KMMPreference
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-class TimelineScreenViewModel(private val useCase: GetStartupsUseCase, private val kmmPreference: KMMPreference) :
+class TimelineScreenViewModel(
+    private val useCase: GetStartupsUseCase
+) :
     StateScreenModel<TimelineScreenViewModel.State>(State.Empty) {
 
-    private val currentDate = Clock.System.now().toLocalDateTime(
+    private var currentDate: LocalDate = Clock.System.now().toLocalDateTime(
         TimeZone.currentSystemDefault()
     ).date
 
     data class State(
         val title: String = "",
         val isRefreshing: Boolean = false,
-        val isPickerVisible: Boolean = false,
         val error: String? = null,
         val pagingList: Flow<PagingData<ProjectUI>> = emptyFlow()
     ) {
@@ -51,12 +55,6 @@ class TimelineScreenViewModel(private val useCase: GetStartupsUseCase, private v
     val effect = mutableEffect.asSharedFlow()
 
     init {
-        mutableState.update {
-            it.copy(
-                isRefreshing = true,
-                title = currentDate.toTitle()
-            )
-        }
         loadData()
     }
 
@@ -67,15 +65,17 @@ class TimelineScreenViewModel(private val useCase: GetStartupsUseCase, private v
                 loadData()
             }
             Event.TogglePicker -> togglePicker()
-            is Event.DatePicked -> loadData(event.date)
+            is Event.DatePicked -> {
+                currentDate = event.date
+                loadData(event.date)
+            }
             is Event.Vote -> voteProject(event.projectId)
         }
     }
 
     private fun voteProject(projectId: Int) = coroutineScope.launch {
         useCase.voteProject(
-            projectId,
-            kmmPreference.getString("ACCESS_TOKEN")
+            projectId
         ).collectLatest { response ->
             when (response) {
                 is ApiResult.Error -> {
@@ -94,7 +94,16 @@ class TimelineScreenViewModel(private val useCase: GetStartupsUseCase, private v
     private fun loadData(
         date: LocalDate = currentDate
     ) = coroutineScope.launch {
-        delay(800)
+
+        mutableState.update {
+            it.copy(
+                isRefreshing = true,
+                title = currentDate.toTitle()
+            )
+        }
+
+        delay(500)
+
         mutableState.update {
             it.copy(
                 isRefreshing = false,

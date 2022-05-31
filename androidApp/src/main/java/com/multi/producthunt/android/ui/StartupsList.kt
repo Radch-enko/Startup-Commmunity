@@ -24,6 +24,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.items
 import com.multi.producthunt.MR
 import com.multi.producthunt.ui.models.ProjectUI
+import kotlinx.coroutines.delay
 
 @Composable
 fun StartupsList(
@@ -42,7 +43,11 @@ fun StartupsList(
         item {
             Spacer(modifier = Modifier.height(firstItemPaddingTop))
         }
-        this.applyStates(pagingList, onUpvoteClicked = onUpvoteClicked, onProjectClick =onProjectClick)
+        this.applyStates(
+            pagingList,
+            onUpvoteClicked = onUpvoteClicked,
+            onProjectClick = onProjectClick
+        )
     }
 }
 
@@ -55,7 +60,7 @@ private fun LazyListScope.applyStates(
     onUpvoteClicked: (projectId: Int) -> Unit
 ) {
     this.apply {
-        startupsRow(list, onUpvoteClicked = onUpvoteClicked, onProjectClick =onProjectClick)
+        startupsRow(list, onUpvoteClicked = onUpvoteClicked, onProjectClick = onProjectClick)
         when {
             list.loadState.refresh is LoadState.Error -> {
                 val e = list.loadState.refresh as LoadState.Error
@@ -104,7 +109,11 @@ private fun LazyListScope.startupsRow(
     this.items(list) { startup ->
         Box(modifier = startupsRowModifier) {
             if (startup != null) {
-                StartupRow(startup, onUpvoteClicked = { onUpvoteClicked(startup.id) }, onProjectClick = onProjectClick)
+                StartupRow(
+                    startup,
+                    onUpvoteClicked = { onUpvoteClicked(startup.id) },
+                    onProjectClick = onProjectClick
+                )
             }
         }
     }

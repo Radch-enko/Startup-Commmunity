@@ -7,10 +7,10 @@ import kotlinx.coroutines.flow.Flow
 
 interface StartupsRepository {
     fun addProject(
-        token: String?,
         name: String,
         tagline: String,
         description: String,
+        ownerLink: String,
         thumbnail: String? = null,
         media: List<String?> = emptyList(),
         topics: List<Int>
@@ -19,16 +19,14 @@ interface StartupsRepository {
     fun getProjects(
         cursor: Int,
         pageSize: Int?,
-        day: String?,
-        token: String?
+        day: String?
     ): Flow<ApiResult<List<ProjectDomain>>>
 
-    fun getProjectById(projectId: Int, token: String?): Flow<ApiResult<ProjectDomain>>
+    fun getProjectById(projectId: Int): Flow<ApiResult<ProjectDomain>>
 
-    fun commentForProject(projectId: Int, text: String, token: String?): Flow<ApiResult<ProjectDomain>>
+    fun commentForProject(projectId: Int, text: String): Flow<ApiResult<ProjectDomain>>
 
     fun voteProject(
-        projectId: Int,
-        token: String?
+        projectId: Int
     ): Flow<ApiResult<VoteResponse>>
 }

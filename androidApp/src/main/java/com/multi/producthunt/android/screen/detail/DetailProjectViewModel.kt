@@ -11,7 +11,6 @@ import com.multi.producthunt.domain.usecase.GetStartupsUseCase
 import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.ui.models.DetailProjectUI
 import com.multi.producthunt.ui.models.toDetailUI
-import com.multi.producthunt.utils.KMMPreference
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -23,8 +22,7 @@ import kotlinx.coroutines.launch
 class DetailProjectViewModel(
     private val id: Int,
     private val startupsRepository: StartupsRepository,
-    private val useCase: GetStartupsUseCase,
-    kmmPreference: KMMPreference
+    private val useCase: GetStartupsUseCase
 ) :
     StateScreenModel<DetailProjectViewModel.State>(State(DetailProjectUI.Empty)) {
 
@@ -46,8 +44,6 @@ class DetailProjectViewModel(
     sealed class Effect {
         object ScrollToBottom : Effect()
     }
-
-    private val token = kmmPreference.getString("ACCESS_TOKEN")
 
     private val mutableEffect = MutableSharedFlow<Effect>()
     val effect = mutableEffect.asSharedFlow()
@@ -72,8 +68,7 @@ class DetailProjectViewModel(
     private fun sendComment() = coroutineScope.launch {
         startupsRepository.commentForProject(
             state.value.detailProjectUI.id,
-            state.value.comment,
-            token
+            state.value.comment
         ).collectLatest { response ->
             when (response) {
                 is ApiResult.Error -> mutableState.update { it.copy(error = response.exception) }
@@ -93,8 +88,7 @@ class DetailProjectViewModel(
 
     private fun doVote() = coroutineScope.launch {
         useCase.voteProject(
-            state.value.detailProjectUI.id,
-            token
+            state.value.detailProjectUI.id
         ).collectLatest { response ->
             when (response) {
                 is ApiResult.Error -> {
@@ -127,7 +121,7 @@ class DetailProjectViewModel(
             it.copy(isLoading = true)
         }
 
-        startupsRepository.getProjectById(id, token).collectLatest { response ->
+        startupsRepository.getProjectById(id).collectLatest { response ->
             when (response) {
                 is ApiResult.Error -> mutableState.update { it.copy(error = response.exception) }
                 is ApiResult.Success -> {

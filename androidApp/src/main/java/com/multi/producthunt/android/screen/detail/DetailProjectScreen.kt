@@ -31,6 +31,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -50,6 +51,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.Color.Companion.Transparent
@@ -155,7 +157,9 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
             LazyColumn(
                 contentPadding = innerPadding,
                 state = scroll,
-                modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
             ) {
                 item {
                     detailProjectUI.media.let {
@@ -166,52 +170,62 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
                 }
 
                 item {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        ProjectInfoThumbnail(
-                            detailProjectUI.name,
-                            detailProjectUI.tagline,
-                            detailProjectUI.thumbnail
-                        )
+                    Column(
+                        modifier = Modifier
+                            .background(MaterialTheme.colorScheme.background)
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+
+
+                            ProjectInfoThumbnail(
+                                detailProjectUI.name,
+                                detailProjectUI.tagline,
+                                detailProjectUI.thumbnail
+                            )
+
+                            Spacer(modifier = Modifier.height(32.dp))
+
+                            val context = LocalContext.current
+                            ProjectButtons(
+                                detailProjectUI.votesCount,
+                                voted = detailProjectUI.isVoted,
+                                visitEnable = !detailProjectUI.ownerLink.isNullOrEmpty(),
+                                onVisitClick = {
+                                    handleEvent(
+                                        DetailProjectViewModel.Event.OnVisitClick(
+                                            context = context
+                                        )
+                                    )
+                                },
+                                onVoteClick = {
+                                    handleEvent(DetailProjectViewModel.Event.OnVoteClick)
+                                }
+                            )
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            Text(
+                                text = detailProjectUI.description,
+                                style = typography.bodyMedium
+                            )
+                        }
 
                         Spacer(modifier = Modifier.height(32.dp))
 
-                        val context = LocalContext.current
-                        ProjectButtons(
-                            detailProjectUI.votesCount,
-                            voted = detailProjectUI.isVoted,
-                            visitEnable = !detailProjectUI.ownerLink.isNullOrEmpty(),
-                            onVisitClick = {
-                                handleEvent(DetailProjectViewModel.Event.OnVisitClick(context = context))
-                            },
-                            onVoteClick = {
-                                handleEvent(DetailProjectViewModel.Event.OnVoteClick)
-                            }
-                        )
+                        ProjectTopicsInfo(detailProjectUI.topics)
 
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        Text(text = detailProjectUI.description, style = typography.bodyMedium)
+                        Spacer(modifier = Modifier.height(32.dp))
                     }
                 }
 
                 item {
-                    Spacer(modifier = Modifier.height(32.dp))
-
-                    ProjectTopicsInfo(detailProjectUI.topics)
-
-                    Spacer(modifier = Modifier.height(32.dp))
-                }
-
-                item {
-                    Surface(
+                    Card(
                         modifier = Modifier
-                            .fillMaxWidth(),
-                        shadowElevation = 16.dp,
-                        shape = CutCornerShape(topStart = 16.dp, topEnd = 16.dp),
-                        color = MaterialTheme.colorScheme.background
+                            .fillMaxSize(),
                     ) {
                         Column(
                             modifier = Modifier
+                                .fillMaxSize()
                                 .padding(16.dp)
                         ) {
 
@@ -261,7 +275,9 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
         onCommentSend: () -> Unit,
     ) {
         TextField(
-            modifier = modifier,
+            modifier = modifier
+                .padding(16.dp)
+                .shadow(4.dp, CutCornerShape(8.dp)),
             value = text,
             onValueChange = onValueChanged,
             colors = TextFieldDefaults.textFieldColors(

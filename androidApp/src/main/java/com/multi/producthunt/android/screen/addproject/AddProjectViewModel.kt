@@ -11,15 +11,17 @@ import com.multi.producthunt.domain.repository.TopicsRepository
 import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.ui.models.SelectableTopicUI
 import com.multi.producthunt.ui.models.toSelectableUI
-import com.multi.producthunt.utils.KMMPreference
 import io.github.aakira.napier.Napier
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AddProjectViewModel(
     private val startupsRepository: StartupsRepository,
     private val topicsRepository: TopicsRepository,
-    private val kmmPreference: KMMPreference,
     private val context: Context
 ) :
     StateScreenModel<AddProjectState>(
@@ -43,11 +45,15 @@ class AddProjectViewModel(
         class MediaChanged(val media: Uri) :
             Event()
 
-        class MediaDeleted(val media: Uri) :
+        class MediaDeleted(val position: Int) :
             Event()
 
         class TopicChanged(val topic: SelectableTopicUI) :
             Event()
+
+        class OwnerLinkChanged(val ownerLink: String) :
+            Event()
+
 
         object AddProject : Event()
 
@@ -55,7 +61,7 @@ class AddProjectViewModel(
     }
 
     sealed class Effect {
-        object Success : Effect()
+        class Success(val projectId: Int) : Effect()
     }
 
     private val mutableEffect = MutableSharedFlow<Effect>()
@@ -92,7 +98,14 @@ class AddProjectViewModel(
             is Event.ThumnailChanged -> updateThumbnail(event.thumbnail)
             is Event.TopicChanged -> updateTopics(event.topic)
             is Event.DescriptionChanged -> updateDescription(event.description)
-            is Event.MediaDeleted -> deleteMedia(event.media)
+            is Event.OwnerLinkChanged -> updateOwnerlink(event.ownerLink)
+            is Event.MediaDeleted -> deleteMedia(event.position)
+        }
+    }
+
+    private fun updateOwnerlink(ownerLink: String) {
+        mutableState.update {
+            it.copy(ownerLink = ownerLink)
         }
     }
 
@@ -103,13 +116,16 @@ class AddProjectViewModel(
     }
 
     private fun addProject() = coroutineScope.launch {
+        mutableState.update {
+            it.copy(isLoading = true)
+        }
         try {
             startupsRepository.addProject(
-                token = kmmPreference.getString("ACCESS_TOKEN"),
                 name = state.value.name,
                 tagline = state.value.tagline,
                 thumbnail = state.value.thumbnail?.toByteArray(context)?.toBase64(),
                 description = state.value.description,
+                ownerLink = state.value.ownerLink,
                 media = state.value.media.map { it.toByteArray(context)?.toBase64() },
                 topics = state.value.topics.filter { it.selected }.map {
                     it.id
@@ -126,7 +142,7 @@ class AddProjectViewModel(
                         }
                     }
                     is ApiResult.Success -> {
-                        mutableEffect.emit(Effect.Success)
+                        mutableEffect.emit(Effect.Success(response._data.id))
                     }
                 }
             }
@@ -175,16 +191,19 @@ class AddProjectViewModel(
         medias.add(media)
 
         mutableState.update {
-            it.copy(media = medias)
+            it.copy(media = medias.toList())
         }
     }
 
-    private fun deleteMedia(media: Uri) {
+    private fun deleteMedia(position: Int) {
         val medias = mutableState.value.media.toMutableList()
-        medias.remove(media)
+        Napier.e("medias = $medias")
+        Napier.e("position = $position")
+        medias.removeAt(position)
+        Napier.e("deletedMedias = $medias")
 
         mutableState.update {
-            it.copy(media = medias)
+            it.copy(media = medias.toList())
         }
     }
 

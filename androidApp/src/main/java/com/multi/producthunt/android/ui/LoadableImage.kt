@@ -17,7 +17,7 @@ import com.multi.producthunt.android.R
 fun LoadableImage(
     modifier: Modifier = Modifier, link: String?,
     contentScale: ContentScale = ContentScale.Crop,
-    @DrawableRes errorDrawable: Int = R.drawable.no_image_icon,
+    @DrawableRes errorDrawable: Int = R.drawable.image_svgrepo_com,
 ) {
     var placeholder by remember {
         mutableStateOf(false)
@@ -36,6 +36,9 @@ fun LoadableImage(
             placeholder = true
         },
         onSuccess = {
+            placeholder = false
+        },
+        onError = {
             placeholder = false
         },
         imageLoader = getImageLoader(LocalContext.current)

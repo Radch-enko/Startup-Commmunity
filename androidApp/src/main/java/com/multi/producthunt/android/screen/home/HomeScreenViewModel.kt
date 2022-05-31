@@ -6,7 +6,6 @@ import com.kuuurt.paging.multiplatform.PagingData
 import com.multi.producthunt.domain.usecase.GetStartupsUseCase
 import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.ui.models.ProjectUI
-import com.multi.producthunt.utils.KMMPreference
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,8 +20,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
 class HomeScreenViewModel(
-    private val useCase: GetStartupsUseCase,
-    private val kmmPreference: KMMPreference
+    private val useCase: GetStartupsUseCase
 ) :
     StateScreenModel<HomeScreenViewModel.State>(State.Empty) {
 
@@ -77,8 +75,7 @@ class HomeScreenViewModel(
 
     private fun voteProject(projectId: Int) = coroutineScope.launch {
         useCase.voteProject(
-            projectId,
-            kmmPreference.getString("ACCESS_TOKEN")
+            projectId
         ).collectLatest { response ->
             when (response) {
                 is ApiResult.Error -> {

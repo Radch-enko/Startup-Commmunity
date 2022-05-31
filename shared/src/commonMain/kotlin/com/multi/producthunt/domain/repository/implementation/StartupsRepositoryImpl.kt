@@ -18,10 +18,10 @@ class StartupsRepositoryImpl(
     StartupsRepository {
 
     override fun addProject(
-        token: String?,
         name: String,
         tagline: String,
         description: String,
+        ownerLink: String,
         thumbnail: String?,
         media: List<String?>,
         topics: List<Int>
@@ -30,54 +30,50 @@ class StartupsRepositoryImpl(
             name = name,
             tagline = tagline,
             description = description,
+            ownerLink = ownerLink,
             thumbnail = thumbnail,
             media = media.filterNotNull(),
             topics = topics.map { TopicBody(it) }
-        ), "Bearer " + token.orEmpty()).toDomain()
+        )).toDomain()
     }
 
     override fun getProjects(
         cursor: Int,
         pageSize: Int?,
-        day: String?,
-        token: String?
+        day: String?
     ): Flow<ApiResult<List<ProjectDomain>>> {
         return if (day == null) {
             service.getProjects(
                 cursor = cursor,
-                pageSize = pageSize ?: 10,
-                token = "Bearer " + token.orEmpty()
+                pageSize = pageSize ?: 10
             ).asCommonFlow()
                 .toDomain()
         } else {
             service.getProjectsByDay(
                 cursor = cursor,
                 pageSize = pageSize ?: 10,
-                day = day,
-                token = "Bearer " + token.orEmpty()
+                day = day
             ).asCommonFlow()
                 .toDomain()
         }
     }
 
-    override fun getProjectById(projectId: Int, token: String?): Flow<ApiResult<ProjectDomain>> {
-        return service.getProjectById(projectId, token = "Bearer " + token.orEmpty()).toDomain()
+    override fun getProjectById(projectId: Int): Flow<ApiResult<ProjectDomain>> {
+        return service.getProjectById(projectId).toDomain()
     }
 
     override fun commentForProject(
         projectId: Int,
-        text: String,
-        token: String?
+        text: String
     ): Flow<ApiResult<ProjectDomain>> {
         return service.commentForProject(
-            CreateCommentBody(projectId, text),
-            token = "Bearer " + token.orEmpty()
+            CreateCommentBody(projectId, text)
         )
             .toDomain()
     }
 
-    override fun voteProject(projectId: Int, token: String?): Flow<ApiResult<VoteResponse>> {
-        return service.voteForProject(projectId, token = "Bearer " + token.orEmpty())
+    override fun voteProject(projectId: Int): Flow<ApiResult<VoteResponse>> {
+        return service.voteForProject(projectId)
     }
 }
 

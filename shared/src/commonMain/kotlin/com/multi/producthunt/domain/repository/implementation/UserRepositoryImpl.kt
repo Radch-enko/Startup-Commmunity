@@ -36,19 +36,22 @@ class UserRepositoryImpl(private val service: ProjectsApiService) : UserReposito
         )
     }
 
-    override fun me(token: String?): Flow<ApiResult<UserDomain>> {
-        return service.me("Bearer " + token.orEmpty()).toDomain()
+    override fun me(): Flow<ApiResult<UserDomain>> {
+        return service.me().toDomain()
     }
 
     override fun updateUser(
-        token: String?,
         name: String?,
         headline: String?,
         profileImage: String?,
         coverImage: String?,
     ): Flow<ApiResult<UserDomain>> {
-        return service.updateUser(UpdateUserBody(name, headline,
-            profileImage,coverImage), "Bearer " + token.orEmpty())
+        return service.updateUser(
+            UpdateUserBody(
+                name, headline,
+                profileImage, coverImage
+            )
+        )
             .toDomain()
     }
 }

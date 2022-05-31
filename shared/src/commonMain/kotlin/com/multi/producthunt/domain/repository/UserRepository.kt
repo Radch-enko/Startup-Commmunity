@@ -16,10 +16,9 @@ interface UserRepository {
         password2: String,
     ): Flow<ApiResult<UserResponse>>
 
-    fun me(token: String?): Flow<ApiResult<UserDomain>>
+    fun me(): Flow<ApiResult<UserDomain>>
 
     fun updateUser(
-        token: String? = null,
         name: String? = null,
         headline: String? = null,
         profileImage: String? = null,

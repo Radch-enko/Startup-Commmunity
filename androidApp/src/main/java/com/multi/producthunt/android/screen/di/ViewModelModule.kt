@@ -14,16 +14,15 @@ import org.kodein.di.factory
 import org.kodein.di.instance
 
 val viewModelModule = DI.Module("viewModelModule") {
-    bindProvider { HomeScreenViewModel(instance(), instance()) }
-    bindProvider { TimelineScreenViewModel(instance(), instance()) }
+    bindProvider { HomeScreenViewModel(instance()) }
+    bindProvider { TimelineScreenViewModel(instance()) }
     bindProvider { SettingsScreenViewModel(instance()) }
     bindProvider { AuthorizationViewModel(instance(), instance()) }
-    bindProvider { ProfileScreenViewModel(instance(), instance()) }
-    bindProvider { AddProjectViewModel(instance(), instance(), instance(), instance()) }
+    bindProvider { ProfileScreenViewModel(instance()) }
+    bindProvider { AddProjectViewModel(instance(), instance(), instance()) }
     bind<DetailProjectViewModel>() with factory { params: Int ->
         DetailProjectViewModel(
             params,
-            instance(),
             instance(),
             instance()
         )

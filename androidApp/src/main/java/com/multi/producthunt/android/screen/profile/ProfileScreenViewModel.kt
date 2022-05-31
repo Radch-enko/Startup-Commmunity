@@ -2,17 +2,14 @@ package com.multi.producthunt.android.screen.profile
 
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
-import com.multi.producthunt.android.screen.authorization.AuthorizationViewModel
 import com.multi.producthunt.android.ui.toBase64
 import com.multi.producthunt.domain.repository.UserRepository
 import com.multi.producthunt.network.model.ApiResult
-import com.multi.producthunt.utils.KMMPreference
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class ProfileScreenViewModel(
-    private val userRepository: UserRepository,
-    private val kmmPreference: KMMPreference
+    private val userRepository: UserRepository
 ) :
     StateScreenModel<ProfileScreenViewModel.State>(State.Loading) {
 
@@ -56,8 +53,7 @@ class ProfileScreenViewModel(
             name = name,
             headline = headline,
             profileImage = profileImage,
-            coverImage = coverImage,
-            token = kmmPreference.getString(AuthorizationViewModel.ACCESS_TOKEN)
+            coverImage = coverImage
         ).collectLatest { response ->
             when (response) {
                 is ApiResult.Error -> {
@@ -75,7 +71,7 @@ class ProfileScreenViewModel(
     private fun loadData() = coroutineScope.launch {
         mutableState.value = State.Loading
 
-        userRepository.me(kmmPreference.getString(AuthorizationViewModel.ACCESS_TOKEN))
+        userRepository.me()
             .collectLatest { response ->
                 when (response) {
                     is ApiResult.Error -> {

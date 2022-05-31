@@ -11,6 +11,8 @@ data class AddProjectBody(
     val tagline: String,
     @SerialName("description")
     val description: String,
+    @SerialName("ownerLink")
+    val ownerLink: String,
     @SerialName("thumbnail")
     val thumbnail: String? = null,
     @SerialName("media")
