@@ -62,6 +62,7 @@ import cafe.adriel.voyager.kodein.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.multi.producthunt.MR
+import com.multi.producthunt.android.R
 import com.multi.producthunt.android.ui.ButtonDefault
 import com.multi.producthunt.android.ui.DefaultTopAppBar
 import com.multi.producthunt.android.ui.ErrorDialog
@@ -157,7 +158,11 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
                 modifier = Modifier.background(MaterialTheme.colorScheme.surface)
             ) {
                 item {
-                    DetailProjectMedia(detailProjectUI.media)
+                    detailProjectUI.media.let {
+                        if (it.isNotEmpty()) {
+                            DetailProjectMedia(it)
+                        }
+                    }
                 }
 
                 item {
@@ -348,7 +353,10 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
     @Composable
     fun ProjectInfoThumbnail(name: String, tagline: String, thumbnail: String?) {
         Row {
-            LoadableImage(modifier = Modifier.size(80.dp), link = thumbnail)
+            LoadableImage(
+                modifier = Modifier.size(80.dp),
+                link = thumbnail,
+            )
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
@@ -487,7 +495,8 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
                 link = avatar, modifier = Modifier
                     .size(50.dp)
                     .clip(CircleShape)
-                    .then(makerModifier)
+                    .then(makerModifier),
+                errorDrawable = R.drawable.no_profile_image
             )
 
             Column(modifier = Modifier.padding(start = 10.dp)) {

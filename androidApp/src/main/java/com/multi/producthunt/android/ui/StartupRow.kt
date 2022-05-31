@@ -30,11 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.multi.producthunt.android.ui.theme.Shapes
 import com.multi.producthunt.ui.models.ProjectUI
 import com.multi.producthunt.ui.models.TopicUI
@@ -42,7 +38,7 @@ import com.multi.producthunt.ui.models.TopicUI
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartupRow(
-    startup: ProjectUI, placeHolderVisible: Boolean = false,onUpvoteClicked: () -> Unit,
+    startup: ProjectUI, placeHolderVisible: Boolean = false, onUpvoteClicked: () -> Unit,
     onProjectClick: (id: Int) -> Unit = {}
 ) {
     androidx.compose.material3.Surface(
@@ -83,7 +79,12 @@ fun StartupRow(
                 TopicsList(startup.topics, placeHolderVisible)
             }
 
-            UpvoteButton(startup.votesCount, startup.isVoted, placeHolderVisible, onUpvoteClicked = onUpvoteClicked)
+            UpvoteButton(
+                startup.votesCount,
+                startup.isVoted,
+                placeHolderVisible,
+                onUpvoteClicked = onUpvoteClicked
+            )
         }
     }
 }
@@ -138,26 +139,9 @@ fun UpvoteButton(
 
 @Composable
 fun StartupImage(url: String?) {
-    var imagePlaceHolderVisibility by remember {
-        mutableStateOf(true)
-    }
-    AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(url)
-            .crossfade(true)
-            .build(),
-        contentScale = ContentScale.Crop,
-        contentDescription = null,
-        modifier = Modifier
+    LoadableImage(
+        link = url, modifier = Modifier
             .size(80.dp)
-            .placeholder(imagePlaceHolderVisibility),
-        onLoading = {
-            imagePlaceHolderVisibility = true
-        },
-        onSuccess = {
-            imagePlaceHolderVisibility = false
-        },
-        imageLoader = getImageLoader(LocalContext.current),
     )
 }
 
