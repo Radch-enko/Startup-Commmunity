@@ -21,4 +21,8 @@ interface StartupsRepository {
         day: String?,
         token: String?
     ): Flow<ApiResult<List<ProjectDomain>>>
+
+    fun getProjectById(projectId: Int, token: String?): Flow<ApiResult<ProjectDomain>>
+
+    fun commentForProject(projectId: Int, text: String, token: String?): Flow<ApiResult<ProjectDomain>>
 }

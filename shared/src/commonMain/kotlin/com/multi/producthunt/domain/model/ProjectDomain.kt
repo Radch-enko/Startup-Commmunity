@@ -17,7 +17,10 @@ data class ProjectDomain(
     val media: List<Media?>,
     val isVoted: Boolean,
     val topics: List<TopicDomain>,
-    val votesCount: Int
+    val votesCount: Int,
+    val ownerLink: String?,
+    val comments: List<CommentDomain>,
+    val makerId: Int
 )
 
 fun Flow<ApiResult<ProjectResponse>>.toDomain(): Flow<ApiResult<ProjectDomain>> {
@@ -48,6 +51,11 @@ fun ProjectResponse.toDomain(): ProjectDomain {
         media = this.media,
         isVoted = this.isVoted,
         topics = this.topics.map { TopicDomain(it.id, it.name) },
-        votesCount = this.votesCount
+        votesCount = this.votesCount,
+        ownerLink = this.ownerLink,
+        comments = this.comments.map {
+            CommentDomain(it.text, it.user.toDomain(), it.createdDate)
+        },
+        makerId = this.makerId
     )
 }

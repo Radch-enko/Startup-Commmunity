@@ -18,6 +18,7 @@ fun CustomChip(
     selected: Boolean,
     text: String,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     onToggle: () -> Unit
 ) {
     // define properties to the chip
@@ -41,7 +42,9 @@ fun CustomChip(
             containerColor = containerAnimatedColor.value,
             contentColor = contentAnimatedColor.value
         ),
+        modifier = modifier,
         shape = CircleShape,
+        enabled = enabled,
         border = BorderStroke(
             width = 1.dp,
             color = when {

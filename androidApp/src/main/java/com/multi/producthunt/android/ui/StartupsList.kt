@@ -1,7 +1,16 @@
 package com.multi.producthunt.android.ui
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,24 +30,30 @@ fun StartupsList(
     pagingList: LazyPagingItems<ProjectUI>,
     scrollState: LazyListState = rememberLazyListState(),
     firstItemPaddingTop: Dp = 0.dp,
+    onProjectClick: (id: Int) -> Unit,
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 16.dp),
         state = scrollState
     ) {
         item {
             Spacer(modifier = Modifier.height(firstItemPaddingTop))
         }
-        this.applyStates(pagingList)
+        this.applyStates(pagingList, onProjectClick)
     }
 }
 
 private val startupsRowModifier =
     Modifier.padding(top = 0.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
 
-private fun LazyListScope.applyStates(list: LazyPagingItems<ProjectUI>) {
+private fun LazyListScope.applyStates(
+    list: LazyPagingItems<ProjectUI>,
+    onProjectClick: (id: Int) -> Unit
+) {
     this.apply {
-        startupsRow(list)
+        startupsRow(list, onProjectClick)
         when {
             list.loadState.refresh is LoadState.Error -> {
                 val e = list.loadState.refresh as LoadState.Error
@@ -80,12 +95,13 @@ private fun LazyListScope.placeholderStartupsList(
 }
 
 private fun LazyListScope.startupsRow(
-    list: LazyPagingItems<ProjectUI>
+    list: LazyPagingItems<ProjectUI>,
+    onProjectClick: (id: Int) -> Unit
 ) {
     this.items(list) { startup ->
         Box(modifier = startupsRowModifier) {
             if (startup != null) {
-                StartupRow(startup)
+                StartupRow(startup, onProjectClick = onProjectClick)
             }
         }
     }

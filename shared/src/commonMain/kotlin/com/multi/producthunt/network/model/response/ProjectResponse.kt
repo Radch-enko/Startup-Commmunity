@@ -24,5 +24,11 @@ data class ProjectResponse(
     @SerialName("topics")
     val topics: List<Topic>,
     @SerialName("votesCount")
-    val votesCount: Int
+    val votesCount: Int,
+    @SerialName("ownerLink")
+    val ownerLink: String?,
+    @SerialName("comments")
+    val comments: List<CommentResponse>,
+    @SerialName("maker")
+    val makerId: Int
 )
