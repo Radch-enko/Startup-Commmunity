@@ -30,7 +30,7 @@ fun StartupsList(
     pagingList: LazyPagingItems<ProjectUI>,
     scrollState: LazyListState = rememberLazyListState(),
     firstItemPaddingTop: Dp = 0.dp,
-    onUpvoteClicked: (projectId: Int) -> Unit
+    onUpvoteClicked: (projectId: Int) -> Unit,
     onProjectClick: (id: Int) -> Unit,
 ) {
     LazyColumn(

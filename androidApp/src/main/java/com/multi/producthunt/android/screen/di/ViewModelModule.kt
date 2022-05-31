@@ -24,6 +24,7 @@ val viewModelModule = DI.Module("viewModelModule") {
         DetailProjectViewModel(
             params,
             instance(),
+            instance(),
             instance()
         )
     }
