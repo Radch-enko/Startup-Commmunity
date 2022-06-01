@@ -7,6 +7,8 @@ import com.multi.producthunt.domain.usecase.AuthorizationUseCase
 import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.utils.KMMPreference
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -174,7 +176,10 @@ class AuthorizationViewModel(
                     }
                 }
                 is ApiResult.Success -> {
-                    pref.put(AuthorizationUseCase.ACCESS_TOKEN, response._data.token)
+                    val mainTredScope = CoroutineScope(Dispatchers.Main)
+                    mainTredScope.launch {
+                        pref.put(AuthorizationUseCase.ACCESS_TOKEN, response._data.token)
+                    }
                     mutableEffect.emit(Effect.AuthorizationSuccess)
                 }
             }

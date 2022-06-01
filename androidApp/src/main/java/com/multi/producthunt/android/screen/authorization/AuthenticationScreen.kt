@@ -21,7 +21,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.androidx.AndroidScreen
-import cafe.adriel.voyager.kodein.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import com.multi.producthunt.MR
@@ -34,19 +33,19 @@ import com.multi.producthunt.android.ui.ProgressBar
 import com.multi.producthunt.android.ui.Requirement
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.collectLatest
+import org.kodein.di.compose.rememberInstance
 
 class AuthenticationScreen(private val onSuccessAuthenticate: (navigator: Navigator?) -> Unit) :
     AndroidScreen() {
 
     @Composable
     override fun Content() {
-        val viewModel = rememberScreenModel<AuthorizationViewModel>()
+        val viewModel: AuthorizationViewModel by rememberInstance()
         val navigator = LocalNavigator.current
         LaunchedEffect(null) {
             viewModel.effect.collectLatest { effect ->
                 when (effect) {
                     AuthorizationViewModel.Effect.AuthorizationSuccess -> {
-                        Napier.e("AuthorizationScreen: AuthorizationViewModel.Effect.AuthorizationSuccess")
                         onSuccessAuthenticate(navigator)
                     }
                 }

@@ -1,7 +1,8 @@
 package com.multi.producthunt.domain.usecase
 
 import com.multi.producthunt.utils.KMMPreference
-import io.github.aakira.napier.Napier
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 class AuthorizationUseCase(private val kmmPreference: KMMPreference) {
 
@@ -9,12 +10,10 @@ class AuthorizationUseCase(private val kmmPreference: KMMPreference) {
         const val ACCESS_TOKEN = "ACCESS_TOKEN"
     }
 
+    val scope = CoroutineScope(Dispatchers.Main)
+
     fun isAuthorized(): Boolean {
-        val token = kmmPreference.getString(ACCESS_TOKEN)
-        Napier.e("AuthorizationUseCase_token = $token")
-        val result = !token.isNullOrEmpty()
-        Napier.e("isAuthorized = $result")
-        return result
+        return !kmmPreference.getString(ACCESS_TOKEN).isNullOrEmpty()
     }
 
     fun logout() {

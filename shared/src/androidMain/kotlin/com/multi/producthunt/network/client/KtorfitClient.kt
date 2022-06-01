@@ -9,9 +9,6 @@ import de.jensklingenberg.ktorfit.Ktorfit
 import de.jensklingenberg.ktorfit.create
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
-import io.ktor.client.plugins.auth.Auth
-import io.ktor.client.plugins.auth.providers.BearerTokens
-import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
@@ -19,25 +16,22 @@ import okhttp3.logging.HttpLoggingInterceptor
 
 actual class KtorfitClient actual constructor(kmmPreference: KMMPreference) {
 
-    val token = kmmPreference.getString(AuthorizationUseCase.ACCESS_TOKEN)
-
     private val client = HttpClient(OkHttp) {
         engine {
             val logger = HttpLoggingInterceptor()
             logger.level = HttpLoggingInterceptor.Level.BODY
             addInterceptor(logger)
-        }
-        if (!token.isNullOrEmpty()) {
-            install(Auth) {
-                bearer {
-                    loadTokens {
-                        // Load tokens from a local storage and return them as the 'BearerTokens' instance
-                        BearerTokens(
-                            kmmPreference.getString(AuthorizationUseCase.ACCESS_TOKEN) ?: "",
-                            "xyz111"
-                        )
-                    }
+            addInterceptor { chain ->
+                val token = kmmPreference.getString(AuthorizationUseCase.ACCESS_TOKEN)
+                val newRequest = chain.request().newBuilder()
+                if (!token.isNullOrEmpty()) {
+                    newRequest.addHeader(
+                        "Authorization",
+                        "Bearer $token"
+                    )
                 }
+                chain.proceed(newRequest.build())
+
             }
         }
         install(ContentNegotiation) {

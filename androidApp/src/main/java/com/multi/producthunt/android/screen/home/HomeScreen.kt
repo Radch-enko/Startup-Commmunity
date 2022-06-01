@@ -9,7 +9,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.paging.compose.collectAsLazyPagingItems
 import cafe.adriel.voyager.androidx.AndroidScreen
-import cafe.adriel.voyager.kodein.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -18,12 +17,13 @@ import com.multi.producthunt.android.screen.authorization.AuthenticationScreen
 import com.multi.producthunt.android.screen.detail.DetailProjectScreen
 import com.multi.producthunt.android.ui.ScrollableSearchField
 import com.multi.producthunt.android.ui.StartupsList
+import org.kodein.di.compose.rememberInstance
 
 class HomeScreen : AndroidScreen() {
 
     @Composable
     override fun Content() {
-        val viewModel = rememberScreenModel<HomeScreenViewModel>()
+        val viewModel: HomeScreenViewModel by rememberInstance()
 
         HomeScreenInner(viewModel)
     }
@@ -56,7 +56,7 @@ class HomeScreen : AndroidScreen() {
                     if (state.isAuthorized) {
                         viewModel.sendEvent(HomeScreenViewModel.Event.Vote(it))
                     } else {
-                        navigator?.push(AuthenticationScreen(onSuccessAuthenticate = { localNavigator->
+                        navigator?.push(AuthenticationScreen(onSuccessAuthenticate = { localNavigator ->
                             localNavigator?.pop()
                         }))
                     }

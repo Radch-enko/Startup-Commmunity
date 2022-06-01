@@ -47,7 +47,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.core.lifecycle.LifecycleEffect
-import cafe.adriel.voyager.kodein.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import coil.compose.AsyncImage
@@ -68,7 +67,9 @@ import com.multi.producthunt.android.ui.UpdateValueDialog
 import com.multi.producthunt.android.ui.getImageLoader
 import com.multi.producthunt.android.ui.placeholder
 import com.multi.producthunt.android.ui.theme.shadow
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.collectLatest
+import org.kodein.di.compose.rememberInstance
 import java.io.InputStream
 
 
@@ -76,7 +77,8 @@ class ProfileScreen : AndroidScreen() {
 
     @Composable
     override fun Content() {
-        val viewModel = rememberScreenModel<ProfileScreenViewModel>()
+        Napier.e("ProfileScreen screen is Started")
+        val viewModel: ProfileScreenViewModel by rememberInstance()
         val state by viewModel.state.collectAsState()
 
         val systemUiController = rememberSystemUiController()
@@ -115,7 +117,6 @@ class ProfileScreen : AndroidScreen() {
                     },
                     onLogout = {
                         viewModel.sendEvent(ProfileScreenViewModel.Event.Logout)
-                        viewModel.onDispose()
                     }
                 )
             }
@@ -275,7 +276,7 @@ class ProfileScreen : AndroidScreen() {
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))
-                        val navigator = LocalNavigator.current?.parent?.parent
+                        val navigator = LocalNavigator.current?.parent
                         OutlinedButtonDefault(
                             modifier = Modifier.fillMaxWidth(),
                             text = stringResource(id = MR.strings.add_project.resourceId),
