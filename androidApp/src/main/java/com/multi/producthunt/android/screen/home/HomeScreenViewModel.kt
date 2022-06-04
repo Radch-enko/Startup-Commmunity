@@ -3,10 +3,10 @@ package com.multi.producthunt.android.screen.home
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.kuuurt.paging.multiplatform.PagingData
+import com.multi.producthunt.domain.usecase.AuthorizationUseCase
 import com.multi.producthunt.domain.usecase.GetStartupsUseCase
 import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.ui.models.ProjectUI
-import com.multi.producthunt.utils.KMMPreference
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,14 +22,15 @@ import kotlinx.coroutines.launch
 @OptIn(FlowPreview::class)
 class HomeScreenViewModel(
     private val useCase: GetStartupsUseCase,
-    private val kmmPreference: KMMPreference
+    private val authorizationUseCase: AuthorizationUseCase
 ) :
     StateScreenModel<HomeScreenViewModel.State>(State.Empty) {
 
     data class State(
         val isRefreshing: Boolean = false,
         val error: String? = null,
-        val pagingList: Flow<PagingData<ProjectUI>> = emptyFlow()
+        val pagingList: Flow<PagingData<ProjectUI>> = emptyFlow(),
+        val isAuthorized: Boolean = false
     ) {
         companion object {
             val Empty = State()
@@ -77,8 +78,7 @@ class HomeScreenViewModel(
 
     private fun voteProject(projectId: Int) = coroutineScope.launch {
         useCase.voteProject(
-            projectId,
-            kmmPreference.getString("ACCESS_TOKEN")
+            projectId
         ).collectLatest { response ->
             when (response) {
                 is ApiResult.Error -> {
@@ -105,7 +105,8 @@ class HomeScreenViewModel(
                 mutableState.update {
                     it.copy(
                         isRefreshing = false,
-                        pagingList = useCase.getStartupsPagingData(query, null)
+                        pagingList = useCase.getStartupsPagingData(query, null),
+                        isAuthorized = authorizationUseCase.isAuthorized()
                     )
                 }
             }

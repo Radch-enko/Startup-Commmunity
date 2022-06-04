@@ -7,11 +7,11 @@ import androidx.core.content.ContextCompat.startActivity
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.multi.producthunt.domain.repository.StartupsRepository
+import com.multi.producthunt.domain.usecase.AuthorizationUseCase
 import com.multi.producthunt.domain.usecase.GetStartupsUseCase
 import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.ui.models.DetailProjectUI
 import com.multi.producthunt.ui.models.toDetailUI
-import com.multi.producthunt.utils.KMMPreference
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -24,7 +24,7 @@ class DetailProjectViewModel(
     private val id: Int,
     private val startupsRepository: StartupsRepository,
     private val useCase: GetStartupsUseCase,
-    kmmPreference: KMMPreference
+    private val authorizationUseCase: AuthorizationUseCase
 ) :
     StateScreenModel<DetailProjectViewModel.State>(State(DetailProjectUI.Empty)) {
 
@@ -32,7 +32,8 @@ class DetailProjectViewModel(
         val detailProjectUI: DetailProjectUI,
         val isLoading: Boolean = true,
         val error: String? = null,
-        val comment: String = ""
+        val comment: String = "",
+        val isAuthorized: Boolean = false,
     )
 
     sealed class Event {
@@ -46,8 +47,6 @@ class DetailProjectViewModel(
     sealed class Effect {
         object ScrollToBottom : Effect()
     }
-
-    private val token = kmmPreference.getString("ACCESS_TOKEN")
 
     private val mutableEffect = MutableSharedFlow<Effect>()
     val effect = mutableEffect.asSharedFlow()
@@ -72,8 +71,7 @@ class DetailProjectViewModel(
     private fun sendComment() = coroutineScope.launch {
         startupsRepository.commentForProject(
             state.value.detailProjectUI.id,
-            state.value.comment,
-            token
+            state.value.comment
         ).collectLatest { response ->
             when (response) {
                 is ApiResult.Error -> mutableState.update { it.copy(error = response.exception) }
@@ -93,8 +91,7 @@ class DetailProjectViewModel(
 
     private fun doVote() = coroutineScope.launch {
         useCase.voteProject(
-            state.value.detailProjectUI.id,
-            token
+            state.value.detailProjectUI.id
         ).collectLatest { response ->
             when (response) {
                 is ApiResult.Error -> {
@@ -127,12 +124,16 @@ class DetailProjectViewModel(
             it.copy(isLoading = true)
         }
 
-        startupsRepository.getProjectById(id, token).collectLatest { response ->
+        startupsRepository.getProjectById(id).collectLatest { response ->
             when (response) {
                 is ApiResult.Error -> mutableState.update { it.copy(error = response.exception) }
                 is ApiResult.Success -> {
                     mutableState.update {
-                        it.copy(detailProjectUI = response._data.toDetailUI(), isLoading = false)
+                        it.copy(
+                            detailProjectUI = response._data.toDetailUI(),
+                            isLoading = false,
+                            isAuthorized = authorizationUseCase.isAuthorized()
+                        )
                     }
                 }
             }

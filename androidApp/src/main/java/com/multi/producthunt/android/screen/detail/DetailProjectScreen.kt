@@ -31,6 +31,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -50,6 +51,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.Color.Companion.Transparent
@@ -62,6 +64,8 @@ import cafe.adriel.voyager.kodein.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.multi.producthunt.MR
+import com.multi.producthunt.android.R
+import com.multi.producthunt.android.screen.authorization.AuthenticationScreen
 import com.multi.producthunt.android.ui.ButtonDefault
 import com.multi.producthunt.android.ui.DefaultTopAppBar
 import com.multi.producthunt.android.ui.ErrorDialog
@@ -93,7 +97,8 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
                     state.detailProjectUI,
                     handleEvent = viewModel::sendEvent,
                     state.comment,
-                    scroll
+                    scroll,
+                    state.isAuthorized
                 )
             }
         }
@@ -142,7 +147,8 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
         detailProjectUI: DetailProjectUI,
         handleEvent: (DetailProjectViewModel.Event) -> Unit,
         comment: String,
-        scroll: LazyListState
+        scroll: LazyListState,
+        authorized: Boolean
     ) {
         val navigator = LocalNavigator.current
         Scaffold(modifier = Modifier, topBar = {
@@ -154,59 +160,84 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
             LazyColumn(
                 contentPadding = innerPadding,
                 state = scroll,
-                modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
             ) {
                 item {
-                    DetailProjectMedia(detailProjectUI.media)
-                }
-
-                item {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        ProjectInfoThumbnail(
-                            detailProjectUI.name,
-                            detailProjectUI.tagline,
-                            detailProjectUI.thumbnail
-                        )
-
-                        Spacer(modifier = Modifier.height(32.dp))
-
-                        val context = LocalContext.current
-                        ProjectButtons(
-                            detailProjectUI.votesCount,
-                            voted = detailProjectUI.isVoted,
-                            visitEnable = !detailProjectUI.ownerLink.isNullOrEmpty(),
-                            onVisitClick = {
-                                handleEvent(DetailProjectViewModel.Event.OnVisitClick(context = context))
-                            },
-                            onVoteClick = {
-                                handleEvent(DetailProjectViewModel.Event.OnVoteClick)
-                            }
-                        )
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        Text(text = detailProjectUI.description, style = typography.bodyMedium)
+                    detailProjectUI.media.let {
+                        if (it.isNotEmpty()) {
+                            DetailProjectMedia(it)
+                        }
                     }
                 }
 
                 item {
-                    Spacer(modifier = Modifier.height(32.dp))
+                    Column(
+                        modifier = Modifier
+                            .background(MaterialTheme.colorScheme.background)
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
 
-                    ProjectTopicsInfo(detailProjectUI.topics)
 
-                    Spacer(modifier = Modifier.height(32.dp))
+                            ProjectInfoThumbnail(
+                                detailProjectUI.name,
+                                detailProjectUI.tagline,
+                                detailProjectUI.thumbnail
+                            )
+
+                            Spacer(modifier = Modifier.height(32.dp))
+
+                            val context = LocalContext.current
+                            ProjectButtons(
+                                detailProjectUI.votesCount,
+                                voted = detailProjectUI.isVoted,
+                                visitEnable = !detailProjectUI.ownerLink.isNullOrEmpty(),
+                                onVisitClick = {
+                                    handleEvent(
+                                        DetailProjectViewModel.Event.OnVisitClick(
+                                            context = context
+                                        )
+                                    )
+                                },
+                                onVoteClick = {
+                                    if (authorized) {
+                                        handleEvent(DetailProjectViewModel.Event.OnVoteClick)
+                                    } else {
+                                        navigator?.push(
+                                            AuthenticationScreen(
+                                                onSuccessAuthenticate = { localNavigator ->
+                                                    localNavigator?.pop()
+                                                })
+                                        )
+                                    }
+                                }
+                            )
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            Text(
+                                text = detailProjectUI.description,
+                                style = typography.bodyMedium
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(32.dp))
+
+                        ProjectTopicsInfo(detailProjectUI.topics)
+
+                        Spacer(modifier = Modifier.height(32.dp))
+                    }
                 }
 
                 item {
-                    Surface(
+                    Card(
                         modifier = Modifier
-                            .fillMaxWidth(),
-                        shadowElevation = 16.dp,
-                        shape = CutCornerShape(topStart = 16.dp, topEnd = 16.dp),
-                        color = MaterialTheme.colorScheme.background
+                            .fillMaxSize(),
                     ) {
                         Column(
                             modifier = Modifier
+                                .fillMaxSize()
                                 .padding(16.dp)
                         ) {
 
@@ -240,7 +271,13 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
                     )
                 }, label = stringResource(id = MR.strings.enter_comment.resourceId),
                 onCommentSend = {
-                    handleEvent(DetailProjectViewModel.Event.SendComment)
+                    if (authorized) {
+                        handleEvent(DetailProjectViewModel.Event.SendComment)
+                    } else {
+                        navigator?.push(AuthenticationScreen(onSuccessAuthenticate = { localNavigator ->
+                            localNavigator?.pop()
+                        }))
+                    }
                 }
             )
         }, containerColor = MaterialTheme.colorScheme.surface
@@ -256,7 +293,9 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
         onCommentSend: () -> Unit,
     ) {
         TextField(
-            modifier = modifier,
+            modifier = modifier
+                .padding(16.dp)
+                .shadow(4.dp, CutCornerShape(8.dp)),
             value = text,
             onValueChange = onValueChanged,
             colors = TextFieldDefaults.textFieldColors(
@@ -348,7 +387,10 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
     @Composable
     fun ProjectInfoThumbnail(name: String, tagline: String, thumbnail: String?) {
         Row {
-            LoadableImage(modifier = Modifier.size(80.dp), link = thumbnail)
+            LoadableImage(
+                modifier = Modifier.size(80.dp),
+                link = thumbnail,
+            )
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
@@ -487,7 +529,8 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
                 link = avatar, modifier = Modifier
                     .size(50.dp)
                     .clip(CircleShape)
-                    .then(makerModifier)
+                    .then(makerModifier),
+                errorDrawable = R.drawable.no_profile_image
             )
 
             Column(modifier = Modifier.padding(start = 10.dp)) {

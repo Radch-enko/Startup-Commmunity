@@ -30,6 +30,7 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,15 +47,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.core.lifecycle.LifecycleEffect
-import cafe.adriel.voyager.kodein.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.multi.producthunt.MR
+import com.multi.producthunt.android.navigation.HomeTab
 import com.multi.producthunt.android.screen.addproject.AddProjectScreen
+import com.multi.producthunt.android.ui.ButtonDefault
 import com.multi.producthunt.android.ui.ErrorDialog
 import com.multi.producthunt.android.ui.MediumText
 import com.multi.producthunt.android.ui.OutlinedButtonDefault
@@ -64,6 +67,9 @@ import com.multi.producthunt.android.ui.UpdateValueDialog
 import com.multi.producthunt.android.ui.getImageLoader
 import com.multi.producthunt.android.ui.placeholder
 import com.multi.producthunt.android.ui.theme.shadow
+import io.github.aakira.napier.Napier
+import kotlinx.coroutines.flow.collectLatest
+import org.kodein.di.compose.rememberInstance
 import java.io.InputStream
 
 
@@ -71,7 +77,8 @@ class ProfileScreen : AndroidScreen() {
 
     @Composable
     override fun Content() {
-        val viewModel = rememberScreenModel<ProfileScreenViewModel>()
+        Napier.e("ProfileScreen screen is Started")
+        val viewModel: ProfileScreenViewModel by rememberInstance()
         val state by viewModel.state.collectAsState()
 
         val systemUiController = rememberSystemUiController()
@@ -107,6 +114,9 @@ class ProfileScreen : AndroidScreen() {
                                 newHeadline
                             )
                         )
+                    },
+                    onLogout = {
+                        viewModel.sendEvent(ProfileScreenViewModel.Event.Logout)
                     }
                 )
             }
@@ -115,6 +125,17 @@ class ProfileScreen : AndroidScreen() {
             }
             ProfileScreenViewModel.State.Loading -> ProgressBar()
         }
+
+        val tabNavigator = LocalTabNavigator.current
+        LaunchedEffect(key1 = null, block = {
+            viewModel.effect.collectLatest { effect ->
+                when (effect) {
+                    ProfileScreenViewModel.Effect.SuccessLogout -> {
+                        tabNavigator.current = HomeTab
+                    }
+                }
+            }
+        })
     }
 
     @Composable
@@ -123,7 +144,8 @@ class ProfileScreen : AndroidScreen() {
         onProfileUploaded: (ByteArray) -> Unit,
         onCoverUploaded: (ByteArray) -> Unit,
         onNameChanged: (String) -> Unit,
-        onHeadlineChanged: (String) -> Unit
+        onHeadlineChanged: (String) -> Unit,
+        onLogout: () -> Unit,
     ) {
         val context = LocalContext.current
         val launcherForProfileImage = rememberLauncherForActivityResult(
@@ -178,7 +200,8 @@ class ProfileScreen : AndroidScreen() {
                         )
                     },
                     onNameChanged,
-                    onHeadlineChanged
+                    onHeadlineChanged,
+                    onLogout
                 )
             }
         }
@@ -194,6 +217,7 @@ class ProfileScreen : AndroidScreen() {
         onUploadProfileImage: () -> Unit,
         onNameChanged: (String) -> Unit,
         onHeadlineChanged: (String) -> Unit,
+        onLogout: () -> Unit
     ) {
         Box(modifier = modifier) {
             Card(
@@ -252,13 +276,20 @@ class ProfileScreen : AndroidScreen() {
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))
-                        val navigator = LocalNavigator.current?.parent?.parent
+                        val navigator = LocalNavigator.current?.parent
                         OutlinedButtonDefault(
                             modifier = Modifier.fillMaxWidth(),
                             text = stringResource(id = MR.strings.add_project.resourceId),
                             onClick = {
                                 navigator?.push(AddProjectScreen())
                             })
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        ButtonDefault(
+                            text = stringResource(id = MR.strings.logout.resourceId),
+                            onClick = onLogout
+                        )
                     }
 
                     IconButton(

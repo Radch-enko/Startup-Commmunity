@@ -1,7 +1,12 @@
 package com.multi.producthunt.android.screen.authorization
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -16,25 +21,33 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.androidx.AndroidScreen
-import cafe.adriel.voyager.kodein.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
 import com.multi.producthunt.MR
-import com.multi.producthunt.android.screen.profile.ProfileScreen
-import com.multi.producthunt.android.ui.*
+import com.multi.producthunt.android.ui.ButtonDefault
+import com.multi.producthunt.android.ui.ErrorDialog
+import com.multi.producthunt.android.ui.OutlinedButtonDefault
+import com.multi.producthunt.android.ui.OutlinedPasswordTextField
+import com.multi.producthunt.android.ui.OutlinedTextFieldDefault
+import com.multi.producthunt.android.ui.ProgressBar
+import com.multi.producthunt.android.ui.Requirement
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.collectLatest
+import org.kodein.di.compose.rememberInstance
 
-class AuthenticationScreen : AndroidScreen() {
+class AuthenticationScreen(private val onSuccessAuthenticate: (navigator: Navigator?) -> Unit) :
+    AndroidScreen() {
 
     @Composable
     override fun Content() {
-        val viewModel = rememberScreenModel<AuthorizationViewModel>()
+        val viewModel: AuthorizationViewModel by rememberInstance()
         val navigator = LocalNavigator.current
         LaunchedEffect(null) {
             viewModel.effect.collectLatest { effect ->
                 when (effect) {
-                    AuthorizationViewModel.Effect.AuthorizationSuccess -> navigator?.replace(
-                        ProfileScreen()
-                    )
+                    AuthorizationViewModel.Effect.AuthorizationSuccess -> {
+                        onSuccessAuthenticate(navigator)
+                    }
                 }
             }
         }
@@ -52,9 +65,9 @@ class AuthenticationScreen : AndroidScreen() {
         authenticationState: AuthenticationState,
         handleEvent: (event: AuthorizationViewModel.Event) -> Unit
     ) {
-        if (authenticationState.isLoading){
+        if (authenticationState.isLoading) {
             ProgressBar()
-        }else{
+        } else {
             AuthenticationForm(
                 name = authenticationState.name,
                 username = authenticationState.username,

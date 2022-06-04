@@ -20,7 +20,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -54,11 +54,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.androidx.AndroidScreen
+import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.kodein.rememberScreenModel
+import cafe.adriel.voyager.navigator.LocalNavigator
+import coil.compose.rememberImagePainter
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.multi.producthunt.MR
 import com.multi.producthunt.android.R
+import com.multi.producthunt.android.screen.detail.DetailProjectScreen
 import com.multi.producthunt.android.ui.ButtonDefault
 import com.multi.producthunt.android.ui.CustomChip
 import com.multi.producthunt.android.ui.ErrorDialog
@@ -66,63 +70,68 @@ import com.multi.producthunt.android.ui.OutlinedButtonDefault
 import com.multi.producthunt.android.ui.OutlinedTextFieldDefault
 import com.multi.producthunt.android.ui.ProgressBar
 import com.multi.producthunt.android.ui.TitleMedium
-import com.multi.producthunt.android.ui.toImageBitmap
 import com.multi.producthunt.ui.models.SelectableTopicUI
 import kotlinx.coroutines.flow.collectLatest
 
-class AddProjectScreen : AndroidScreen() {
+class AddProjectScreen(private val projectToRedact: Int = 0) : AndroidScreen() {
 
     @Composable
     override fun Content() {
-        val viewModel = rememberScreenModel<AddProjectViewModel>()
+        val viewModel: AddProjectViewModel = rememberScreenModel(arg = projectToRedact)
         val state = viewModel.state.collectAsState().value
         val context = LocalContext.current
+        val navigator = LocalNavigator.current
 
         LaunchedEffect(key1 = null, block = {
             viewModel.effect.collectLatest { effect ->
                 when (effect) {
-                    AddProjectViewModel.Effect.Success -> {
+                    is AddProjectViewModel.Effect.Success -> {
                         Toast.makeText(context, "Success project added!", Toast.LENGTH_LONG).show()
+                        navigator?.replace(DetailProjectScreen(effect.projectId))
                     }
                 }
             }
         })
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .statusBarsPadding()
-                .verticalScroll(rememberScrollState())
-                .imePadding()
-                .padding(16.dp)
-        ) {
-            when {
-                state.isLoading -> {
-                    ProgressBar()
-                }
-                else -> {
+        when {
+            state.isLoading -> {
+                ProgressBar()
+            }
+            else -> {
+                Box(
+                    modifier = Modifier
+                        .systemBarsPadding()
+                        .padding(16.dp)
+                        .imePadding()
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                ) {
                     AddProjectForm(
                         name = state.name,
                         tagline = state.tagline,
                         description = state.description,
+                        ownerLink = state.ownerLink,
                         thumbnail = state.thumbnail,
                         media = state.media,
                         topics = state.topics,
+                        isValid = state.isFormValid(),
                         handleEvent = viewModel::sendEvent
                     )
+
+
                 }
             }
+        }
 
-            state.error?.let { error ->
-                ErrorDialog(
-                    error = error,
-                    dismissError = {
-                        viewModel.sendEvent(
-                            AddProjectViewModel.Event.ErrorDismissed
-                        )
-                    }
-                )
-            }
+        state.error?.let { error ->
+            ErrorDialog(
+                error = error,
+                dismissError = {
+                    viewModel.sendEvent(
+                        AddProjectViewModel.Event.ErrorDismissed
+                    )
+                }
+            )
         }
     }
 
@@ -132,8 +141,10 @@ class AddProjectScreen : AndroidScreen() {
         name: String,
         tagline: String,
         description: String,
+        ownerLink: String,
         thumbnail: Uri?,
         media: List<Uri?>,
+        isValid: Boolean,
         topics: List<SelectableTopicUI>,
         handleEvent: (event: AddProjectViewModel.Event) -> Unit,
     ) {
@@ -211,6 +222,17 @@ class AddProjectScreen : AndroidScreen() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            OutlinedTextFieldDefault(
+                value = ownerLink,
+                onValueChange = { handleEvent(AddProjectViewModel.Event.OwnerLinkChanged(it)) },
+                label = stringResource(
+                    id = MR.strings.project_ownerlink.resourceId
+                ),
+                singleLine = false
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             TitleMedium(text = stringResource(id = MR.strings.project_topics.resourceId))
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -229,10 +251,13 @@ class AddProjectScreen : AndroidScreen() {
                 handleEvent(AddProjectViewModel.Event.MediaDeleted(it))
             })
 
+            Spacer(modifier = Modifier.height(16.dp))
+
             ButtonDefault(
                 text = stringResource(id = MR.strings.add_project.resourceId),
                 onClick = { handleEvent(AddProjectViewModel.Event.AddProject) },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                enabled = isValid
             )
         }
     }
@@ -241,7 +266,7 @@ class AddProjectScreen : AndroidScreen() {
     fun MediasPicker(
         mediasList: List<Uri?>,
         onAddImages: () -> Unit,
-        onDelete: (uri: Uri) -> Unit
+        onDelete: (position: Int) -> Unit
     ) {
         Column {
 
@@ -255,18 +280,15 @@ class AddProjectScreen : AndroidScreen() {
             Spacer(modifier = Modifier.height(16.dp))
 
             LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                itemsIndexed(mediasList) { index, item ->
-                    if (item != null) {
-                        MediaPickerImage(item, onDelete = onDelete)
-                    }
+                itemsIndexed(mediasList.filterNotNull()) { index, item ->
+                    MediaPickerImage(item, onDelete = { onDelete(index) })
                 }
             }
         }
     }
 
     @Composable
-    fun MediaPickerImage(image: Uri, onDelete: (uri: Uri) -> Unit) {
-        val context = LocalContext.current
+    fun MediaPickerImage(image: Uri, onDelete: () -> Unit) {
         Surface(
             modifier = Modifier
                 .size(70.dp)
@@ -281,14 +303,13 @@ class AddProjectScreen : AndroidScreen() {
                     shape = RoundedCornerShape(16.dp)
                 )
         ) {
-            val savedImage by remember {
-                mutableStateOf(image.toImageBitmap(context))
-            }
             Image(
-                bitmap = savedImage, contentDescription = null,
+                painter = rememberImagePainter(
+                    data = image
+                ), contentDescription = null,
                 contentScale = ContentScale.Crop
             )
-            IconButton(onClick = { onDelete(image) }) {
+            IconButton(onClick = onDelete) {
                 Icon(Icons.Filled.Delete, contentDescription = null, tint = Color.White)
             }
         }
@@ -306,12 +327,10 @@ class AddProjectScreen : AndroidScreen() {
             }
 
         if (image != null) {
-            val context = LocalContext.current
-            var savedImage by remember {
-                mutableStateOf(image.toImageBitmap(context))
-            }
             Image(
-                bitmap = savedImage,
+                painter = rememberImagePainter(
+                    data = image
+                ),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = commonModifier,

@@ -11,7 +11,7 @@ actual fun KMMContext.getInt(key: String, default: Int): Int {
 }
 
 actual fun KMMContext.putString(key: String, value: String) {
-    getSpEditor().putString(key, value).apply()
+    getSpEditor().putString(key, value).commit()
 }
 
 actual fun KMMContext.getString(key: String): String? {

@@ -24,7 +24,7 @@ fun ButtonDefault(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    icon: ImageVector? = Icons.Filled.Add
+    icon: ImageVector? = null
 ) {
     Button(
         onClick = onClick,
@@ -47,7 +47,7 @@ fun OutlinedButtonDefault(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    icon: ImageVector? = Icons.Filled.Add
+    icon: ImageVector? = null
 ) {
     OutlinedButton(
         onClick,

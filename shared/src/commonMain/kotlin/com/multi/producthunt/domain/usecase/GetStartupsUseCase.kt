@@ -12,7 +12,6 @@ import com.multi.producthunt.network.model.response.VoteResponse
 import com.multi.producthunt.network.util.asCommonFlow
 import com.multi.producthunt.ui.models.ProjectUI
 import com.multi.producthunt.ui.models.toUI
-import com.multi.producthunt.utils.KMMPreference
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.MainScope
@@ -22,8 +21,7 @@ import kotlinx.datetime.LocalDate
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class GetStartupsUseCase(
-    private val repository: StartupsRepository,
-    kmmPreference: KMMPreference
+    private val repository: StartupsRepository
 ) {
 
     private val scope = MainScope()
@@ -33,8 +31,6 @@ class GetStartupsUseCase(
         initialLoadSize = 150,
         prefetchDistance = 150
     )
-
-    private val token = kmmPreference.getString("ACCESS_TOKEN")
 
     fun getStartupsPagingData(
         query: String = "", date: LocalDate?
@@ -52,8 +48,7 @@ class GetStartupsUseCase(
                     repository.getProjects(
                         cursor = currentKey,
                         pageSize = size,
-                        day = day,
-                        token = token
+                        day = day
                     )
                         .single().map { projectsDomains ->
                             projectsDomains.map { domain ->
@@ -70,7 +65,7 @@ class GetStartupsUseCase(
             }).pagingData.asCommonFlow().cachedIn(scope)
     }
 
-    fun voteProject(projectId: Int, token: String?): Flow<ApiResult<VoteResponse>> {
-        return repository.voteProject(projectId, token = token)
+    fun voteProject(projectId: Int): Flow<ApiResult<VoteResponse>> {
+        return repository.voteProject(projectId)
     }
 }
