@@ -70,4 +70,10 @@
     <string name="delete_vote">Убрать голос</string>
 
     <string name="logout">Выйти</string>
+
+    <string name="user_projects">Все проекты</string>
+
+    <string name="save">Сохранить</string>
+
+    <string name="success">Успешно</string>
 </resources>

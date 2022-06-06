@@ -6,8 +6,11 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Base64
+import android.webkit.URLUtil
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.core.net.toUri
+import coil.request.ImageRequest
 import kotlinx.datetime.LocalDate
 import java.io.InputStream
 
@@ -30,7 +33,20 @@ fun Uri.toByteArray(context: Context): ByteArray? {
     val inputStream: InputStream? =
         context.contentResolver.openInputStream(this)
 
+
+    val imageRequest = ImageRequest.Builder(context)
+        .data(this)
+        .build()
+
     return inputStream?.readBytes()
+}
+
+fun String.uploadMedia(context: Context): String? {
+    return if (URLUtil.isHttpUrl(this) || URLUtil.isHttpsUrl(this)) {
+        this
+    } else {
+        this.toUri().toByteArray(context)?.toBase64()
+    }
 }
 
 fun ByteArray.toBase64(): String {

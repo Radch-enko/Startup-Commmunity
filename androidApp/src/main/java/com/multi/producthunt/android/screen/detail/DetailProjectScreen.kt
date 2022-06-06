@@ -67,6 +67,7 @@ import com.multi.producthunt.MR
 import com.multi.producthunt.android.R
 import com.multi.producthunt.android.screen.authorization.AuthenticationScreen
 import com.multi.producthunt.android.screen.profile.ProfileScreen
+import com.multi.producthunt.android.screen.user_projects.UserProjectsListScreen
 import com.multi.producthunt.android.ui.ButtonDefault
 import com.multi.producthunt.android.ui.DefaultTopAppBar
 import com.multi.producthunt.android.ui.ErrorDialog
@@ -156,7 +157,8 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
             DefaultTopAppBar(
                 modifier = Modifier.statusBarsPadding(),
                 title = null,
-                onBack = { navigator?.pop() })
+                onBack = { navigator?.pop() }
+            )
         }, content = { innerPadding ->
             LazyColumn(
                 contentPadding = innerPadding,
@@ -258,6 +260,12 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
                                                 it,
                                                 onLogout = { localNavigator ->
                                                     localNavigator?.pop()
+                                                }, onShowProjects = { id, localNavigator ->
+                                                    localNavigator?.push(
+                                                        UserProjectsListScreen(
+                                                            id
+                                                        )
+                                                    )
                                                 })
                                         )
                                     })

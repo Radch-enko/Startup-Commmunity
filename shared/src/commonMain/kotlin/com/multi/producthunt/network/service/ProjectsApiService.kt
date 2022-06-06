@@ -42,6 +42,13 @@ interface ProjectsApiService {
     ): Flow<ApiResult<ProjectResponse>>
 
     @Headers(["Content-Type: application/json"])
+    @POST("projects/{project_id}/update")
+    fun updateProject(
+        @Path("project_id") projectId: Int,
+        @Body body: AddProjectBody
+    ): Flow<ApiResult<ProjectResponse>>
+
+    @Headers(["Content-Type: application/json"])
     @POST("projects/{project_id}/comment")
     fun commentForProject(
         @Body body: CreateCommentBody
@@ -53,6 +60,14 @@ interface ProjectsApiService {
         @Query("cursor") cursor: Int,
         @Query("page_size") pageSize: Int,
         @Query("day") day: String
+    ): Flow<ApiResult<List<ProjectResponse>>>
+
+    @Headers(["Content-Type: application/json"])
+    @GET("projects")
+    fun getMakerProjects(
+        @Query("cursor") cursor: Int,
+        @Query("page_size") pageSize: Int,
+        @Query("makerId") makerId: Int
     ): Flow<ApiResult<List<ProjectResponse>>>
 
     @Headers(["Content-Type: application/json"])

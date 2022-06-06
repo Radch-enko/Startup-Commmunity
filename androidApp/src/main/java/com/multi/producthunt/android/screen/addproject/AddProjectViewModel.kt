@@ -7,12 +7,14 @@ import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.multi.producthunt.android.ui.toBase64
 import com.multi.producthunt.android.ui.toByteArray
+import com.multi.producthunt.android.ui.uploadMedia
 import com.multi.producthunt.domain.repository.StartupsRepository
 import com.multi.producthunt.domain.repository.TopicsRepository
 import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.ui.models.SelectableTopicUI
 import com.multi.producthunt.ui.models.toSelectableUI
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
@@ -21,7 +23,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AddProjectViewModel(
-    projectToRedact: Int,
+    private val projectToRedact: Int = 0,
     private val startupsRepository: StartupsRepository,
     private val topicsRepository: TopicsRepository,
     private val context: Context,
@@ -56,8 +58,7 @@ class AddProjectViewModel(
         class OwnerLinkChanged(val ownerLink: String) :
             Event()
 
-
-        object AddProject : Event()
+        object SaveProject : Event()
 
         object ErrorDismissed : Event()
     }
@@ -71,10 +72,6 @@ class AddProjectViewModel(
 
     init {
         loadTopics()
-
-        if (projectToRedact != 0) {
-            loadProjectToRedact(projectToRedact)
-        }
     }
 
     private fun loadProjectToRedact(projectToRedact: Int) = coroutineScope.launch {
@@ -82,12 +79,13 @@ class AddProjectViewModel(
             it.copy(isLoading = true)
         }
 
+        delay(1000)
         startupsRepository.getProjectById(projectToRedact).collectLatest { response ->
             when (response) {
                 is ApiResult.Error -> mutableState.update { it.copy(error = response.exception) }
                 is ApiResult.Success -> {
                     with(response._data) {
-                        mutableState.update {
+                        mutableState.update { it ->
                             it.copy(
                                 isLoading = false,
                                 name = name,
@@ -96,6 +94,11 @@ class AddProjectViewModel(
                                 ownerLink = ownerLink.orEmpty(),
                                 thumbnail = thumbnail?.toUri(),
                                 media = media.mapNotNull { media -> media?.url?.toUri() },
+                                topics = it.topics.map { selectableTopicUi ->
+                                    selectableTopicUi.selected =
+                                        topics.map { it.id }.contains(selectableTopicUi.id)
+                                    selectableTopicUi
+                                }
                             )
                         }
                     }
@@ -116,6 +119,10 @@ class AddProjectViewModel(
                     mutableState.update {
                         it.copy(topics = response._data.map { it.toSelectableUI() })
                     }
+
+                    if (projectToRedact != 0) {
+                        loadProjectToRedact(projectToRedact)
+                    }
                 }
             }
         }
@@ -123,7 +130,7 @@ class AddProjectViewModel(
 
     fun sendEvent(event: Event) {
         when (event) {
-            Event.AddProject -> addProject()
+            Event.SaveProject -> saveProject()
             Event.ErrorDismissed -> dismissError()
             is Event.MediaChanged -> updatedMedia(event.media)
             is Event.NameChanged -> updateName(event.name)
@@ -148,22 +155,40 @@ class AddProjectViewModel(
         }
     }
 
-    private fun addProject() = coroutineScope.launch {
+    private fun saveProject() = coroutineScope.launch {
         mutableState.update {
             it.copy(isLoading = true)
         }
+
         try {
-            startupsRepository.addProject(
-                name = state.value.name,
-                tagline = state.value.tagline,
-                thumbnail = state.value.thumbnail?.toByteArray(context)?.toBase64(),
-                description = state.value.description,
-                ownerLink = state.value.ownerLink,
-                media = state.value.media.map { it.toByteArray(context)?.toBase64() },
-                topics = state.value.topics.filter { it.selected }.map {
-                    it.id
+            projectToRedact.let {
+                if (it == 0) {
+                    startupsRepository.addProject(
+                        name = state.value.name,
+                        tagline = state.value.tagline,
+                        thumbnail = state.value.thumbnail?.toByteArray(context)?.toBase64(),
+                        description = state.value.description,
+                        ownerLink = state.value.ownerLink,
+                        media = state.value.media.map { it.toByteArray(context)?.toBase64() },
+                        topics = state.value.topics.filter { it.selected }.map {
+                            it.id
+                        }
+                    )
+                } else {
+                    startupsRepository.updateProject(
+                        projectId = projectToRedact,
+                        name = state.value.name,
+                        tagline = state.value.tagline,
+                        thumbnail = state.value.thumbnail.toString().uploadMedia(context),
+                        description = state.value.description,
+                        ownerLink = state.value.ownerLink,
+                        media = state.value.media.map { it.toString().uploadMedia(context) },
+                        topics = state.value.topics.filter { it.selected }.map {
+                            it.id
+                        }
+                    )
                 }
-            ).catch { collector ->
+            }.catch { collector ->
                 mutableState.update {
                     it.copy(error = collector.localizedMessage)
                 }
@@ -180,12 +205,9 @@ class AddProjectViewModel(
                 }
             }
         } catch (e: Exception) {
-            Napier.e("AddProject", e)
-            mutableState.update {
-                it.copy(error = e.localizedMessage)
-            }
+            Napier.e("TAG", e)
+            e.printStackTrace()
         }
-
     }
 
     private fun updateTopics(topic: SelectableTopicUI) {

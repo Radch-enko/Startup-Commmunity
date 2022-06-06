@@ -10,6 +10,7 @@ import com.multi.producthunt.network.model.body.TopicBody
 import com.multi.producthunt.network.model.response.VoteResponse
 import com.multi.producthunt.network.service.ProjectsApiService
 import com.multi.producthunt.network.util.asCommonFlow
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.Flow
 
 class StartupsRepositoryImpl(
@@ -37,22 +38,52 @@ class StartupsRepositoryImpl(
         )).toDomain()
     }
 
+    override fun updateProject(
+        projectId: Int,
+        name: String,
+        tagline: String,
+        description: String,
+        ownerLink: String,
+        thumbnail: String?,
+        media: List<String?>,
+        topics: List<Int>
+    ): Flow<ApiResult<ProjectDomain>> {
+        Napier.e("$media")
+        return service.updateProject(projectId, AddProjectBody(
+            name = name,
+            tagline = tagline,
+            description = description,
+            ownerLink = ownerLink,
+            thumbnail = thumbnail,
+            media = media.filterNotNull(),
+            topics = topics.map { TopicBody(it) }
+        )).toDomain()
+    }
+
     override fun getProjects(
         cursor: Int,
         pageSize: Int?,
-        day: String?
+        day: String?,
+        makerId: Int?
     ): Flow<ApiResult<List<ProjectDomain>>> {
-        return if (day == null) {
-            service.getProjects(
+        return if (makerId != null) {
+            service.getMakerProjects(
                 cursor = cursor,
-                pageSize = pageSize ?: 10
+                pageSize = pageSize ?: 10,
+                makerId = makerId
             ).asCommonFlow()
                 .toDomain()
-        } else {
+        } else if (day != null) {
             service.getProjectsByDay(
                 cursor = cursor,
                 pageSize = pageSize ?: 10,
                 day = day
+            ).asCommonFlow()
+                .toDomain()
+        } else {
+            service.getProjects(
+                cursor = cursor,
+                pageSize = pageSize ?: 10
             ).asCommonFlow()
                 .toDomain()
         }

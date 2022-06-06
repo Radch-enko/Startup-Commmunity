@@ -73,4 +73,10 @@
     <string name="delete_vote">unvote</string>
 
     <string name="logout">Logout</string>
+
+    <string name="user_projects">See projects</string>
+
+    <string name="save">Save</string>
+
+    <string name="success">Success</string>
 </resources>

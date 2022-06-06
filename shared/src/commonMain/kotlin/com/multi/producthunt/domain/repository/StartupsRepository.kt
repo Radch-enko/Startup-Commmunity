@@ -16,10 +16,22 @@ interface StartupsRepository {
         topics: List<Int>
     ): Flow<ApiResult<ProjectDomain>>
 
+    fun updateProject(
+        projectId: Int,
+        name: String,
+        tagline: String,
+        description: String,
+        ownerLink: String,
+        thumbnail: String? = null,
+        media: List<String?> = emptyList(),
+        topics: List<Int>
+    ): Flow<ApiResult<ProjectDomain>>
+
     fun getProjects(
         cursor: Int,
         pageSize: Int?,
-        day: String?
+        day: String?,
+        makerId: Int?
     ): Flow<ApiResult<List<ProjectDomain>>>
 
     fun getProjectById(projectId: Int): Flow<ApiResult<ProjectDomain>>
