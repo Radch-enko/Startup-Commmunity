@@ -24,4 +24,6 @@ interface UserRepository {
         profileImage: String? = null,
         coverImage: String? = null,
     ): Flow<ApiResult<UserDomain>>
+
+    fun getUserById(id: Int): Flow<ApiResult<UserDomain>>
 }
