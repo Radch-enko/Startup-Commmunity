@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class ProfileScreenViewModel(
+    private val id: Int,
     private val userRepository: UserRepository,
     private val authorizationUseCase: AuthorizationUseCase
 ) :
@@ -21,7 +22,7 @@ class ProfileScreenViewModel(
     sealed class State {
         object Loading : State()
         class Error(val message: String) : State()
-        class Data(val userUI: UserUI) : State()
+        class Data(val userUI: UserUI, val isEditable: Boolean = false) : State()
     }
 
     sealed class Event {
@@ -38,7 +39,6 @@ class ProfileScreenViewModel(
     }
 
     init {
-        Napier.e("ProfileScreenViewModel init")
         loadData()
     }
 
@@ -58,6 +58,7 @@ class ProfileScreenViewModel(
 
     private fun logout() = coroutineScope.launch {
         authorizationUseCase.logout()
+        authorizationUseCase.deleteCurrentUserId()
         mutableEffect.emit(Effect.SuccessLogout)
     }
 
@@ -80,7 +81,8 @@ class ProfileScreenViewModel(
                 }
                 is ApiResult.Success -> {
                     mutableState.value = State.Data(
-                        response._data.toUI()
+                        response._data.toUI(),
+                        isEditable = authorizationUseCase.getCurrentUserId() == response._data.id
                     )
                 }
             }
@@ -90,19 +92,21 @@ class ProfileScreenViewModel(
     private fun loadData() = coroutineScope.launch {
         mutableState.value = State.Loading
 
-        userRepository.me()
-            .collectLatest { response ->
-                when (response) {
-                    is ApiResult.Error -> {
-                        mutableState.value = State.Error(response.exception)
-                    }
-                    is ApiResult.Success -> {
-                        mutableState.value = State.Data(
-                            response._data.toUI()
-                        )
-                    }
+        id.let {
+            if (id == 0) userRepository.me() else userRepository.getUserById(id)
+        }.collectLatest { response ->
+            when (response) {
+                is ApiResult.Error -> {
+                    mutableState.value = State.Error(response.exception)
+                }
+                is ApiResult.Success -> {
+                    mutableState.value = State.Data(
+                        response._data.toUI(),
+                        isEditable = authorizationUseCase.getCurrentUserId() == response._data.id
+                    )
                 }
             }
+        }
     }
 
     private fun dismissError() {

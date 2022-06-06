@@ -54,4 +54,8 @@ class UserRepositoryImpl(private val service: ProjectsApiService) : UserReposito
         )
             .toDomain()
     }
+
+    override fun getUserById(id: Int): Flow<ApiResult<UserDomain>> {
+        return service.getUserById(id).toDomain()
+    }
 }

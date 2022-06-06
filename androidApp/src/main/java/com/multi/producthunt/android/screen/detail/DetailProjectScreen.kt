@@ -66,6 +66,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.multi.producthunt.MR
 import com.multi.producthunt.android.R
 import com.multi.producthunt.android.screen.authorization.AuthenticationScreen
+import com.multi.producthunt.android.screen.profile.ProfileScreen
 import com.multi.producthunt.android.ui.ButtonDefault
 import com.multi.producthunt.android.ui.DefaultTopAppBar
 import com.multi.producthunt.android.ui.ErrorDialog
@@ -251,11 +252,18 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
                                 ProjectComments(
                                     detailProjectUI.comments,
                                     detailProjectUI.makerId,
-                                    onCommentatorClick = {})
+                                    onCommentatorClick = {
+                                        navigator?.push(
+                                            ProfileScreen(
+                                                it,
+                                                onLogout = { localNavigator ->
+                                                    localNavigator?.pop()
+                                                })
+                                        )
+                                    })
                             }
                         }
                     }
-
                 }
             }
         }, bottomBar = {

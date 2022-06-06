@@ -80,6 +80,12 @@ interface ProjectsApiService {
         @Body body: UpdateUserBody
     ): Flow<ApiResult<UserResponse>>
 
+    @Headers(["Content-Type: application/json"])
+    @GET("users/{user_id}")
+    fun getUserById(
+        @Path("user_id") id: Int
+    ): Flow<ApiResult<UserResponse>>
+
     // Other
     @GET("topics")
     fun getTopics(): Flow<ApiResult<List<TopicResponse>>>

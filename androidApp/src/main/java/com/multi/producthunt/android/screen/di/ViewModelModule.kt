@@ -23,7 +23,13 @@ val viewModelModule = DI.Module("viewModelModule") {
     }
     bind<SettingsScreenViewModel>() with provider { SettingsScreenViewModel(instance()) }
     bind<AuthorizationViewModel>() with provider { AuthorizationViewModel(instance(), instance()) }
-    bind<ProfileScreenViewModel>() with provider { ProfileScreenViewModel(instance(), instance()) }
+    bind<ProfileScreenViewModel>() with factory { params: Int ->
+        ProfileScreenViewModel(
+            params,
+            instance(),
+            instance()
+        )
+    }
 
     bind<AddProjectViewModel>() with factory { params: Int ->
         AddProjectViewModel(
