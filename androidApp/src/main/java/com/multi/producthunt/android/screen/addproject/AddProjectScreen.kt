@@ -54,7 +54,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.androidx.AndroidScreen
-import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.kodein.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import coil.compose.rememberImagePainter
@@ -78,7 +77,7 @@ class AddProjectScreen(private val projectToRedact: Int = 0) : AndroidScreen() {
     @Composable
     override fun Content() {
         val viewModel: AddProjectViewModel = rememberScreenModel(arg = projectToRedact)
-        val state = viewModel.state.collectAsState().value
+        val state by viewModel.state.collectAsState()
         val context = LocalContext.current
         val navigator = LocalNavigator.current
 
@@ -86,7 +85,8 @@ class AddProjectScreen(private val projectToRedact: Int = 0) : AndroidScreen() {
             viewModel.effect.collectLatest { effect ->
                 when (effect) {
                     is AddProjectViewModel.Effect.Success -> {
-                        Toast.makeText(context, "Success project added!", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, MR.strings.success.resourceId, Toast.LENGTH_LONG)
+                            .show()
                         navigator?.replace(DetailProjectScreen(effect.projectId))
                     }
                 }
@@ -254,8 +254,8 @@ class AddProjectScreen(private val projectToRedact: Int = 0) : AndroidScreen() {
             Spacer(modifier = Modifier.height(16.dp))
 
             ButtonDefault(
-                text = stringResource(id = MR.strings.add_project.resourceId),
-                onClick = { handleEvent(AddProjectViewModel.Event.AddProject) },
+                text = stringResource(id = MR.strings.save.resourceId),
+                onClick = { handleEvent(AddProjectViewModel.Event.SaveProject) },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = isValid
             )

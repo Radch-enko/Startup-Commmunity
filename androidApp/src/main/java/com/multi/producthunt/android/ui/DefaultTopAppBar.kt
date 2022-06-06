@@ -12,7 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun DefaultTopAppBar(modifier: Modifier = Modifier, title: String?, onBack: () -> Unit) {
+fun DefaultTopAppBar(
+    modifier: Modifier = Modifier,
+    title: String?,
+    onBack: () -> Unit,
+    isPlaceholderVisible: Boolean = false
+) {
     SmallTopAppBar(
         modifier = modifier,
         navigationIcon = {
@@ -20,7 +25,11 @@ fun DefaultTopAppBar(modifier: Modifier = Modifier, title: String?, onBack: () -
         },
         title = {
             if (title != null) {
-                Text(text = title, style = typography.titleLarge)
+                Text(
+                    text = title,
+                    style = typography.titleLarge,
+                    modifier = Modifier.placeholder(isPlaceholderVisible)
+                )
             }
         },
     )

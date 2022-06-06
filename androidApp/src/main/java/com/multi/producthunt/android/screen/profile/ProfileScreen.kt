@@ -73,15 +73,16 @@ import java.io.InputStream
 
 class ProfileScreen(
     private val id: Int = 0,
-    private val onLogout: (navigator: Navigator?) -> Unit
+    private val onLogout: (navigator: Navigator?) -> Unit,
+    private val onShowProjects: (id: Int, navigator: Navigator?) -> Unit
 ) : AndroidScreen() {
 
     @Composable
     override fun Content() {
         val viewModel: ProfileScreenViewModel = rememberScreenModel(arg = id)
         val state by viewModel.state.collectAsState()
-
         val systemUiController = rememberSystemUiController()
+        val navigator = LocalNavigator.current
 
         LifecycleEffect(
             onStarted = {
@@ -118,7 +119,10 @@ class ProfileScreen(
                     onLogout = {
                         viewModel.sendEvent(ProfileScreenViewModel.Event.Logout)
                     },
-                    (state as ProfileScreenViewModel.State.Data).isEditable
+                    (state as ProfileScreenViewModel.State.Data).isEditable,
+                    onUserProjects = {
+                        viewModel.sendEvent(ProfileScreenViewModel.Event.ViewUserProject)
+                    }
                 )
             }
             is ProfileScreenViewModel.State.Error -> ErrorDialog(error = (state as ProfileScreenViewModel.State.Error).message) {
@@ -127,12 +131,14 @@ class ProfileScreen(
             ProfileScreenViewModel.State.Loading -> ProgressBar()
         }
 
-        val navigator = LocalNavigator.current
         LaunchedEffect(key1 = null, block = {
             viewModel.effect.collectLatest { effect ->
                 when (effect) {
                     ProfileScreenViewModel.Effect.SuccessLogout -> {
                         onLogout(navigator)
+                    }
+                    is ProfileScreenViewModel.Effect.ShowUserProjects -> {
+                        onShowProjects(effect.id, navigator)
                     }
                 }
             }
@@ -148,6 +154,7 @@ class ProfileScreen(
         onHeadlineChanged: (String) -> Unit,
         onLogout: () -> Unit,
         editable: Boolean,
+        onUserProjects: () -> Unit,
     ) {
         val context = LocalContext.current
         val launcherForProfileImage = rememberLauncherForActivityResult(
@@ -204,7 +211,8 @@ class ProfileScreen(
                     onNameChanged,
                     onHeadlineChanged,
                     onLogout,
-                    editable
+                    editable,
+                    onUserProjects
                 )
             }
         }
@@ -221,7 +229,8 @@ class ProfileScreen(
         onNameChanged: (String) -> Unit,
         onHeadlineChanged: (String) -> Unit,
         onLogout: () -> Unit,
-        editable: Boolean
+        editable: Boolean,
+        onUserProjects: () -> Unit
     ) {
         Box(modifier = modifier) {
             Card(
@@ -278,6 +287,13 @@ class ProfileScreen(
                                 dialogVisibility = !dialogVisibility
                             }
                         }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        OutlinedButtonDefault(
+                            text = stringResource(id = MR.strings.user_projects.resourceId),
+                            onClick = onUserProjects
+                        )
 
                         if (editable) {
                             Spacer(modifier = Modifier.height(16.dp))

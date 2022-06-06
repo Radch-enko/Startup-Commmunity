@@ -7,6 +7,7 @@ import com.multi.producthunt.android.screen.home.HomeScreenViewModel
 import com.multi.producthunt.android.screen.profile.ProfileScreenViewModel
 import com.multi.producthunt.android.screen.settings.SettingsScreenViewModel
 import com.multi.producthunt.android.screen.timeline.TimelineScreenViewModel
+import com.multi.producthunt.android.screen.user_projects.UserProjectsListViewModel
 import org.kodein.di.DI
 import org.kodein.di.bind
 import org.kodein.di.factory
@@ -45,6 +46,14 @@ val viewModelModule = DI.Module("viewModelModule") {
             instance(),
             instance(),
             instance(),
+        )
+    }
+    bind<UserProjectsListViewModel>() with factory { params: Int ->
+        UserProjectsListViewModel(
+            params,
+            instance(),
+            instance(),
+            instance()
         )
     }
 }

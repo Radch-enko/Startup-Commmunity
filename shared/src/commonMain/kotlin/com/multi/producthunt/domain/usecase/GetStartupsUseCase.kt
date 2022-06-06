@@ -33,7 +33,7 @@ class GetStartupsUseCase(
     )
 
     fun getStartupsPagingData(
-        query: String = "", date: LocalDate?
+        query: String = "", date: LocalDate?, makerId: Int? = null
     ): Flow<PagingData<ProjectUI>> {
         return Pager(
             clientScope = scope,
@@ -48,7 +48,8 @@ class GetStartupsUseCase(
                     repository.getProjects(
                         cursor = currentKey,
                         pageSize = size,
-                        day = day
+                        day = day,
+                        makerId = makerId
                     )
                         .single().map { projectsDomains ->
                             projectsDomains.map { domain ->

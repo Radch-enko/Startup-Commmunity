@@ -6,7 +6,6 @@ import com.multi.producthunt.android.ui.toBase64
 import com.multi.producthunt.domain.repository.UserRepository
 import com.multi.producthunt.domain.usecase.AuthorizationUseCase
 import com.multi.producthunt.network.model.ApiResult
-import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -30,12 +29,15 @@ class ProfileScreenViewModel(
         class PickCoverImage(val byteArray: ByteArray) : Event()
         object ErrorDismissed : Event()
         object Logout : Event()
+        object ViewUserProject : ProfileScreenViewModel.Event()
+
         class OnNameChanged(val newName: String) : Event()
         class OnHeadlineChanged(val newHeadline: String) : Event()
     }
 
     sealed class Effect {
         object SuccessLogout : Effect()
+        class ShowUserProjects(val id: Int) : Effect()
     }
 
     init {
@@ -53,7 +55,12 @@ class ProfileScreenViewModel(
             is Event.OnHeadlineChanged -> updateUser(headline = event.newHeadline)
             is Event.OnNameChanged -> updateUser(name = event.newName)
             Event.Logout -> logout()
+            Event.ViewUserProject -> viewUserProject()
         }
+    }
+
+    private fun viewUserProject() = coroutineScope.launch {
+        mutableEffect.emit(Effect.ShowUserProjects(id))
     }
 
     private fun logout() = coroutineScope.launch {
