@@ -17,6 +17,6 @@ fun RowScope.TabNavigationItem(tab: Tab) {
         onClick = { tabNavigator.current = tab },
         label = { Text(text = tab.title) },
         icon = { tab.icon?.let { Icon(painter = it, contentDescription = tab.title) } },
-        alwaysShowLabel = true
+        alwaysShowLabel = false
     )
 }

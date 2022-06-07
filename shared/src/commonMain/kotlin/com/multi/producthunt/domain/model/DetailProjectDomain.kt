@@ -2,30 +2,36 @@ package com.multi.producthunt.domain.model
 
 import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.network.model.map
-import com.multi.producthunt.network.model.response.ProjectResponse
+import com.multi.producthunt.network.model.response.DetailProjectResponse
+import com.multi.producthunt.network.model.response.Media
 import com.multi.producthunt.network.util.CommonFlow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-data class ProjectDomain(
+data class DetailProjectDomain(
     val id: Int,
     val name: String,
     val tagline: String,
+    val description: String,
     val thumbnail: String?,
+    val media: List<Media?>,
     val isVoted: Boolean,
     val topics: List<TopicDomain>,
     val votesCount: Int,
+    val ownerLink: String?,
+    val comments: List<CommentDomain>,
+    val makerId: Int
 )
 
-fun Flow<ApiResult<ProjectResponse>>.toDomain(): Flow<ApiResult<ProjectDomain>> {
+fun Flow<ApiResult<DetailProjectResponse>>.toDomain(): Flow<ApiResult<DetailProjectDomain>> {
     return this.map { response ->
-        response.map { data: ProjectResponse ->
+        response.map { data: DetailProjectResponse ->
             data.toDomain()
         }
     }
 }
 
-fun CommonFlow<ApiResult<List<ProjectResponse>>>.toDomain(): Flow<ApiResult<List<ProjectDomain>>> {
+fun CommonFlow<ApiResult<List<DetailProjectResponse>>>.toDomain(): Flow<ApiResult<List<DetailProjectDomain>>> {
     return this.map { apiResult ->
         apiResult.map { listResponse ->
             listResponse.map { projectResponse ->
@@ -35,14 +41,21 @@ fun CommonFlow<ApiResult<List<ProjectResponse>>>.toDomain(): Flow<ApiResult<List
     }
 }
 
-fun ProjectResponse.toDomain(): ProjectDomain {
-    return ProjectDomain(
+fun DetailProjectResponse.toDomain(): DetailProjectDomain {
+    return DetailProjectDomain(
         id = this.id,
         name = this.name,
         tagline = this.tagline,
+        description = this.description,
         thumbnail = this.thumbnail,
+        media = this.media,
         isVoted = this.isVoted,
         topics = this.topics.map { TopicDomain(it.id, it.name, it.image, it.description) },
         votesCount = this.votesCount,
+        ownerLink = this.ownerLink,
+        comments = this.comments.map {
+            CommentDomain(it.text, it.user.toDomain(), it.createdDate)
+        },
+        makerId = this.makerId
     )
 }

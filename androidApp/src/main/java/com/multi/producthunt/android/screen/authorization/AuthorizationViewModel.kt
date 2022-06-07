@@ -221,7 +221,6 @@ class AuthorizationViewModel(
                 }
             }
         }
-
     }
 
     private fun dismissError() {

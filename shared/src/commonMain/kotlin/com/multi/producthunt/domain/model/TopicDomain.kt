@@ -8,14 +8,21 @@ import kotlinx.coroutines.flow.map
 
 class TopicDomain(
     val id: Int,
-    val title: String
+    val title: String,
+    val image: String,
+    val description: String,
 )
 
 fun Flow<ApiResult<List<TopicResponse>>>.toDomain(): Flow<ApiResult<List<TopicDomain>>> {
     return this.map { value: ApiResult<List<TopicResponse>> ->
         value.map {
             it.map { topicResponse ->
-                TopicDomain(topicResponse.id, topicResponse.name)
+                TopicDomain(
+                    topicResponse.id,
+                    topicResponse.name,
+                    topicResponse.image,
+                    topicResponse.description
+                )
             }
         }
     }

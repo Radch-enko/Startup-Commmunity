@@ -76,4 +76,8 @@
     <string name="save">Сохранить</string>
 
     <string name="success">Успешно</string>
+
+    <string name="topics_tab_title">Темы</string>
+
+    <string name="open">Открыть</string>
 </resources>

@@ -79,4 +79,8 @@
     <string name="save">Save</string>
 
     <string name="success">Success</string>
+
+    <string name="topics_tab_title">Topics</string>
+
+    <string name="open">Open</string>
 </resources>

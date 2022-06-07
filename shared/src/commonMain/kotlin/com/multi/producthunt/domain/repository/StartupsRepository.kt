@@ -1,5 +1,6 @@
 package com.multi.producthunt.domain.repository
 
+import com.multi.producthunt.domain.model.DetailProjectDomain
 import com.multi.producthunt.domain.model.ProjectDomain
 import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.network.model.response.VoteResponse
@@ -31,12 +32,13 @@ interface StartupsRepository {
         cursor: Int,
         pageSize: Int?,
         day: String?,
-        makerId: Int?
+        makerId: Int?,
+        topicId: Int?
     ): Flow<ApiResult<List<ProjectDomain>>>
 
-    fun getProjectById(projectId: Int): Flow<ApiResult<ProjectDomain>>
+    fun getProjectById(projectId: Int): Flow<ApiResult<DetailProjectDomain>>
 
-    fun commentForProject(projectId: Int, text: String): Flow<ApiResult<ProjectDomain>>
+    fun commentForProject(projectId: Int, text: String): Flow<ApiResult<DetailProjectDomain>>
 
     fun voteProject(
         projectId: Int
