@@ -1,22 +1,9 @@
 package com.multi.producthunt.network.service
 
 import com.multi.producthunt.network.model.ApiResult
-import com.multi.producthunt.network.model.body.AddProjectBody
-import com.multi.producthunt.network.model.body.CreateCommentBody
-import com.multi.producthunt.network.model.body.LoginBody
-import com.multi.producthunt.network.model.body.RegisterBody
-import com.multi.producthunt.network.model.body.UpdateUserBody
-import com.multi.producthunt.network.model.response.LoginResponse
-import com.multi.producthunt.network.model.response.ProjectResponse
-import com.multi.producthunt.network.model.response.TopicResponse
-import com.multi.producthunt.network.model.response.UserResponse
-import com.multi.producthunt.network.model.response.VoteResponse
-import de.jensklingenberg.ktorfit.http.Body
-import de.jensklingenberg.ktorfit.http.GET
-import de.jensklingenberg.ktorfit.http.Headers
-import de.jensklingenberg.ktorfit.http.POST
-import de.jensklingenberg.ktorfit.http.Path
-import de.jensklingenberg.ktorfit.http.Query
+import com.multi.producthunt.network.model.body.*
+import com.multi.producthunt.network.model.response.*
+import de.jensklingenberg.ktorfit.http.*
 import kotlinx.coroutines.flow.Flow
 
 interface ProjectsApiService {
@@ -39,7 +26,7 @@ interface ProjectsApiService {
     @GET("projects/{project_id}")
     fun getProjectById(
         @Path("project_id") projectId: Int
-    ): Flow<ApiResult<ProjectResponse>>
+    ): Flow<ApiResult<DetailProjectResponse>>
 
     @Headers(["Content-Type: application/json"])
     @POST("projects/{project_id}/update")
@@ -52,7 +39,7 @@ interface ProjectsApiService {
     @POST("projects/{project_id}/comment")
     fun commentForProject(
         @Body body: CreateCommentBody
-    ): Flow<ApiResult<ProjectResponse>>
+    ): Flow<ApiResult<DetailProjectResponse>>
 
     @Headers(["Content-Type: application/json"])
     @GET("projects")
@@ -68,6 +55,14 @@ interface ProjectsApiService {
         @Query("cursor") cursor: Int,
         @Query("page_size") pageSize: Int,
         @Query("makerId") makerId: Int
+    ): Flow<ApiResult<List<ProjectResponse>>>
+
+    @Headers(["Content-Type: application/json"])
+    @GET("projects")
+    fun getProjectsByTopicId(
+        @Query("cursor") cursor: Int,
+        @Query("page_size") pageSize: Int,
+        @Query("topicId") topicId: Int
     ): Flow<ApiResult<List<ProjectResponse>>>
 
     @Headers(["Content-Type: application/json"])
@@ -101,7 +96,7 @@ interface ProjectsApiService {
         @Path("user_id") id: Int
     ): Flow<ApiResult<UserResponse>>
 
-    // Other
+    // Topics flow
     @GET("topics")
     fun getTopics(): Flow<ApiResult<List<TopicResponse>>>
 }

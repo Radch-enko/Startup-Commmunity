@@ -84,7 +84,7 @@ class TimelineScreen : AndroidScreen() {
         state: TimelineScreenViewModel.State,
         handleEvent: KFunction1<TimelineScreenViewModel.Event, Unit>
     ) {
-        val navigator = LocalNavigator.current
+        val navigator = LocalNavigator.current?.parent?.parent
         Scaffold(
             topBar = {
                 SmallTopAppBar(title = {

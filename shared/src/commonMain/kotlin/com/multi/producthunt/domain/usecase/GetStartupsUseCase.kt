@@ -33,7 +33,7 @@ class GetStartupsUseCase(
     )
 
     fun getStartupsPagingData(
-        query: String = "", date: LocalDate?, makerId: Int? = null
+        query: String = "", date: LocalDate?, makerId: Int? = null, topicId: Int? = null
     ): Flow<PagingData<ProjectUI>> {
         return Pager(
             clientScope = scope,
@@ -49,7 +49,8 @@ class GetStartupsUseCase(
                         cursor = currentKey,
                         pageSize = size,
                         day = day,
-                        makerId = makerId
+                        makerId = makerId,
+                        topicId= topicId
                     )
                         .single().map { projectsDomains ->
                             projectsDomains.map { domain ->

@@ -1,5 +1,6 @@
 package com.multi.producthunt.ui.models
 
+import com.multi.producthunt.domain.model.DetailProjectDomain
 import com.multi.producthunt.domain.model.ProjectDomain
 import io.github.aakira.napier.Napier
 import kotlinx.datetime.toLocalDateTime
@@ -36,7 +37,7 @@ data class DetailProjectUI(
     }
 }
 
-fun ProjectDomain.toDetailUI(): DetailProjectUI {
+fun DetailProjectDomain.toDetailUI(): DetailProjectUI {
     return DetailProjectUI(
         id,
         name,

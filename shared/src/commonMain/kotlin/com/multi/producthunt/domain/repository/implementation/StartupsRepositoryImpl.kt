@@ -1,5 +1,6 @@
 package com.multi.producthunt.domain.repository.implementation
 
+import com.multi.producthunt.domain.model.DetailProjectDomain
 import com.multi.producthunt.domain.model.ProjectDomain
 import com.multi.producthunt.domain.model.toDomain
 import com.multi.producthunt.domain.repository.StartupsRepository
@@ -64,7 +65,8 @@ class StartupsRepositoryImpl(
         cursor: Int,
         pageSize: Int?,
         day: String?,
-        makerId: Int?
+        makerId: Int?,
+        topicId: Int?
     ): Flow<ApiResult<List<ProjectDomain>>> {
         return if (makerId != null) {
             service.getMakerProjects(
@@ -80,7 +82,15 @@ class StartupsRepositoryImpl(
                 day = day
             ).asCommonFlow()
                 .toDomain()
-        } else {
+        } else if (topicId != null){
+            service.getProjectsByTopicId(
+                cursor = cursor,
+                pageSize = pageSize ?: 10,
+                topicId = topicId
+            ).asCommonFlow()
+                .toDomain()
+        }
+        else {
             service.getProjects(
                 cursor = cursor,
                 pageSize = pageSize ?: 10
@@ -89,24 +99,25 @@ class StartupsRepositoryImpl(
         }
     }
 
-    override fun getProjectById(projectId: Int): Flow<ApiResult<ProjectDomain>> {
+    override fun getProjectById(projectId: Int): Flow<ApiResult<DetailProjectDomain>> {
         return service.getProjectById(projectId).toDomain()
     }
 
     override fun commentForProject(
         projectId: Int,
         text: String
-    ): Flow<ApiResult<ProjectDomain>> {
+    ): Flow<ApiResult<DetailProjectDomain>> {
         return service.commentForProject(
             CreateCommentBody(projectId, text)
-        )
-            .toDomain()
+        ).toDomain()
     }
 
     override fun voteProject(projectId: Int): Flow<ApiResult<VoteResponse>> {
         return service.voteForProject(projectId)
     }
 }
+
+
 
 
 
