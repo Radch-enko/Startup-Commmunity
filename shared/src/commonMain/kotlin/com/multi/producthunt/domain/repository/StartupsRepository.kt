@@ -33,7 +33,8 @@ interface StartupsRepository {
         pageSize: Int?,
         day: String?,
         makerId: Int?,
-        topicId: Int?
+        topicId: Int?,
+        searchQuery: String?
     ): Flow<ApiResult<List<ProjectDomain>>>
 
     fun getProjectById(projectId: Int): Flow<ApiResult<DetailProjectDomain>>

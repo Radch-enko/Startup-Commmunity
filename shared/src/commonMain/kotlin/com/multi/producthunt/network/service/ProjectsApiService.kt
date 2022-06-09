@@ -66,6 +66,14 @@ interface ProjectsApiService {
     ): Flow<ApiResult<List<ProjectResponse>>>
 
     @Headers(["Content-Type: application/json"])
+    @GET("projects")
+    fun searchProjects(
+        @Query("cursor") cursor: Int,
+        @Query("page_size") pageSize: Int,
+        @Query("searchQuery") searchQuery: String,
+    ): Flow<ApiResult<List<ProjectResponse>>>
+
+    @Headers(["Content-Type: application/json"])
     @GET("projects/{project_id}/vote")
     fun voteForProject(
         @Path("project_id") projectId: Int,
@@ -89,6 +97,14 @@ interface ProjectsApiService {
     fun updateUser(
         @Body body: UpdateUserBody
     ): Flow<ApiResult<UserResponse>>
+
+    @Headers(["Content-Type: application/json"])
+    @GET("users")
+    fun getAllUsers(
+        @Query("cursor") cursor: Int,
+        @Query("page_size") pageSize: Int,
+        @Query("searchQuery") searchQuery: String,
+    ): Flow<ApiResult<List<UserResponse>>>
 
     @Headers(["Content-Type: application/json"])
     @GET("users/{user_id}")

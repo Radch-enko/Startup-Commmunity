@@ -10,6 +10,7 @@ import com.multi.producthunt.network.model.body.UpdateUserBody
 import com.multi.producthunt.network.model.response.LoginResponse
 import com.multi.producthunt.network.model.response.UserResponse
 import com.multi.producthunt.network.service.ProjectsApiService
+import com.multi.producthunt.network.util.asCommonFlow
 import kotlinx.coroutines.flow.Flow
 
 class UserRepositoryImpl(private val service: ProjectsApiService) : UserRepository {
@@ -57,5 +58,12 @@ class UserRepositoryImpl(private val service: ProjectsApiService) : UserReposito
 
     override fun getUserById(id: Int): Flow<ApiResult<UserDomain>> {
         return service.getUserById(id).toDomain()
+    }
+
+    override fun getAllUsers(
+        cursor: Int,
+        pageSize: Int?, searchQuery: String
+    ): Flow<ApiResult<List<UserDomain>>> {
+        return service.getAllUsers(cursor, pageSize ?: 10, searchQuery).asCommonFlow().toDomain()
     }
 }

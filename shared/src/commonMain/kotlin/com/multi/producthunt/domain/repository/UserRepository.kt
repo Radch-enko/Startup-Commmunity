@@ -26,4 +26,9 @@ interface UserRepository {
     ): Flow<ApiResult<UserDomain>>
 
     fun getUserById(id: Int): Flow<ApiResult<UserDomain>>
+
+    fun getAllUsers(
+        cursor: Int,
+        pageSize: Int?, searchQuery: String
+    ): Flow<ApiResult<List<UserDomain>>>
 }
