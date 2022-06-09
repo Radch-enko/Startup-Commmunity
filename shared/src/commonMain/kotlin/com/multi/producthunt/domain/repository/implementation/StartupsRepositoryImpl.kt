@@ -66,7 +66,8 @@ class StartupsRepositoryImpl(
         pageSize: Int?,
         day: String?,
         makerId: Int?,
-        topicId: Int?
+        topicId: Int?,
+        searchQuery: String?
     ): Flow<ApiResult<List<ProjectDomain>>> {
         return if (makerId != null) {
             service.getMakerProjects(
@@ -87,6 +88,13 @@ class StartupsRepositoryImpl(
                 cursor = cursor,
                 pageSize = pageSize ?: 10,
                 topicId = topicId
+            ).asCommonFlow()
+                .toDomain()
+        } else if(!searchQuery.isNullOrEmpty()){
+            service.searchProjects(
+                cursor = cursor,
+                pageSize = pageSize ?: 10,
+                searchQuery = searchQuery
             ).asCommonFlow()
                 .toDomain()
         }

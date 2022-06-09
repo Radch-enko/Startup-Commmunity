@@ -5,36 +5,37 @@ import cafe.adriel.voyager.core.model.coroutineScope
 import com.kuuurt.paging.multiplatform.PagingData
 import com.multi.producthunt.domain.usecase.AuthorizationUseCase
 import com.multi.producthunt.domain.usecase.GetStartupsUseCase
+import com.multi.producthunt.domain.usecase.GetUsersUseCase
 import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.ui.models.ProjectUI
+import com.multi.producthunt.ui.models.SearchUserUI
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
 class HomeScreenViewModel(
     private val useCase: GetStartupsUseCase,
-    private val authorizationUseCase: AuthorizationUseCase
+    private val authorizationUseCase: AuthorizationUseCase,
+    private val usersUseCase: GetUsersUseCase
 ) :
     StateScreenModel<HomeScreenViewModel.State>(State.Empty) {
 
     data class State(
         val isRefreshing: Boolean = false,
         val error: String? = null,
-        val pagingList: Flow<PagingData<ProjectUI>> = emptyFlow(),
+        val pagingList: Data = Data.ProjectList(),
         val isAuthorized: Boolean = false
     ) {
         companion object {
             val Empty = State()
         }
+    }
+
+
+    sealed class Data {
+        class ProjectList(val pagingList: Flow<PagingData<ProjectUI>> = emptyFlow()) : Data()
+        class UsersList(val pagingList: Flow<PagingData<SearchUserUI>> = emptyFlow()) : Data()
     }
 
     sealed class Event {
@@ -105,7 +106,18 @@ class HomeScreenViewModel(
                 mutableState.update {
                     it.copy(
                         isRefreshing = false,
-                        pagingList = useCase.getStartupsPagingData(query, null),
+                        pagingList = if (query.isNotEmpty() && query[0] == '@') {
+                            Data.UsersList(
+                                pagingList = usersUseCase.getUsersPagingData(query.substring(1))
+                            )
+                        } else {
+                            Data.ProjectList(
+                                pagingList = useCase.getStartupsPagingData(
+                                    date = null,
+                                    searchQuery = query
+                                )
+                            )
+                        },
                         isAuthorized = authorizationUseCase.isAuthorized()
                     )
                 }

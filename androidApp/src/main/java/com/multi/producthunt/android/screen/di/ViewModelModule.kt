@@ -13,7 +13,13 @@ import com.multi.producthunt.android.screen.user_projects.UserProjectsListViewMo
 import org.kodein.di.*
 
 val viewModelModule = DI.Module("viewModelModule") {
-    bind<HomeScreenViewModel>() with provider { HomeScreenViewModel(instance(), instance()) }
+    bind<HomeScreenViewModel>() with provider {
+        HomeScreenViewModel(
+            instance(),
+            instance(),
+            instance()
+        )
+    }
     bind<TimelineScreenViewModel>() with provider {
         TimelineScreenViewModel(
             instance(),

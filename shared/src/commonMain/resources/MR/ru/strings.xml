@@ -3,7 +3,7 @@
     <string name="timeline_tab_title">История</string>
     <string name="setting_tab_title">Настройки</string>
     <string name="profile_tab_title">Профиль</string>
-    <string name="search_project">Найти стартапы</string>
+    <string name="search_project">Поиск</string>
     <string name="something_went_wrong">Что-то пошло не так, пожалуйста попробуйте позже</string>
     <string name="enter_password">Введите пароль</string>
     <string name="enter_username">Введите логин</string>
@@ -53,9 +53,9 @@
     <string name="upload_medias">Загрузить изображения</string>
 
     <string name="select_date">Выбрать дату</string>
-    <string name="no_items_message">Нет проектов</string>
+    <string name="no_items_message">Ничего нет</string>
 
-    <string name="vote">Голос</string>
+    <string name="vote">Нравится</string>
     <string name="visit">Подробнее</string>
 
     <string name="discussion">Обсуждение</string>
@@ -67,7 +67,7 @@
 
     <string name="no_comments">Комментариев нет. Будьте первыми!</string>
 
-    <string name="delete_vote">Убрать голос</string>
+    <string name="delete_vote">Не нравится</string>
 
     <string name="logout">Выйти</string>
 

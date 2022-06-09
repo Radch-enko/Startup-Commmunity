@@ -3,7 +3,7 @@
     <string name="timeline_tab_title">Timeline</string>
     <string name="setting_tab_title">Settings</string>
     <string name="profile_tab_title">Profile</string>
-    <string name="search_project">Search projects</string>
+    <string name="search_project">Search</string>
     <string name="something_went_wrong">Something went wrong, please try again later</string>
     <string name="enter_password">Enter password</string>
     <string name="enter_username">Enter username</string>
@@ -58,7 +58,7 @@
     <string name="select_date">Select date</string>
     <string name="no_items_message">No items</string>
 
-    <string name="vote">Vote</string>
+    <string name="vote">Like</string>
     <string name="visit">Visit</string>
 
     <string name="discussion">Discussion</string>
@@ -70,7 +70,7 @@
 
     <string name="no_comments">No comments. Be the first!</string>
 
-    <string name="delete_vote">unvote</string>
+    <string name="delete_vote">Dislike</string>
 
     <string name="logout">Logout</string>
 

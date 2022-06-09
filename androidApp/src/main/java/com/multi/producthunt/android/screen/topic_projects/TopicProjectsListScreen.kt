@@ -20,6 +20,7 @@ import com.multi.producthunt.android.screen.authorization.AuthenticationScreen
 import com.multi.producthunt.android.screen.detail.DetailProjectScreen
 import com.multi.producthunt.android.ui.DefaultTopAppBar
 import com.multi.producthunt.android.ui.StartupsList
+import com.multi.producthunt.android.ui.UsersList
 import com.multi.producthunt.ui.models.ProjectUI
 
 class TopicProjectsListScreen(private val topicId: Int, private val title: String) :
