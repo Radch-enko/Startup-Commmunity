@@ -225,7 +225,13 @@ class AuthorizationViewModel(
 
     private fun dismissError() {
         mutableState.update {
-            it.copy(error = null)
+            it.copy(
+                name = "",
+                username = "",
+                password = "",
+                isLoading = false,
+                passwordAgain = "", error = null
+            )
         }
     }
 }

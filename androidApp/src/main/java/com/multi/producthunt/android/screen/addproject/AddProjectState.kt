@@ -12,7 +12,7 @@ data class AddProjectState(
     val thumbnail: Uri? = null,
     val media: List<Uri> = emptyList(),
     var topics: List<SelectableTopicUI> = emptyList(),
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val error: String? = null
 ) {
     fun isFormValid(): Boolean {

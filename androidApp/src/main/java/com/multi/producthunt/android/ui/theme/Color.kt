@@ -10,6 +10,10 @@ val white = Color(0xFFFFFFFF)
 val black = Color(0xFF000000)
 val shadow = Color(0x953F3F3F)
 
+val gold = Color(0xFFFFD700)
+val silver = Color(0xFFC0C0C0)
+val bronze = Color(0xFFAF6650)
+
 
 val md_theme_light_primary = Color(0xFF00629d)
 val md_theme_light_onPrimary = Color(0xFFffffff)

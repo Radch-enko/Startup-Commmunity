@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.items
+import androidx.paging.compose.itemsIndexed
 import com.multi.producthunt.MR
 import com.multi.producthunt.ui.models.ProjectUI
 import kotlinx.coroutines.delay
@@ -106,13 +107,14 @@ private fun LazyListScope.startupsRow(
     onUpvoteClicked: (projectId: Int) -> Unit,
     onProjectClick: (id: Int) -> Unit
 ) {
-    this.items(list) { startup ->
+    this.itemsIndexed(list) { index, startup ->
         Box(modifier = startupsRowModifier) {
             if (startup != null) {
                 StartupRow(
                     startup,
                     onUpvoteClicked = { onUpvoteClicked(startup.id) },
-                    onProjectClick = onProjectClick
+                    onProjectClick = onProjectClick,
+                    position = index
                 )
             }
         }

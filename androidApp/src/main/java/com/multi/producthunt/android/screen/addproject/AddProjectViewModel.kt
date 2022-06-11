@@ -79,7 +79,6 @@ class AddProjectViewModel(
             it.copy(isLoading = true)
         }
 
-        delay(1000)
         startupsRepository.getProjectById(projectToRedact).collectLatest { response ->
             when (response) {
                 is ApiResult.Error -> mutableState.update { it.copy(error = response.exception) }
@@ -117,7 +116,7 @@ class AddProjectViewModel(
                 }
                 is ApiResult.Success -> {
                     mutableState.update {
-                        it.copy(topics = response._data.map { it.toSelectableUI() })
+                        it.copy(isLoading = false, topics = response._data.map { it.toSelectableUI() })
                     }
 
                     if (projectToRedact != 0) {

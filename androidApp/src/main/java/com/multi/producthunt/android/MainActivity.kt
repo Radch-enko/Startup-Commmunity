@@ -3,17 +3,19 @@ package com.multi.producthunt.android
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.SideEffect
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.LaunchedEffect
 import androidx.core.view.WindowCompat
 import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.SlideTransition
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.multi.producthunt.android.navigation.BottomNavigationScreen
 import com.multi.producthunt.android.ui.theme.ProductHuntMaterial2
 import com.multi.producthunt.android.ui.theme.ProductHuntMaterial3
-import com.multi.producthunt.android.ui.theme.white
-import com.multi.producthunt.android.ui.theme.zircon
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -22,21 +24,22 @@ class MainActivity : ComponentActivity() {
 
             WindowCompat.setDecorFitsSystemWindows(window, false)
 
-            SideEffect {
+            ProductHuntMaterial3 {
+                ProductHuntMaterial2 {
+                    Navigator(screen = BottomNavigationScreen()) { navigator ->
+                        SlideTransition(navigator)
+                    }
+                }
+                val statusBarColor = MaterialTheme.colorScheme.surface
+
                 systemUiController.setNavigationBarColor(
-                    color = zircon,
+                    color = statusBarColor,
                     darkIcons = true
                 )
                 systemUiController.setStatusBarColor(
-                    color = white,
+                    color = statusBarColor,
                     darkIcons = true
                 )
-            }
-
-            ProductHuntMaterial3 {
-                ProductHuntMaterial2 {
-                    Navigator(screen = BottomNavigationScreen())
-                }
             }
         }
     }

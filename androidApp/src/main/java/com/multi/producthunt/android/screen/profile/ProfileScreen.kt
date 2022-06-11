@@ -55,13 +55,18 @@ class ProfileScreen(
         val state by viewModel.state.collectAsState()
         val systemUiController = rememberSystemUiController()
         val navigator = LocalNavigator.current
+        val statusBarColor = MaterialTheme.colorScheme.surface
 
         LifecycleEffect(
             onStarted = {
                 systemUiController.setStatusBarColor(Color.Transparent, darkIcons = false)
             },
             onDisposed = {
-                systemUiController.setStatusBarColor(White, darkIcons = true)
+
+                systemUiController.setStatusBarColor(
+                    color = statusBarColor,
+                    darkIcons = true
+                )
             }
         )
 
@@ -371,17 +376,13 @@ class ProfileScreen(
             )
         )
 
-        var placeholder by remember {
-            mutableStateOf(true)
-        }
         Box(modifier = modifier) {
             LoadableImage(
                 link = profileImage,
                 modifier = modifier
                     .size(120.dp)
                     .border(shape = CircleShape, width = 3.dp, color = White)
-                    .clip(CircleShape)
-                    .placeholder(placeholder),
+                    .clip(CircleShape),
                 errorDrawable = R.drawable.no_profile_image
             )
 

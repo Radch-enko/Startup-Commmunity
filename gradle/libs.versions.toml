@@ -81,11 +81,15 @@ serialization-negotiation = { module = "io.ktor:ktor-client-content-negotiation"
 serialization-server-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
 
 paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging-version" }
+
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
+
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyager-kodein = { module = "cafe.adriel.voyager:voyager-kodein", version.ref = "voyager" }
 voyager-tab-navigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
 voyager-androidx = { module = "cafe.adriel.voyager:voyager-androidx", version.ref = "voyager" }
+voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
+
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 coil-gif = { module = "io.coil-kt:coil-gif", version.ref = "coil" }
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
@@ -109,7 +113,7 @@ okhttp-logging = { module = "com.squareup.okhttp3:logging-interceptor", version.
 
 [bundles]
 plugins = ["plugin-android", "plugin-kotlin", "plugin-kotlin-serialization", "plugin-gver"]
-voyager = ["voyager-navigator", "voyager-kodein", "voyager-tab-navigator"]
+voyager = ["voyager-navigator", "voyager-kodein", "voyager-tab-navigator", "voyager-transitions"]
 compose = ["androidx-compose-ui", "androidx-compose-ui-tooling", "androidx-compose-foundation", "androidx-compose-material", "androidx-compose-animation", "androidx-compose-activity", "androidx-compose-paging", "androidx-compose-materialyou", "androidx-compose-icons", "androidx-compose-constraint", "compose-dialogs"]
 okhttp = ["okhttp-client", "okhttp-logging"]
 coil = ["coil-gif", "coil-compose"]
