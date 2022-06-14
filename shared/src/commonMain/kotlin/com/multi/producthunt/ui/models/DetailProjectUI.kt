@@ -1,9 +1,8 @@
 package com.multi.producthunt.ui.models
 
 import com.multi.producthunt.domain.model.DetailProjectDomain
-import com.multi.producthunt.domain.model.ProjectDomain
-import io.github.aakira.napier.Napier
-import kotlinx.datetime.toLocalDateTime
+import com.multi.producthunt.utils.toCommentDate
+import com.multi.producthunt.utils.toFullDate
 
 data class DetailProjectUI(
     val id: Int,
@@ -17,7 +16,8 @@ data class DetailProjectUI(
     val votesCount: Int,
     val ownerLink: String?,
     val comments: List<UiComment>,
-    val makerId: Int
+    val maker: UiUserCard,
+    val createdDate: String?,
 ) {
     companion object {
         val Empty = DetailProjectUI(
@@ -32,7 +32,8 @@ data class DetailProjectUI(
             0,
             null,
             emptyList(),
-            0
+            UiUserCard(0, "", "", "", ""),
+            ""
         )
     }
 }
@@ -57,26 +58,19 @@ fun DetailProjectDomain.toDetailUI(): DetailProjectUI {
                     it.user.id,
                     avatar = it.user.profileImage,
                     name = it.user.name,
-                    headline = it.user.headline
+                    headline = it.user.headline,
+                    username = "@${it.user.username}"
                 ),
                 childComments = emptyList()
             )
         },
-        makerId = makerId
+        maker = UiUserCard(
+            id = maker.id,
+            name = maker.name,
+            headline = maker.headline,
+            avatar = maker.profileImage,
+            username = "@${maker.username}"
+        ),
+        createdDate = createdDate.toFullDate()
     )
-}
-
-private fun String.toCommentDate(): String? {
-    return try {
-        val localDateTime = this.substringBefore(".").toLocalDateTime()
-
-        "${localDateTime.dayOfMonth} ${localDateTime.month.name[0]}${
-            localDateTime.month.name.substring(
-                1
-            ).lowercase()
-        }"
-    } catch (e: Exception) {
-        Napier.e("CommentDateCast", e)
-        null
-    }
 }

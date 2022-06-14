@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <resources>
     <string name="home_tab_title">Главная</string>
     <string name="timeline_tab_title">История</string>
@@ -80,4 +81,6 @@
     <string name="topics_tab_title">Темы</string>
 
     <string name="open">Открыть</string>
+
+    <string name="date_mask">Создано %s</string>
 </resources>

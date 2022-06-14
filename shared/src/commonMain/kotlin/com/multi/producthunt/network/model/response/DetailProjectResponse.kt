@@ -30,5 +30,5 @@ data class DetailProjectResponse(
     @SerialName("comments")
     val comments: List<CommentResponse>,
     @SerialName("maker")
-    val makerId: Int
+    val maker: UserResponse
 )

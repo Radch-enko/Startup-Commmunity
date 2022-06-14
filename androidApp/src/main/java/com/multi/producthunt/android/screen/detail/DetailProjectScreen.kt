@@ -80,6 +80,7 @@ import com.multi.producthunt.android.ui.theme.white
 import com.multi.producthunt.ui.models.DetailProjectUI
 import com.multi.producthunt.ui.models.TopicUI
 import com.multi.producthunt.ui.models.UiComment
+import com.multi.producthunt.ui.models.UiUserCard
 import kotlinx.coroutines.flow.collectLatest
 
 class DetailProjectScreen(private val id: Int) : AndroidScreen() {
@@ -182,7 +183,6 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
 
-
                             ProjectInfoThumbnail(
                                 detailProjectUI.name,
                                 detailProjectUI.tagline,
@@ -219,6 +219,16 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
 
                             Spacer(modifier = Modifier.height(16.dp))
 
+                            detailProjectUI.createdDate?.let {
+                                MediumText(
+                                    text = stringResource(
+                                        id = MR.strings.date_mask.resourceId, it
+                                    )
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
                             Text(
                                 text = detailProjectUI.description,
                                 style = typography.bodyMedium
@@ -230,6 +240,24 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
                         ProjectTopicsInfo(detailProjectUI.topics)
 
                         Spacer(modifier = Modifier.height(32.dp))
+
+                        Divider(modifier = Modifier.fillMaxWidth())
+
+                        ProjectMaker(detailProjectUI.maker, onMakerClick = {
+                            navigator?.push(
+                                ProfileScreen(
+                                    it,
+                                    onLogout = { localNavigator ->
+                                        localNavigator?.pop()
+                                    }, onShowProjects = { id, localNavigator ->
+                                        localNavigator?.push(
+                                            UserProjectsListScreen(
+                                                id
+                                            )
+                                        )
+                                    })
+                            )
+                        })
                     }
                 }
 
@@ -253,7 +281,7 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
                             } else {
                                 ProjectComments(
                                     detailProjectUI.comments,
-                                    detailProjectUI.makerId,
+                                    detailProjectUI.maker.id,
                                     onCommentatorClick = {
                                         navigator?.push(
                                             ProfileScreen(
@@ -298,6 +326,23 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
             )
         }, containerColor = MaterialTheme.colorScheme.surface
         )
+    }
+
+    @Composable
+    fun ProjectMaker(maker: UiUserCard, onMakerClick: (id: Int) -> Unit) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+            .clickable {
+                onMakerClick(maker.id)
+            }
+            .fillMaxWidth()
+            .padding(16.dp)) {
+
+            TitleMedium(text = stringResource(id = MR.strings.maker_indicator.resourceId))
+
+            Spacer(modifier = Modifier.width(10.dp))
+
+            Text(text = maker.username, style = typography.titleMedium)
+        }
     }
 
     @Composable

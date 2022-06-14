@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <resources>
     <string name="home_tab_title">Home</string>
     <string name="timeline_tab_title">Timeline</string>
@@ -83,4 +84,6 @@
     <string name="topics_tab_title">Topics</string>
 
     <string name="open">Open</string>
+
+    <string name="date_mask">Created at %s</string>
 </resources>
