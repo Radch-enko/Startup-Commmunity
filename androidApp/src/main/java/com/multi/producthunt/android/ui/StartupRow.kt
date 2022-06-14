@@ -2,7 +2,15 @@ package com.multi.producthunt.android.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
@@ -14,19 +22,16 @@ import androidx.compose.material.icons.filled.ChatBubble
 import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.BottomEnd
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.multi.producthunt.android.R
 import com.multi.producthunt.android.ui.theme.Shapes
-import com.multi.producthunt.android.ui.theme.bronze
-import com.multi.producthunt.android.ui.theme.gold
-import com.multi.producthunt.android.ui.theme.silver
 import com.multi.producthunt.ui.models.ProjectUI
 import com.multi.producthunt.ui.models.TopicUI
 
@@ -34,15 +39,8 @@ import com.multi.producthunt.ui.models.TopicUI
 @Composable
 fun StartupRow(
     startup: ProjectUI, placeHolderVisible: Boolean = false, onUpvoteClicked: () -> Unit,
-    onProjectClick: (id: Int) -> Unit = {},
-    position: Int? = null,
+    onProjectClick: (id: Int) -> Unit = {}
 ) {
-    val iconColor: Color? = when (position) {
-        0 -> gold
-        1 -> silver
-        2 -> bronze
-        else -> null
-    }
     androidx.compose.material3.Surface(
         shape = Shapes.medium,
         shadowElevation = 4.dp,
@@ -57,7 +55,7 @@ fun StartupRow(
                 .padding(16.dp),
             verticalAlignment = CenterVertically
         ) {
-            StartupImage(startup.url, iconColor)
+            StartupImage(startup.url)
             Spacer(modifier = Modifier.width(16.dp))
             Column(
                 modifier = Modifier
@@ -140,24 +138,11 @@ fun UpvoteButton(
 }
 
 @Composable
-fun StartupImage(url: String?, positionIcon: Color? = null) {
-    Box() {
-        LoadableImage(
-            link = url, modifier = Modifier
-                .size(80.dp)
-        )
-        if (positionIcon != null) {
-            Icon(
-                painter = painterResource(id = R.drawable.winner_icon),
-                contentDescription = null,
-                tint = positionIcon,
-                modifier = Modifier
-                    .size(24.dp)
-                    .align(BottomEnd)
-            )
-        }
-    }
-
+fun StartupImage(url: String?) {
+    LoadableImage(
+        link = url, modifier = Modifier
+            .size(80.dp)
+    )
 }
 
 @Composable
