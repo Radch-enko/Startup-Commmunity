@@ -1,11 +1,13 @@
 package com.multi.producthunt.android.screen.topics
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -24,6 +26,7 @@ import com.multi.producthunt.android.screen.topic_projects.TopicProjectsListScre
 import com.multi.producthunt.android.ui.ButtonDefault
 import com.multi.producthunt.android.ui.ErrorDialog
 import com.multi.producthunt.android.ui.LoadableImage
+import com.multi.producthunt.android.ui.MediumText
 import com.multi.producthunt.ui.models.DetailTopicUI
 
 class TopicsScreen : AndroidScreen() {
@@ -52,6 +55,7 @@ class TopicsScreen : AndroidScreen() {
         }
     }
 
+    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun DetailTopicsInner(
         topics: List<DetailTopicUI>,
@@ -67,6 +71,22 @@ class TopicsScreen : AndroidScreen() {
         ) {
             LazyColumn(
                 content = {
+                    stickyHeader {
+                        Surface {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(16.dp)
+                            ) {
+                                Text(
+                                    text = stringResource(id = MR.strings.topics_tab_title.resourceId),
+                                    style = typography.headlineSmall
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
+                                MediumText(text = stringResource(id = MR.strings.topics_screen_explanaiton.resourceId))
+                            }
+                        }
+                    }
                     items(topics) { topic ->
                         DetailTopicCard(
                             topic.id,
@@ -105,7 +125,7 @@ class TopicsScreen : AndroidScreen() {
                 Text(text = title, style = typography.bodyLarge)
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(text = description, style = typography.bodyMedium)
-
+                Spacer(modifier = Modifier.height(8.dp))
                 ButtonDefault(
                     text = stringResource(id = MR.strings.open.resourceId),
                     onClick = { onDetailTopicClick(id, title) },

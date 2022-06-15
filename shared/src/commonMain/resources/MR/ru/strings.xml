@@ -83,4 +83,6 @@
     <string name="open">Открыть</string>
 
     <string name="date_mask">Создано %s</string>
+
+    <string name="topics_screen_explanaiton">Следите за новинками по определённым темам</string>
 </resources>

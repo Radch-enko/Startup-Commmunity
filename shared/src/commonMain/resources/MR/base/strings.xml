@@ -86,4 +86,6 @@
     <string name="open">Open</string>
 
     <string name="date_mask">Created at %s</string>
+
+    <string name="topics_screen_explanaiton">Stay up-to-date on specific topics</string>
 </resources>

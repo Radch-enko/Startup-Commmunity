@@ -30,7 +30,7 @@ class TopicsScreenViewModel(private val topicsRepository: TopicsRepository) :
 
     private fun loadData() = coroutineScope.launch {
         mutableState.update {
-            it.copy(isRefreshing = true)
+            it.copy(isRefreshing = true, error = null)
         }
         delay(400)
         topicsRepository.getTopics().collectLatest { response ->
@@ -51,7 +51,7 @@ class TopicsScreenViewModel(private val topicsRepository: TopicsRepository) :
         }
     }
 
-    fun sendEvent(event: TopicsScreenViewModel.Event) {
+    fun sendEvent(event: Event) {
         when (event) {
             Event.Refresh -> {
                 loadData()
