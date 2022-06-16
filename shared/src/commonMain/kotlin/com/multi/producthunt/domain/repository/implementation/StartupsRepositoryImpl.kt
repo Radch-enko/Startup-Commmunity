@@ -11,6 +11,7 @@ import com.multi.producthunt.network.model.body.TopicBody
 import com.multi.producthunt.network.model.response.VoteResponse
 import com.multi.producthunt.network.service.ProjectsApiService
 import com.multi.producthunt.network.util.asCommonFlow
+import com.multi.producthunt.utils.getDeviceLang
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.Flow
 
@@ -36,7 +37,7 @@ class StartupsRepositoryImpl(
             thumbnail = thumbnail,
             media = media.filterNotNull(),
             topics = topics.map { TopicBody(it) }
-        )).toDomain()
+        )).toDomain(getDeviceLang())
     }
 
     override fun updateProject(
@@ -58,7 +59,7 @@ class StartupsRepositoryImpl(
             thumbnail = thumbnail,
             media = media.filterNotNull(),
             topics = topics.map { TopicBody(it) }
-        )).toDomain()
+        )).toDomain(getDeviceLang())
     }
 
     override fun getProjects(
@@ -75,35 +76,35 @@ class StartupsRepositoryImpl(
                 pageSize = pageSize ?: 10,
                 makerId = makerId
             ).asCommonFlow()
-                .toDomain()
+                .toDomain(getDeviceLang())
         } else if (day != null) {
             service.getProjectsByDay(
                 cursor = cursor,
                 pageSize = pageSize ?: 10,
                 day = day
             ).asCommonFlow()
-                .toDomain()
+                .toDomain(getDeviceLang())
         } else if (topicId != null){
             service.getProjectsByTopicId(
                 cursor = cursor,
                 pageSize = pageSize ?: 10,
                 topicId = topicId
             ).asCommonFlow()
-                .toDomain()
+                .toDomain(getDeviceLang())
         } else if(!searchQuery.isNullOrEmpty()){
             service.searchProjects(
                 cursor = cursor,
                 pageSize = pageSize ?: 10,
                 searchQuery = searchQuery
             ).asCommonFlow()
-                .toDomain()
+                .toDomain(getDeviceLang())
         }
         else {
             service.getProjects(
                 cursor = cursor,
                 pageSize = pageSize ?: 10
             ).asCommonFlow()
-                .toDomain()
+                .toDomain(getDeviceLang())
         }
     }
 

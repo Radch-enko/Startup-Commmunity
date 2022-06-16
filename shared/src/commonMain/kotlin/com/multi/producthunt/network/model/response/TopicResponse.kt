@@ -9,8 +9,12 @@ class TopicResponse(
     val id: Int,
     @SerialName("name")
     val name: String,
+    @SerialName("name_ru")
+    val nameRu: String,
     @SerialName("image")
     val image: String,
     @SerialName("description")
     val description: String,
+    @SerialName("description_ru")
+    val descriptionRu: String,
 )

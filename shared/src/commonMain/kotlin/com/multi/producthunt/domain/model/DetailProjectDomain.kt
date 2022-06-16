@@ -51,7 +51,14 @@ fun DetailProjectResponse.toDomain(): DetailProjectDomain {
         thumbnail = this.thumbnail,
         media = this.media,
         isVoted = this.isVoted,
-        topics = this.topics.map { TopicDomain(it.id, it.name, it.image, it.description) },
+        topics = this.topics.map {
+            TopicDomain(
+                id = it.id,
+                title = it.name,
+                image = it.image,
+                description = it.description
+            )
+        },
         votesCount = this.votesCount,
         ownerLink = this.ownerLink,
         comments = this.comments.map {

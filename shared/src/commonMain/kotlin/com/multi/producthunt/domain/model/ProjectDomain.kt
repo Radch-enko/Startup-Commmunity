@@ -17,32 +17,39 @@ data class ProjectDomain(
     val votesCount: Int,
 )
 
-fun Flow<ApiResult<ProjectResponse>>.toDomain(): Flow<ApiResult<ProjectDomain>> {
+fun Flow<ApiResult<ProjectResponse>>.toDomain(lang: String?): Flow<ApiResult<ProjectDomain>> {
     return this.map { response ->
         response.map { data: ProjectResponse ->
-            data.toDomain()
+            data.toDomain(lang)
         }
     }
 }
 
-fun CommonFlow<ApiResult<List<ProjectResponse>>>.toDomain(): Flow<ApiResult<List<ProjectDomain>>> {
+fun CommonFlow<ApiResult<List<ProjectResponse>>>.toDomain(lang: String?): Flow<ApiResult<List<ProjectDomain>>> {
     return this.map { apiResult ->
         apiResult.map { listResponse ->
             listResponse.map { projectResponse ->
-                projectResponse.toDomain()
+                projectResponse.toDomain(lang)
             }
         }
     }
 }
 
-fun ProjectResponse.toDomain(): ProjectDomain {
+fun ProjectResponse.toDomain(lang: String?): ProjectDomain {
     return ProjectDomain(
         id = this.id,
         name = this.name,
         tagline = this.tagline,
         thumbnail = this.thumbnail,
         isVoted = this.isVoted,
-        topics = this.topics.map { TopicDomain(it.id, it.name, it.image, it.description) },
+        topics = this.topics.map {
+            TopicDomain(
+                it.id,
+                if (lang == "ru") it.nameRu else it.name,
+                it.image,
+                if (lang == "ru") it.descriptionRu else it.description
+            )
+        },
         votesCount = this.votesCount,
     )
 }
