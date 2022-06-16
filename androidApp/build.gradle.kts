@@ -7,7 +7,7 @@ plugins {
 android {
     signingConfigs {
         create("release") {
-            storeFile = file("/Users/stanislav.radchenko/Desktop/Product_Hunt/keystore")
+            storeFile = file("${project.rootDir}/keystore")
             storePassword = "123456"
             keyAlias = "key0"
             keyPassword = "123456"
