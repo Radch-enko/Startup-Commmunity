@@ -8,7 +8,7 @@ import com.kuuurt.paging.multiplatform.helpers.cachedIn
 import com.multi.producthunt.domain.repository.StartupsRepository
 import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.network.model.map
-import com.multi.producthunt.network.model.response.VoteResponse
+import com.multi.producthunt.network.model.response.SuccessResponse
 import com.multi.producthunt.network.util.asCommonFlow
 import com.multi.producthunt.ui.models.ProjectUI
 import com.multi.producthunt.ui.models.toUI
@@ -68,7 +68,7 @@ class GetStartupsUseCase(
             }).pagingData.asCommonFlow().cachedIn(scope)
     }
 
-    fun voteProject(projectId: Int): Flow<ApiResult<VoteResponse>> {
+    fun voteProject(projectId: Int): Flow<ApiResult<SuccessResponse>> {
         return repository.voteProject(projectId)
     }
 }

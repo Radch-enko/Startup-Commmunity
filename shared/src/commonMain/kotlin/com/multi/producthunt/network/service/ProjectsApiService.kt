@@ -77,7 +77,13 @@ interface ProjectsApiService {
     @GET("projects/{project_id}/vote")
     fun voteForProject(
         @Path("project_id") projectId: Int,
-    ): Flow<ApiResult<VoteResponse>>
+    ): Flow<ApiResult<SuccessResponse>>
+
+    @Headers(["Content-Type: application/json"])
+    @POST("projects/{project_id}/delete")
+    fun deleteProject(
+        @Path("project_id") projectId: Int,
+    ): Flow<ApiResult<SuccessResponse>>
 
     // UsersFlow
     @Headers(["Content-Type: application/json"])

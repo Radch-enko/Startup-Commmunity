@@ -3,7 +3,7 @@ package com.multi.producthunt.domain.repository
 import com.multi.producthunt.domain.model.DetailProjectDomain
 import com.multi.producthunt.domain.model.ProjectDomain
 import com.multi.producthunt.network.model.ApiResult
-import com.multi.producthunt.network.model.response.VoteResponse
+import com.multi.producthunt.network.model.response.SuccessResponse
 import kotlinx.coroutines.flow.Flow
 
 interface StartupsRepository {
@@ -28,6 +28,10 @@ interface StartupsRepository {
         topics: List<Int>
     ): Flow<ApiResult<ProjectDomain>>
 
+    fun deleteProject(
+        projectId: Int,
+    ): Flow<ApiResult<SuccessResponse>>
+
     fun getProjects(
         cursor: Int,
         pageSize: Int?,
@@ -43,5 +47,5 @@ interface StartupsRepository {
 
     fun voteProject(
         projectId: Int
-    ): Flow<ApiResult<VoteResponse>>
+    ): Flow<ApiResult<SuccessResponse>>
 }

@@ -5,43 +5,16 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,25 +23,19 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.kodein.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import coil.compose.rememberImagePainter
+import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.multi.producthunt.MR
 import com.multi.producthunt.android.R
 import com.multi.producthunt.android.screen.detail.DetailProjectScreen
-import com.multi.producthunt.android.ui.ButtonDefault
-import com.multi.producthunt.android.ui.CustomChip
-import com.multi.producthunt.android.ui.ErrorDialog
-import com.multi.producthunt.android.ui.OutlinedButtonDefault
-import com.multi.producthunt.android.ui.OutlinedTextFieldDefault
-import com.multi.producthunt.android.ui.ProgressBar
-import com.multi.producthunt.android.ui.TitleMedium
+import com.multi.producthunt.android.ui.*
 import com.multi.producthunt.ui.models.SelectableTopicUI
 import kotlinx.coroutines.flow.collectLatest
 
@@ -89,6 +56,11 @@ class AddProjectScreen(private val projectToRedact: Int = 0) : AndroidScreen() {
                             .show()
                         navigator?.replace(DetailProjectScreen(effect.projectId))
                     }
+                    AddProjectViewModel.Effect.SuccessDelete -> {
+                        Toast.makeText(context, MR.strings.deleted.resourceId, Toast.LENGTH_LONG)
+                            .show()
+                        navigator?.popUntilRoot()
+                    }
                 }
             }
         })
@@ -101,7 +73,6 @@ class AddProjectScreen(private val projectToRedact: Int = 0) : AndroidScreen() {
                 Box(
                     modifier = Modifier
                         .systemBarsPadding()
-                        .padding(16.dp)
                         .imePadding()
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
@@ -115,10 +86,11 @@ class AddProjectScreen(private val projectToRedact: Int = 0) : AndroidScreen() {
                         media = state.media,
                         topics = state.topics,
                         isValid = state.isFormValid(),
+                        isThumbnailValid = state.thumbnail != null,
+                        isMediaValid = state.media.isNotEmpty(),
+                        isRedact = state.isRedact,
                         handleEvent = viewModel::sendEvent
                     )
-
-
                 }
             }
         }
@@ -145,6 +117,9 @@ class AddProjectScreen(private val projectToRedact: Int = 0) : AndroidScreen() {
         thumbnail: Uri?,
         media: List<Uri?>,
         isValid: Boolean,
+        isThumbnailValid: Boolean,
+        isMediaValid: Boolean,
+        isRedact: Boolean,
         topics: List<SelectableTopicUI>,
         handleEvent: (event: AddProjectViewModel.Event) -> Unit,
     ) {
@@ -153,7 +128,7 @@ class AddProjectScreen(private val projectToRedact: Int = 0) : AndroidScreen() {
             ActivityResultContracts.GetContent()
         ) { uri: Uri? ->
             uri?.let {
-                handleEvent(AddProjectViewModel.Event.ThumnailChanged(uri))
+                handleEvent(AddProjectViewModel.Event.ThumbnailChanged(uri))
             }
         }
 
@@ -175,7 +150,8 @@ class AddProjectScreen(private val projectToRedact: Int = 0) : AndroidScreen() {
 
         Column(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(16.dp),
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -189,6 +165,16 @@ class AddProjectScreen(private val projectToRedact: Int = 0) : AndroidScreen() {
                     storagePermissions.launchMultiplePermissionRequest()
                 }
             }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Requirement(
+                message = stringResource(id = MR.strings.thumbnail_required.resourceId),
+                satisfied = isThumbnailValid
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
 
 
             OutlinedTextFieldDefault(
@@ -251,6 +237,13 @@ class AddProjectScreen(private val projectToRedact: Int = 0) : AndroidScreen() {
                 handleEvent(AddProjectViewModel.Event.MediaDeleted(it))
             })
 
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Requirement(
+                message = stringResource(id = MR.strings.media_list_required.resourceId),
+                satisfied = isMediaValid
+            )
+
             Spacer(modifier = Modifier.height(16.dp))
 
             ButtonDefault(
@@ -259,6 +252,57 @@ class AddProjectScreen(private val projectToRedact: Int = 0) : AndroidScreen() {
                 modifier = Modifier.fillMaxWidth(),
                 enabled = isValid
             )
+
+            if (isRedact) {
+                Spacer(modifier = Modifier.height(16.dp))
+
+                var deleteDialogVisible by remember {
+                    mutableStateOf(false)
+                }
+                DeleteButton(
+                    text = stringResource(id = MR.strings.delete_project.resourceId),
+                    onClick = {
+                        deleteDialogVisible = true
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = isValid
+                )
+
+
+                if (deleteDialogVisible) {
+                    AlertDialog(title = {
+                        Text(
+                            text = stringResource(id = MR.strings.delete_project_dialog_title.resourceId),
+                            fontSize = 18.sp
+                        )
+                    }, onDismissRequest = { deleteDialogVisible = false }, confirmButton = {
+                        androidx.compose.material.TextButton(
+                            onClick = {
+                                deleteDialogVisible = false
+                                handleEvent(AddProjectViewModel.Event.DeleteProject)
+                            }
+                        ) {
+                            androidx.compose.material.Text(
+                                text = stringResource(
+                                    id = MR.strings.yes.resourceId
+                                ).uppercase()
+                            )
+                        }
+                    }, dismissButton = {
+                        androidx.compose.material.TextButton(
+                            onClick = {
+                                deleteDialogVisible = false
+                            }
+                        ) {
+                            androidx.compose.material.Text(
+                                text = stringResource(
+                                    id = MR.strings.cancel_button.resourceId
+                                ).uppercase()
+                            )
+                        }
+                    })
+                }
+            }
         }
     }
 
@@ -350,11 +394,8 @@ class AddProjectScreen(private val projectToRedact: Int = 0) : AndroidScreen() {
         topics: List<SelectableTopicUI>,
         onToggle: (topicUI: SelectableTopicUI) -> Unit
     ) {
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(topics) { topicUI ->
+        FlowRow(mainAxisSpacing = 16.dp) {
+            topics.forEach { topicUI ->
                 var selected by remember {
                     mutableStateOf(topicUI.selected)
                 }
@@ -364,16 +405,5 @@ class AddProjectScreen(private val projectToRedact: Int = 0) : AndroidScreen() {
                 })
             }
         }
-    }
-
-    @Composable
-    fun AddProjectTitle(modifier: Modifier) {
-        Text(
-            text = stringResource(
-                MR.strings.add_project.resourceId
-            ), fontSize = 24.sp,
-            fontWeight = FontWeight.Black,
-            modifier = modifier
-        )
     }
 }

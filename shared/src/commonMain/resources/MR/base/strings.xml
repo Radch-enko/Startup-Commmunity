@@ -52,7 +52,7 @@
     <string name="project_thumbnail">Thumbnail</string>
     <string name="project_media">Media</string>
     <string name="project_topics">Topics</string>
-    <string name="project_ownerlink">Website (url link)</string>
+    <string name="project_ownerlink">Website (link)</string>
 
     <string name="upload_medias">Upload images</string>
 
@@ -88,4 +88,15 @@
     <string name="date_mask">Created at %s</string>
 
     <string name="topics_screen_explanaiton">Stay up-to-date on specific topics</string>
+
+    <string name="ownerlink_requirement">Owner link should be https://</string>
+
+    <string name="thumbnail_required">Thumbnail is required</string>
+    <string name="media_list_required">Upload more images</string>
+
+    <string name="delete_project">Delete this project</string>
+    <string name="delete_project_dialog_title">Are you sure?</string>
+    <string name="yes">Yes</string>
+    <string name="deleted">Deleted!</string>
+
 </resources>

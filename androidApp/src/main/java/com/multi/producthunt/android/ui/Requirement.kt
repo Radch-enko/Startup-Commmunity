@@ -6,6 +6,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,7 +49,7 @@ fun Requirement(
     ) {
         Icon(
             modifier = Modifier.size(12.dp),
-            imageVector = Icons.Default.Check,
+            imageVector = if (satisfied) Icons.Default.Check else Icons.Default.Close,
             contentDescription = null,
             tint = tint
         )

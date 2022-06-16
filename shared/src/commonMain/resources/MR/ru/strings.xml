@@ -85,4 +85,18 @@
     <string name="date_mask">Создано %s</string>
 
     <string name="topics_screen_explanaiton">Следите за новинками по определённым темам</string>
+
+    <string name="ownerlink_requirement">Ссылка должна быть в формате https://testexample.ru
+    </string>
+
+    <string name="topics_screen_explanaiton">Следите за новинками по определённым темам</string>
+
+    <string name="thumbnail_required">Аватарка загружена</string>
+    <string name="media_list_required">Загрузите больше изображений</string>
+
+    <string name="delete_project">Удалить проект</string>
+    <string name="delete_project_dialog_title">Вы уверены что хотите удалить этот проект?</string>
+    <string name="yes">Да</string>
+    <string name="deleted">Удалено!</string>
+
 </resources>

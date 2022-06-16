@@ -8,7 +8,7 @@ import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.network.model.body.AddProjectBody
 import com.multi.producthunt.network.model.body.CreateCommentBody
 import com.multi.producthunt.network.model.body.TopicBody
-import com.multi.producthunt.network.model.response.VoteResponse
+import com.multi.producthunt.network.model.response.SuccessResponse
 import com.multi.producthunt.network.service.ProjectsApiService
 import com.multi.producthunt.network.util.asCommonFlow
 import com.multi.producthunt.utils.getDeviceLang
@@ -60,6 +60,10 @@ class StartupsRepositoryImpl(
             media = media.filterNotNull(),
             topics = topics.map { TopicBody(it) }
         )).toDomain(getDeviceLang())
+    }
+
+    override fun deleteProject(projectId: Int): Flow<ApiResult<SuccessResponse>> {
+        return service.deleteProject(projectId)
     }
 
     override fun getProjects(
@@ -121,7 +125,7 @@ class StartupsRepositoryImpl(
         ).toDomain()
     }
 
-    override fun voteProject(projectId: Int): Flow<ApiResult<VoteResponse>> {
+    override fun voteProject(projectId: Int): Flow<ApiResult<SuccessResponse>> {
         return service.voteForProject(projectId)
     }
 }

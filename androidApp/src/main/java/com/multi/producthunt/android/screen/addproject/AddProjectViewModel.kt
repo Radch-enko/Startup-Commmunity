@@ -14,12 +14,7 @@ import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.ui.models.SelectableTopicUI
 import com.multi.producthunt.ui.models.toSelectableUI
 import io.github.aakira.napier.Napier
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class AddProjectViewModel(
@@ -40,7 +35,7 @@ class AddProjectViewModel(
         class TaglineChanged(val tagline: String) :
             Event()
 
-        class ThumnailChanged(val thumbnail: Uri?) :
+        class ThumbnailChanged(val thumbnail: Uri?) :
             Event()
 
         class DescriptionChanged(val description: String) :
@@ -61,10 +56,12 @@ class AddProjectViewModel(
         object SaveProject : Event()
 
         object ErrorDismissed : Event()
+        object DeleteProject : Event()
     }
 
     sealed class Effect {
         class Success(val projectId: Int) : Effect()
+        object SuccessDelete : Effect()
     }
 
     private val mutableEffect = MutableSharedFlow<Effect>()
@@ -97,7 +94,8 @@ class AddProjectViewModel(
                                     selectableTopicUi.selected =
                                         topics.map { it.id }.contains(selectableTopicUi.id)
                                     selectableTopicUi
-                                }
+                                },
+                                isRedact = true
                             )
                         }
                     }
@@ -116,7 +114,9 @@ class AddProjectViewModel(
                 }
                 is ApiResult.Success -> {
                     mutableState.update {
-                        it.copy(isLoading = false, topics = response._data.map { it.toSelectableUI() })
+                        it.copy(
+                            isLoading = false,
+                            topics = response._data.map { it.toSelectableUI() })
                     }
 
                     if (projectToRedact != 0) {
@@ -134,11 +134,27 @@ class AddProjectViewModel(
             is Event.MediaChanged -> updatedMedia(event.media)
             is Event.NameChanged -> updateName(event.name)
             is Event.TaglineChanged -> updateTagline(event.tagline)
-            is Event.ThumnailChanged -> updateThumbnail(event.thumbnail)
+            is Event.ThumbnailChanged -> updateThumbnail(event.thumbnail)
             is Event.TopicChanged -> updateTopics(event.topic)
             is Event.DescriptionChanged -> updateDescription(event.description)
             is Event.OwnerLinkChanged -> updateOwnerlink(event.ownerLink)
             is Event.MediaDeleted -> deleteMedia(event.position)
+            Event.DeleteProject -> deleteProject()
+        }
+    }
+
+    private fun deleteProject() = coroutineScope.launch {
+        startupsRepository.deleteProject(projectToRedact).collectLatest { response ->
+            when(response){
+                is ApiResult.Error -> {
+                    mutableState.update {
+                        it.copy(error = response.exception)
+                    }
+                }
+                is ApiResult.Success -> {
+                    mutableEffect.emit(Effect.SuccessDelete)
+                }
+            }
         }
     }
 

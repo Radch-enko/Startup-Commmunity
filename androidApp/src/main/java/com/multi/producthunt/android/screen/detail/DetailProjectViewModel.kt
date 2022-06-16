@@ -105,8 +105,13 @@ class DetailProjectViewModel(
 
     private fun doVisit(context: Context) {
         try {
+            val url = state.value.detailProjectUI.ownerLink
             val i = Intent(Intent.ACTION_VIEW)
-            i.data = Uri.parse(state.value.detailProjectUI.ownerLink)
+            if (url?.startsWith("http://") == true || url?.startsWith("https://") == true) {
+                i.data = Uri.parse(url)
+            } else {
+                i.data = Uri.parse("http://$url")
+            }
             startActivity(context, i, null)
         } catch (e: Exception) {
             Napier.e("DoVisitByLink", e)

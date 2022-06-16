@@ -98,6 +98,7 @@ accompanist-swiperefresh = { module = "com.google.accompanist:accompanist-swiper
 accompanist-uicontoroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
 accompanist-placeholder = { module = "com.google.accompanist:accompanist-placeholder-material", version.ref = "accompanist" }
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
+accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist" }
 
 work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work-runtime-ktx" }
 kodein-di = { module = "org.kodein.di:kodein-di", version.ref = "kodein" }
@@ -117,6 +118,6 @@ voyager = ["voyager-navigator", "voyager-kodein", "voyager-tab-navigator", "voya
 compose = ["androidx-compose-ui", "androidx-compose-ui-tooling", "androidx-compose-foundation", "androidx-compose-material", "androidx-compose-animation", "androidx-compose-activity", "androidx-compose-paging", "androidx-compose-materialyou", "androidx-compose-icons", "androidx-compose-constraint", "compose-dialogs"]
 okhttp = ["okhttp-client", "okhttp-logging"]
 coil = ["coil-gif", "coil-compose"]
-accompanist = ["accompanist-swiperefresh", "accompanist-uicontoroller", "accompanist-placeholder", "accompanist-permissions"]
+accompanist = ["accompanist-swiperefresh", "accompanist-uicontoroller", "accompanist-placeholder", "accompanist-permissions", "accompanist-flowlayout"]
 ktor = ["ktor-core", "serialization-negotiation", "ktor-client-json", "ktor-logging", "ktor-client-cio", "ktor-auth", "ktor-client-okhttp"]
 serialization = ["serialization", "serialization-json", "serialization-negotiation"]
