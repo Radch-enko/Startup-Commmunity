@@ -1,13 +1,14 @@
 package com.multi.producthunt.network.service
 
 import com.multi.producthunt.network.model.ApiResult
+import com.multi.producthunt.network.model.response.ErrorResponse
 import de.jensklingenberg.ktorfit.adapter.ResponseConverter
-import io.ktor.client.statement.HttpResponse
-import io.ktor.http.HttpStatusCode
-import io.ktor.util.reflect.TypeInfo
-import io.ktor.util.reflect.platformType
-import kotlin.reflect.KClass
+import io.ktor.client.call.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import io.ktor.util.reflect.*
 import kotlinx.coroutines.flow.flow
+import kotlin.reflect.KClass
 
 class ResultConverter : ResponseConverter {
 
@@ -37,11 +38,14 @@ class ResultConverter : ResponseConverter {
                             )
                         }
                         else -> {
-                            ApiResult.Error(exception = response.status.description)
+                            val errorResponse: ErrorResponse? = response.call.body()
+                            ApiResult.Error(
+                                exception = errorResponse?.detail ?: response.status.description
+                            )
                         }
                     }
                 } catch (exception: Exception) {
-                    ApiResult.Error(exception.message.toString())
+                    ApiResult.Error("Something went wrong, please try again later")
                 }
             )
         }
