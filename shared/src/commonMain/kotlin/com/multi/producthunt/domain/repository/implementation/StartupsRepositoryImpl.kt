@@ -88,22 +88,21 @@ class StartupsRepositoryImpl(
                 day = day
             ).asCommonFlow()
                 .toDomain(getDeviceLang())
-        } else if (topicId != null){
+        } else if (topicId != null) {
             service.getProjectsByTopicId(
                 cursor = cursor,
                 pageSize = pageSize ?: 10,
                 topicId = topicId
             ).asCommonFlow()
                 .toDomain(getDeviceLang())
-        } else if(!searchQuery.isNullOrEmpty()){
+        } else if (!searchQuery.isNullOrEmpty()) {
             service.searchProjects(
                 cursor = cursor,
                 pageSize = pageSize ?: 10,
-                searchQuery = searchQuery
+                mapOf("searchQuery" to searchQuery)
             ).asCommonFlow()
                 .toDomain(getDeviceLang())
-        }
-        else {
+        } else {
             service.getProjects(
                 cursor = cursor,
                 pageSize = pageSize ?: 10

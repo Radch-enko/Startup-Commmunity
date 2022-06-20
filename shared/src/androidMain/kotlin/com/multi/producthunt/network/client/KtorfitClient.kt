@@ -10,6 +10,8 @@ import de.jensklingenberg.ktorfit.create
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.http.ContentType
+import io.ktor.http.withCharset
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import okhttp3.logging.HttpLoggingInterceptor
@@ -21,9 +23,14 @@ actual class KtorfitClient actual constructor(kmmPreference: KMMPreference) {
             val logger = HttpLoggingInterceptor()
             logger.level = HttpLoggingInterceptor.Level.BODY
             addInterceptor(logger)
+
             addInterceptor { chain ->
                 val token = kmmPreference.getString(AuthorizationUseCase.ACCESS_TOKEN)
                 val newRequest = chain.request().newBuilder()
+                newRequest.addHeader(
+                    "Content-Type",
+                    "application/json;charset=UTF-8"
+                )
                 if (!token.isNullOrEmpty()) {
                     newRequest.addHeader(
                         "Authorization",
@@ -31,11 +38,12 @@ actual class KtorfitClient actual constructor(kmmPreference: KMMPreference) {
                     )
                 }
                 chain.proceed(newRequest.build())
-
             }
         }
         install(ContentNegotiation) {
-            json(Json { isLenient = true; ignoreUnknownKeys = true; explicitNulls = true })
+            json(
+                Json { isLenient = true; ignoreUnknownKeys = true; explicitNulls = true}
+            )
         }
     }
 

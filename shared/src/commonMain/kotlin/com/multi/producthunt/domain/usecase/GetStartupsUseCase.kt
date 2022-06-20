@@ -12,10 +12,13 @@ import com.multi.producthunt.network.model.response.SuccessResponse
 import com.multi.producthunt.network.util.asCommonFlow
 import com.multi.producthunt.ui.models.ProjectUI
 import com.multi.producthunt.ui.models.toUI
+import io.github.aakira.napier.Napier
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.single
 import kotlinx.datetime.LocalDate
 

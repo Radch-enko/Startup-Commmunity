@@ -24,6 +24,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import com.multi.producthunt.MR
 import com.multi.producthunt.ui.models.ProjectUI
+import io.github.aakira.napier.Napier
 
 @Composable
 fun StartupsList(
