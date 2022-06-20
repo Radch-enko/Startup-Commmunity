@@ -1,5 +1,7 @@
 package com.multi.producthunt.android.screen.authorization
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,9 +21,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
@@ -224,6 +232,34 @@ class AuthenticationScreen(private val onSuccessAuthenticate: (navigator: Naviga
                         onToggleMode()
                     }
                 )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                val mail = stringResource(id = MR.strings.contact_mail.resourceId)
+                val context = LocalContext.current
+                ClickableText(
+                    text = buildAnnotatedString {
+                        append(stringResource(id = MR.strings.forgot_your_password.resourceId))
+                        append(" ")
+                        pushStringAnnotation(
+                            tag = "email",
+                            annotation = mail
+                        )
+                        withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {
+                            append(stringResource(id = MR.strings.contact_support.resourceId))
+                        }
+                        pop()
+                    },
+                    onClick = {
+
+                        try {
+                            val i = Intent(Intent.ACTION_SENDTO)
+                            i.data = Uri.parse("mailto:$mail")
+                            ContextCompat.startActivity(context, i, null)
+                        } catch (e: Exception) {
+                            Napier.e("DoVisitByLink", e)
+                        }
+                    })
             }
         }
     }

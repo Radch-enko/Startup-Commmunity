@@ -102,4 +102,8 @@
     <string name="topics_required">Selected at least one topic</string>
     <string name="all_fields_filled">All fields are filled</string>
 
+    <string name="forgot_your_password">Forgot your password? </string>
+    <string name="contact_mail">stas.radchenko.den@gmail.com</string>
+    <string name="contact_support">Contact support</string>
+
 </resources>
