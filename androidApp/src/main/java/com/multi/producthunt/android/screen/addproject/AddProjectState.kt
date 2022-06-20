@@ -11,6 +11,7 @@ data class AddProjectState(
     val thumbnail: Uri? = null,
     val media: List<Uri> = emptyList(),
     var topics: List<SelectableTopicUI> = emptyList(),
+    var selectedTopics: List<SelectableTopicUI> = emptyList(),
     val isLoading: Boolean = true,
     val error: String? = null,
     val isRedact: Boolean = false,
@@ -18,5 +19,9 @@ data class AddProjectState(
     fun isFormValid(): Boolean {
         return name.isNotEmpty() && tagline.isNotEmpty() && description.isNotEmpty() && ownerLink.isNotEmpty() && thumbnail != null && media.isNotEmpty()
                 && topics.isNotEmpty()
+    }
+
+    fun isTopicsValid(): Boolean {
+        return selectedTopics.isNotEmpty()
     }
 }

@@ -28,23 +28,9 @@ fun Requirement(
     val tint = if (satisfied) {
         MaterialTheme.colors.primary
     } else MaterialTheme.colors.onSurface.copy(alpha = 0.4f)
-    val requirementStatus = if (satisfied) {
-        stringResource(
-            id =
-            MR.strings.password_requirement_satisfied.resourceId, message
-        )
-    } else {
-        stringResource(
-            id =
-            MR.strings.password_requirement_needed.resourceId, message
-        )
-    }
     Row(
         modifier = modifier
-            .padding(0.dp)
-            .semantics(mergeDescendants = true) {
-                text = AnnotatedString(requirementStatus)
-            },
+            .padding(0.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(

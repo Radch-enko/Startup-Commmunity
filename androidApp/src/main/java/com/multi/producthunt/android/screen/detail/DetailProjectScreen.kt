@@ -130,6 +130,7 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
 
         LifecycleEffect(
             onStarted = {
+                viewModel.sendEvent(DetailProjectViewModel.Event.Retry)
                 systemUiController.setNavigationBarColor(
                     color = color,
                     darkIcons = true

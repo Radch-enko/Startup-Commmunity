@@ -14,7 +14,11 @@ import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.ui.models.SelectableTopicUI
 import com.multi.producthunt.ui.models.toSelectableUI
 import io.github.aakira.napier.Napier
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AddProjectViewModel(
@@ -145,7 +149,7 @@ class AddProjectViewModel(
 
     private fun deleteProject() = coroutineScope.launch {
         startupsRepository.deleteProject(projectToRedact).collectLatest { response ->
-            when(response){
+            when (response) {
                 is ApiResult.Error -> {
                     mutableState.update {
                         it.copy(error = response.exception)
@@ -185,9 +189,7 @@ class AddProjectViewModel(
                         description = state.value.description,
                         ownerLink = state.value.ownerLink,
                         media = state.value.media.map { it.toByteArray(context)?.toBase64() },
-                        topics = state.value.topics.filter { it.selected }.map {
-                            it.id
-                        }
+                        topics = state.value.selectedTopics.map { it.id }
                     )
                 } else {
                     startupsRepository.updateProject(
@@ -234,7 +236,7 @@ class AddProjectViewModel(
         }
 
         mutableState.update {
-            it.copy(topics = list.toList())
+            it.copy(topics = list.toList(), selectedTopics = list.filter { it.selected })
         }
     }
 

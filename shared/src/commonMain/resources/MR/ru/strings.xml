@@ -92,11 +92,13 @@
     <string name="topics_screen_explanaiton">Следите за новинками по определённым темам</string>
 
     <string name="thumbnail_required">Аватарка загружена</string>
-    <string name="media_list_required">Загрузите больше изображений</string>
+    <string name="media_list_required">Загружены дополнительные изображения</string>
 
     <string name="delete_project">Удалить проект</string>
     <string name="delete_project_dialog_title">Вы уверены что хотите удалить этот проект?</string>
     <string name="yes">Да</string>
     <string name="deleted">Удалено!</string>
 
+    <string name="topics_required">Выбрана хотя бы одна категория</string>
+    <string name="all_fields_filled">Заполнены все поля</string>
 </resources>

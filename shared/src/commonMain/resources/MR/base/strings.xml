@@ -91,12 +91,15 @@
 
     <string name="ownerlink_requirement">Owner link should be https://</string>
 
-    <string name="thumbnail_required">Thumbnail is required</string>
-    <string name="media_list_required">Upload more images</string>
+    <string name="thumbnail_required">Thumbnail added</string>
+    <string name="media_list_required">Uploaded more images</string>
 
     <string name="delete_project">Delete this project</string>
     <string name="delete_project_dialog_title">Are you sure?</string>
     <string name="yes">Yes</string>
     <string name="deleted">Deleted!</string>
+
+    <string name="topics_required">Selected at least one topic</string>
+    <string name="all_fields_filled">All fields are filled</string>
 
 </resources>

@@ -51,10 +51,6 @@ class DetailProjectViewModel(
     private val mutableEffect = MutableSharedFlow<Effect>()
     val effect = mutableEffect.asSharedFlow()
 
-    init {
-        loadDate(id)
-    }
-
     fun sendEvent(event: Event) {
         when (event) {
             is Event.OnCommentChange -> changeComment(event.comment)
