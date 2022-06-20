@@ -5,9 +5,11 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.ExperimentalUnitApi
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 
+@OptIn(ExperimentalUnitApi::class)
 @Composable
 fun RowScope.TabNavigationItem(tab: Tab) {
     val tabNavigator = LocalTabNavigator.current

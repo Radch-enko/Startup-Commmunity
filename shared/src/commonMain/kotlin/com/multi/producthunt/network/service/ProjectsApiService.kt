@@ -1,25 +1,9 @@
 package com.multi.producthunt.network.service
 
 import com.multi.producthunt.network.model.ApiResult
-import com.multi.producthunt.network.model.body.AddProjectBody
-import com.multi.producthunt.network.model.body.CreateCommentBody
-import com.multi.producthunt.network.model.body.LoginBody
-import com.multi.producthunt.network.model.body.RegisterBody
-import com.multi.producthunt.network.model.body.UpdateUserBody
-import com.multi.producthunt.network.model.response.DetailProjectResponse
-import com.multi.producthunt.network.model.response.LoginResponse
-import com.multi.producthunt.network.model.response.ProjectResponse
-import com.multi.producthunt.network.model.response.SuccessResponse
-import com.multi.producthunt.network.model.response.TopicResponse
-import com.multi.producthunt.network.model.response.UserResponse
-import de.jensklingenberg.ktorfit.http.Body
-import de.jensklingenberg.ktorfit.http.GET
-import de.jensklingenberg.ktorfit.http.Header
-import de.jensklingenberg.ktorfit.http.Headers
-import de.jensklingenberg.ktorfit.http.POST
-import de.jensklingenberg.ktorfit.http.Path
-import de.jensklingenberg.ktorfit.http.Query
-import de.jensklingenberg.ktorfit.http.QueryMap
+import com.multi.producthunt.network.model.body.*
+import com.multi.producthunt.network.model.response.*
+import de.jensklingenberg.ktorfit.http.*
 import kotlinx.coroutines.flow.Flow
 
 interface ProjectsApiService {
@@ -80,7 +64,7 @@ interface ProjectsApiService {
     fun searchProjects(
         @Query("cursor") cursor: Int,
         @Query("page_size") pageSize: Int,
-        @QueryMap(true) map : Map<String,String>
+        @QueryMap(true) map: Map<String, String>
     ): Flow<ApiResult<List<ProjectResponse>>>
 
     @GET("projects/{project_id}/vote")
@@ -126,4 +110,24 @@ interface ProjectsApiService {
     // Topics flow
     @GET("topics")
     fun getTopics(): Flow<ApiResult<List<TopicResponse>>>
+
+    @GET("discussionsTopics")
+    fun getDiscussionsTopics(): Flow<ApiResult<List<TopicResponse>>>
+
+    // Discussions flow
+
+    @GET("discussions")
+    fun getDiscussions(
+        @Query("cursor") cursor: Int,
+        @Query("page_size") pageSize: Int,
+        @QueryMap(true) map: Map<String, String>
+    ): Flow<ApiResult<List<DiscussionResponse>>>
+
+    @POST("discussions/create")
+    fun createDiscussion(@Body body: CreateDiscussionBody): Flow<ApiResult<DiscussionResponse>>
+
+    @GET("discussions/{discussion_id}")
+    fun getDiscussionById(
+        @Path("discussion_id") id: Int
+    ): Flow<ApiResult<DetailDiscussionResponse>>
 }

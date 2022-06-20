@@ -106,4 +106,7 @@
     <string name="contact_mail">stas.radchenko.den@gmail.com</string>
     <string name="contact_support">Contact support</string>
 
+    <string name="discussion_tab_title">Discussion</string>
+    <string name="discussion_explanation">Share experiences, ask questions, develop!</string>
+
 </resources>
