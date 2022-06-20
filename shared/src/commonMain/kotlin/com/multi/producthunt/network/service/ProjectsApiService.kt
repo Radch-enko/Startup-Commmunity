@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.Flow
 interface ProjectsApiService {
 
     // ProjectsFlow
+    @Headers(["Content-Type: application/json"])
     @POST("projects/create")
     fun addProject(
         @Body body: AddProjectBody
@@ -41,12 +42,14 @@ interface ProjectsApiService {
         @Path("project_id") projectId: Int
     ): Flow<ApiResult<DetailProjectResponse>>
 
+    @Headers(["Content-Type: application/json"])
     @POST("projects/{project_id}/update")
     fun updateProject(
         @Path("project_id") projectId: Int,
         @Body body: AddProjectBody
     ): Flow<ApiResult<ProjectResponse>>
 
+    @Headers(["Content-Type: application/json"])
     @POST("projects/{project_id}/comment")
     fun commentForProject(
         @Body body: CreateCommentBody
@@ -91,15 +94,18 @@ interface ProjectsApiService {
     ): Flow<ApiResult<SuccessResponse>>
 
     // UsersFlow
+    @Headers(["Content-Type: application/json"])
     @POST("users/login")
     fun login(@Body body: LoginBody): Flow<ApiResult<LoginResponse>>
 
+    @Headers(["Content-Type: application/json"])
     @POST("users/create")
     fun register(@Body body: RegisterBody): Flow<ApiResult<UserResponse>>
 
     @GET("users/me")
     fun me(): Flow<ApiResult<UserResponse>>
 
+    @Headers(["Content-Type: application/json"])
     @POST("users/update")
     fun updateUser(
         @Body body: UpdateUserBody

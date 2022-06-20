@@ -57,9 +57,6 @@ class TimelineScreenViewModel(
     private val mutableEffect = MutableSharedFlow<Effect>()
     val effect = mutableEffect.asSharedFlow()
 
-    init {
-        loadData()
-    }
 
     fun sendEvent(event: Event) {
         when (event) {
@@ -94,7 +91,7 @@ class TimelineScreenViewModel(
         mutableEffect.emit(Effect.ShowPicker)
     }
 
-    private fun loadData(
+    fun loadData(
         date: LocalDate = currentDate
     ) = coroutineScope.launch {
 

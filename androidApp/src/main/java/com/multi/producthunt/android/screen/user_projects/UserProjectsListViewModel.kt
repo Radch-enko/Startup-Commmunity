@@ -42,9 +42,6 @@ class UserProjectsListViewModel(
         class Vote(val projectId: Int) : Event()
     }
 
-    init {
-        loadData()
-    }
 
     fun sendEvent(event: Event) {
         when (event) {
@@ -70,7 +67,7 @@ class UserProjectsListViewModel(
         }
     }
 
-    private fun loadData() = coroutineScope.launch {
+    fun loadData() = coroutineScope.launch {
         mutableState.update { it.copy(isRefreshing = true) }
 
         val id = if (userId != 0) userId else authorizationUseCase.getCurrentUserId() ?: 0

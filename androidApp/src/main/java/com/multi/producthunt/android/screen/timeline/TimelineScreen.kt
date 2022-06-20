@@ -4,7 +4,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallTopAppBar
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -14,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
 import cafe.adriel.voyager.androidx.AndroidScreen
+import cafe.adriel.voyager.core.lifecycle.LifecycleEffect
 import cafe.adriel.voyager.kodein.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -26,9 +33,9 @@ import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.DatePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import kotlin.reflect.KFunction1
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.datetime.toKotlinLocalDate
-import kotlin.reflect.KFunction1
 
 class TimelineScreen : AndroidScreen() {
     @Composable
@@ -40,6 +47,11 @@ class TimelineScreen : AndroidScreen() {
             handleEvent = viewModel::sendEvent
         )
 
+        LifecycleEffect(
+            onStarted = {
+                viewModel.loadData()
+            }
+        )
 
         val dialogState = rememberMaterialDialogState()
 

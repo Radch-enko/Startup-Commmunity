@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import cafe.adriel.voyager.androidx.AndroidScreen
+import cafe.adriel.voyager.core.lifecycle.LifecycleEffect
 import cafe.adriel.voyager.kodein.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -30,6 +31,13 @@ class UserProjectsListScreen(private val userId: Int) : AndroidScreen() {
         val viewModel: UserProjectsListViewModel = rememberScreenModel(arg = userId)
         val state by viewModel.state.collectAsState()
         val navigator = LocalNavigator.current
+
+        LifecycleEffect(
+            onStarted = {
+                viewModel.loadData()
+            }
+        )
+
         UserProjectsList(
             state.pagingList.collectAsLazyPagingItems(),
             state.title.orEmpty(),
