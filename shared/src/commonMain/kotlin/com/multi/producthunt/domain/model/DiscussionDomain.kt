@@ -10,9 +10,10 @@ import kotlinx.coroutines.flow.map
 class DiscussionDomain(
     val id: Int,
     val title: String,
-    val description: String,
     val topics: List<TopicDomain>,
-    val maker: UserDomain
+    val maker: UserDomain,
+    val createdDate: String,
+    val replies: Int
 )
 
 fun Flow<ApiResult<DiscussionResponse>>.toDomain(lang: String?): Flow<ApiResult<DiscussionDomain>> {
@@ -37,8 +38,9 @@ fun DiscussionResponse.toDomain(lang: String?): DiscussionDomain {
     return DiscussionDomain(
         id = this.id,
         title = this.title,
-        description = this.description,
         topics = this.topics.map { it.toDomain(lang) },
-        maker = this.maker.toDomain()
+        maker = this.maker.toDomain(),
+        createdDate = this.createdDate,
+        replies = this.replies
     )
 }

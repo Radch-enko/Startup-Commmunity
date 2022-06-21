@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <plural name="replies_count">
+        <item quantity="one">%d ответ</item>
+        <item quantity="two">%d ответа</item>
+        <item quantity="other">%d ответов</item>
+    </plural>
+</resources>

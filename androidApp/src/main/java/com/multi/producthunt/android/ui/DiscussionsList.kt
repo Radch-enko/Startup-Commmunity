@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -21,6 +22,7 @@ import androidx.paging.compose.items
 import com.multi.producthunt.MR
 import com.multi.producthunt.android.R
 import com.multi.producthunt.ui.models.DiscussionItemUI
+import com.multi.producthunt.utils.getMyPluralDesc
 
 
 @Composable
@@ -158,18 +160,24 @@ fun DiscussionRow(
                     style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.placeholder(placeHolderVisible)
                 )
-//                Spacer(modifier = Modifier.width(16.dp))
-//                Text(
-//                    text = "22 replies",
-//                    style = MaterialTheme.typography.titleSmall,
-//                    modifier = Modifier.placeholder(placeHolderVisible)
-//                )
-//                Spacer(modifier = Modifier.width(16.dp))
-//                Text(
-//                    text = "21 June 2022",
-//                    style = MaterialTheme.typography.titleSmall,
-//                    modifier = Modifier.placeholder(placeHolderVisible)
-//                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(
+                    text = getMyPluralDesc(MR.plurals.replies_count, discussion.replies).toString(
+                        context = LocalContext.current
+                    ),
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.placeholder(placeHolderVisible)
+                )
+                discussion.createdDate.let {
+                    if (!it.isNullOrEmpty()) {
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.titleSmall,
+                            modifier = Modifier.placeholder(placeHolderVisible)
+                        )
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
