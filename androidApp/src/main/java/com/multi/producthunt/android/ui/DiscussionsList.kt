@@ -147,7 +147,9 @@ fun DiscussionRow(
                 Text(
                     text = discussion.title,
                     style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.placeholder(placeHolderVisible)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .placeholder(placeHolderVisible)
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -156,7 +158,9 @@ fun DiscussionRow(
                 Text(
                     text = discussion.maker.name,
                     style = MaterialTheme.typography.titleSmall,
-                    modifier = Modifier.placeholder(placeHolderVisible)
+                    modifier = Modifier
+                        .weight(1f)
+                        .placeholder(placeHolderVisible)
                 )
                 Spacer(modifier = Modifier.width(16.dp))
 
