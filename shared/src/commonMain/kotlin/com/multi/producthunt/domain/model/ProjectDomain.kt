@@ -43,12 +43,7 @@ fun ProjectResponse.toDomain(lang: String?): ProjectDomain {
         thumbnail = this.thumbnail,
         isVoted = this.isVoted,
         topics = this.topics.map {
-            TopicDomain(
-                it.id,
-                if (lang == "ru") it.nameRu else it.name,
-                it.image,
-                if (lang == "ru") it.descriptionRu else it.description
-            )
+            it.toDomain(lang)
         },
         votesCount = this.votesCount,
     )

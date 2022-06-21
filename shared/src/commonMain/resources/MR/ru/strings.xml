@@ -102,8 +102,21 @@
     <string name="topics_required">Выбрана хотя бы одна категория</string>
     <string name="all_fields_filled">Заполнены все поля</string>
 
-    <string name="forgot_your_password">Забыли пароль? </string>
+    <string name="forgot_your_password">Забыли пароль?</string>
     <string name="contact_mail">stas.radchenko.den@gmail.com</string>
     <string name="contact_support">Обратиться в поддержку</string>
+
+    <string name="discussion_tab_title">Общение</string>
+    <string name="discussion_explanation">Делитесь опытом, задавайте вопросы, развивайтесь!</string>
+
+    <string name="start_discussion">Начать обсуждение</string>
+
+    <string name="discussion_title">Введите заголовок обсуждения</string>
+    <string name="discussion_description">Расскажите подробнее о проблеме</string>
+
+    <string name="creating_of_discussion">Создание обсуждения</string>
+
+    <string name="discussion_maker">Обуждение начал</string>
+
 
 </resources>

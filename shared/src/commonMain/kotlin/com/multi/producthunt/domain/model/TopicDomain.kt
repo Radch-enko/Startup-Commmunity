@@ -17,13 +17,17 @@ fun Flow<ApiResult<List<TopicResponse>>>.toDomain(lang: String?): Flow<ApiResult
     return this.map { value: ApiResult<List<TopicResponse>> ->
         value.map {
             it.map { topicResponse ->
-                TopicDomain(
-                    topicResponse.id,
-                    if (lang == "ru") topicResponse.nameRu else topicResponse.name,
-                    topicResponse.image,
-                    if (lang == "ru") topicResponse.descriptionRu else topicResponse.description
-                )
+                topicResponse.toDomain(lang)
             }
         }
     }
+}
+
+fun TopicResponse.toDomain(lang: String?): TopicDomain {
+    return TopicDomain(
+        this.id,
+        if (lang == "ru") this.nameRu else this.name,
+        this.image,
+        if (lang == "ru") this.descriptionRu else this.description
+    )
 }

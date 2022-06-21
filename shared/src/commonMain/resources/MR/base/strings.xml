@@ -106,4 +106,16 @@
     <string name="contact_mail">stas.radchenko.den@gmail.com</string>
     <string name="contact_support">Contact support</string>
 
+    <string name="discussion_tab_title">Discussion</string>
+    <string name="discussion_explanation">Share experiences, ask questions, develop!</string>
+
+    <string name="start_discussion">Create discussion</string>
+
+    <string name="discussion_title">Enter title of discussion</string>
+    <string name="discussion_description">Tell us more about the problem</string>
+
+    <string name="creating_of_discussion">Create discussion</string>
+
+    <string name="discussion_maker">Discussion started by</string>
+
 </resources>

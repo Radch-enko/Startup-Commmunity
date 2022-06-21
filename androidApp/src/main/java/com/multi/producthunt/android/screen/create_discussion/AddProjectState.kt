@@ -1,4 +1,4 @@
-package com.multi.producthunt.android.screen.addproject
+package com.multi.producthunt.android.screen.create_discussion
 
 import android.net.Uri
 import com.multi.producthunt.ui.models.SelectableTopicUI
@@ -18,7 +18,7 @@ data class AddProjectState(
 ) {
     fun isFormValid(): Boolean {
         return name.isNotEmpty() && tagline.isNotEmpty() && description.isNotEmpty() && ownerLink.isNotEmpty() && thumbnail != null && media.isNotEmpty()
-                && selectedTopics.isNotEmpty()
+                && topics.isNotEmpty()
     }
 
     fun isTopicsValid(): Boolean {

@@ -42,6 +42,7 @@ fun BottomNavigation() {
                 ) {
                     TabNavigationItem(tab = HomeTab)
                     TabNavigationItem(tab = TimelineTab)
+                    TabNavigationItem(tab = DiscussionsTab)
                     TabNavigationItem(tab = TopicsTab)
                     TabNavigationItem(tab = ProfileTab)
                 }
