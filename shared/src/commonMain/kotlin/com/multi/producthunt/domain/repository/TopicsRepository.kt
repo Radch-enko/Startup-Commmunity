@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface TopicsRepository {
     fun getTopics(): Flow<ApiResult<List<TopicDomain>>>
+    fun getDiscussionTopics(): Flow<ApiResult<List<TopicDomain>>>
 }

@@ -1,22 +1,32 @@
 package com.multi.producthunt.android.screen.discussions
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Forum
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.paging.compose.collectAsLazyPagingItems
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.multi.producthunt.MR
 import com.multi.producthunt.android.R
+import com.multi.producthunt.android.screen.authorization.AuthenticationScreen
+import com.multi.producthunt.android.screen.create_discussion.AddDiscussionScreen
 import com.multi.producthunt.android.ui.DiscussionsList
 import com.multi.producthunt.android.ui.ScrollableSearchField
 import org.kodein.di.compose.rememberInstance
 
 class DiscussionListScreen : Screen {
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         val viewModel: DiscussionListViewModel by rememberInstance()
@@ -32,19 +42,46 @@ class DiscussionListScreen : Screen {
 
         viewModel.updateScrollPosition(scrollState.firstVisibleItemIndex)
 
-        SwipeRefresh(
-            state = rememberSwipeRefreshState(isRefreshing = state.isRefreshing),
-            onRefresh = { viewModel.sendEvent(DiscussionListViewModel.Event.Refresh) },
-            indicatorPadding = PaddingValues(top = searchFieldHeight)
-        ) {
-            DiscussionsList(
-                pagingList = state.pagingList.collectAsLazyPagingItems(),
-                firstItemPaddingTop = searchFieldHeight,
-                onDiscussionClick = { })
+        Scaffold(
+            floatingActionButton = {
+                ExtendedFloatingActionButton(text = {
+                    Text(text = stringResource(id = MR.strings.start_discussion.resourceId))
+                }, onClick = {
+                    if (state.isAuthorized) {
+                        navigator?.push(AddDiscussionScreen())
+                    } else {
+                        navigator?.push(AuthenticationScreen(onSuccessAuthenticate = { localNavigator ->
+                            localNavigator?.pop()
+                        }))
+                    }
+
+                }, icon = {
+                    Icon(Icons.Filled.Forum, null)
+                })
+            }) { innerPadding ->
+            SwipeRefresh(
+                state = rememberSwipeRefreshState(isRefreshing = state.isRefreshing),
+                onRefresh = { viewModel.sendEvent(DiscussionListViewModel.Event.Refresh) },
+                indicatorPadding = PaddingValues(top = searchFieldHeight),
+                modifier = Modifier.padding(innerPadding)
+            ) {
+                DiscussionsList(
+                    pagingList = state.pagingList.collectAsLazyPagingItems(),
+                    firstItemPaddingTop = searchFieldHeight,
+                    onDiscussionClick = {
+
+                    })
+            }
+
+            ScrollableSearchField(
+                searchQuery = searchQuery,
+                scrollUpState,
+                viewModel.lastScrollIndex
+            ) {
+                viewModel.sendEvent(DiscussionListViewModel.Event.Search(it))
+            }
         }
 
-        ScrollableSearchField(searchQuery = searchQuery, scrollUpState, viewModel.lastScrollIndex) {
-            viewModel.sendEvent(DiscussionListViewModel.Event.Search(it))
-        }
+
     }
 }

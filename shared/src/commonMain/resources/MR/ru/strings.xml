@@ -109,4 +109,12 @@
     <string name="discussion_tab_title">Общение</string>
     <string name="discussion_explanation">Делитесь опытом, задавайте вопросы, развивайтесь!</string>
 
+    <string name="start_discussion">Начать обсуждение</string>
+
+    <string name="discussion_title">Введите заголовок обсуждения</string>
+    <string name="discussion_description">Расскажите подробнее о проблеме</string>
+
+    <string name="creating_of_discussion">Создание обсуждения</string>
+
+
 </resources>

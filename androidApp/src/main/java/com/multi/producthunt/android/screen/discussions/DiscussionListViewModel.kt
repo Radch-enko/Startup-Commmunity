@@ -3,12 +3,16 @@ package com.multi.producthunt.android.screen.discussions
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.kuuurt.paging.multiplatform.PagingData
+import com.multi.producthunt.domain.usecase.AuthorizationUseCase
 import com.multi.producthunt.domain.usecase.GetDiscussionsUseCase
 import com.multi.producthunt.ui.models.DiscussionItemUI
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class DiscussionListViewModel(private val discussionUseCase: GetDiscussionsUseCase) :
+class DiscussionListViewModel(
+    private val discussionUseCase: GetDiscussionsUseCase,
+    private val authorizationUseCase: AuthorizationUseCase,
+) :
     StateScreenModel<DiscussionListViewModel.State>(State.Empty) {
 
     data class State(
@@ -74,6 +78,7 @@ class DiscussionListViewModel(private val discussionUseCase: GetDiscussionsUseCa
                     it.copy(
                         isRefreshing = false,
                         pagingList = discussionUseCase.getDiscussionPagingData(query),
+                        isAuthorized = authorizationUseCase.isAuthorized()
                     )
                 }
             }

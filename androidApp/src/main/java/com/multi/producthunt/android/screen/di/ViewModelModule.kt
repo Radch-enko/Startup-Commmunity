@@ -2,6 +2,7 @@ package com.multi.producthunt.android.screen.di
 
 import com.multi.producthunt.android.screen.addproject.AddProjectViewModel
 import com.multi.producthunt.android.screen.authorization.AuthorizationViewModel
+import com.multi.producthunt.android.screen.create_discussion.AddDiscussionViewModel
 import com.multi.producthunt.android.screen.detail.DetailProjectViewModel
 import com.multi.producthunt.android.screen.discussions.DiscussionListViewModel
 import com.multi.producthunt.android.screen.home.HomeScreenViewModel
@@ -75,6 +76,15 @@ val viewModelModule = DI.Module("viewModelModule") {
 
     bind<DiscussionListViewModel>() with provider {
         DiscussionListViewModel(
+            instance(),
+            instance()
+        )
+    }
+
+    bind<AddDiscussionViewModel>() with provider {
+        AddDiscussionViewModel(
+            instance(),
+            instance(),
             instance()
         )
     }

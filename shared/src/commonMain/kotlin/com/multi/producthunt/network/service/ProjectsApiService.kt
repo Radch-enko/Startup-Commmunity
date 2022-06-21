@@ -123,6 +123,7 @@ interface ProjectsApiService {
         @QueryMap(true) map: Map<String, String>
     ): Flow<ApiResult<List<DiscussionResponse>>>
 
+    @Headers(["Content-Type: application/json"])
     @POST("discussions/create")
     fun createDiscussion(@Body body: CreateDiscussionBody): Flow<ApiResult<DiscussionResponse>>
 

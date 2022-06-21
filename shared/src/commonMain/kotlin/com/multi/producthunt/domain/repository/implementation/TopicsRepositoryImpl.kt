@@ -12,4 +12,8 @@ class TopicsRepositoryImpl(private val service: ProjectsApiService) : TopicsRepo
     override fun getTopics(): Flow<ApiResult<List<TopicDomain>>> {
         return service.getTopics().toDomain(getDeviceLang())
     }
+
+    override fun getDiscussionTopics(): Flow<ApiResult<List<TopicDomain>>> {
+        return service.getDiscussionsTopics().toDomain(getDeviceLang())
+    }
 }
