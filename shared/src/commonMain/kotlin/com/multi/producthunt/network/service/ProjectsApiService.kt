@@ -131,4 +131,10 @@ interface ProjectsApiService {
     fun getDiscussionById(
         @Path("discussion_id") id: Int
     ): Flow<ApiResult<DetailDiscussionResponse>>
+
+    @Headers(["Content-Type: application/json"])
+    @POST("discussions/comment")
+    fun commentForDiscussion(
+        @Body body: CreateDiscussionCommentBody
+    ): Flow<ApiResult<DetailDiscussionResponse>>
 }

@@ -18,7 +18,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.multi.producthunt.MR
-import com.multi.producthunt.android.screen.authorization.AuthenticationMode
+import com.multi.producthunt.android.screen.detail_discussion.DetailDiscussionScreen
 import com.multi.producthunt.android.ui.*
 import com.multi.producthunt.ui.models.SelectableTopicUI
 import kotlinx.coroutines.flow.collectLatest
@@ -38,7 +38,7 @@ class AddDiscussionScreen() : AndroidScreen() {
                     is AddDiscussionViewModel.Effect.Success -> {
                         Toast.makeText(context, MR.strings.success.resourceId, Toast.LENGTH_LONG)
                             .show()
-
+                        navigator?.replace(DetailDiscussionScreen(effect.discussionId))
                     }
                 }
             }
@@ -96,7 +96,8 @@ class AddDiscussionScreen() : AndroidScreen() {
                 .padding(16.dp),
         ) {
             Text(
-                text = stringResource(MR.strings.creating_of_discussion.resourceId), fontSize = 24.sp,
+                text = stringResource(MR.strings.creating_of_discussion.resourceId),
+                fontSize = 24.sp,
                 fontWeight = FontWeight.Black
             )
 

@@ -6,6 +6,7 @@ import com.multi.producthunt.domain.model.toDomain
 import com.multi.producthunt.domain.repository.DiscussionsRepository
 import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.network.model.body.CreateDiscussionBody
+import com.multi.producthunt.network.model.body.CreateDiscussionCommentBody
 import com.multi.producthunt.network.model.body.TopicBody
 import com.multi.producthunt.network.service.ProjectsApiService
 import com.multi.producthunt.network.util.asCommonFlow
@@ -46,6 +47,16 @@ class DiscussionRepositoryImpl(
                 topics.map { TopicBody(it) }
             )
         ).toDomain(getDeviceLang())
+    }
+
+    override fun commentForDiscussion(
+        discussionId: Int,
+        text: String
+    ): Flow<ApiResult<DetailDiscussionDomain>> {
+        return service.commentForDiscussion(CreateDiscussionCommentBody(discussionId, text))
+            .toDomain(
+                getDeviceLang()
+            )
     }
 }
 

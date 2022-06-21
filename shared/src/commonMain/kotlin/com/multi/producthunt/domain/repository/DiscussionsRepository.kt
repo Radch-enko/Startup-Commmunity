@@ -22,4 +22,10 @@ interface DiscussionsRepository {
         description: String,
         topics: List<Int>,
     ): Flow<ApiResult<DiscussionDomain>>
+
+    fun commentForDiscussion(
+        discussionId: Int,
+        text: String
+    ): Flow<ApiResult<DetailDiscussionDomain>>
+
 }

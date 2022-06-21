@@ -14,5 +14,11 @@ data class DetailDiscussionResponse(
     @SerialName("topics")
     val topics: List<TopicResponse>,
     @SerialName("maker")
-    val maker: UserResponse
+    val maker: UserResponse,
+    @SerialName("createdDate")
+    val createdDate: String,
+    @SerialName("replies")
+    val replies: Int,
+    @SerialName("comments")
+    val comments: List<CommentResponse>,
 )

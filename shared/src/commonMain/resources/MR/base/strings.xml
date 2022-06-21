@@ -116,4 +116,6 @@
 
     <string name="creating_of_discussion">Create discussion</string>
 
+    <string name="discussion_maker">Discussion started by</string>
+
 </resources>

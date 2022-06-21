@@ -21,6 +21,7 @@ import com.multi.producthunt.MR
 import com.multi.producthunt.android.R
 import com.multi.producthunt.android.screen.authorization.AuthenticationScreen
 import com.multi.producthunt.android.screen.create_discussion.AddDiscussionScreen
+import com.multi.producthunt.android.screen.detail_discussion.DetailDiscussionScreen
 import com.multi.producthunt.android.ui.DiscussionsList
 import com.multi.producthunt.android.ui.ScrollableSearchField
 import org.kodein.di.compose.rememberInstance
@@ -68,8 +69,8 @@ class DiscussionListScreen : Screen {
                 DiscussionsList(
                     pagingList = state.pagingList.collectAsLazyPagingItems(),
                     firstItemPaddingTop = searchFieldHeight,
-                    onDiscussionClick = {
-
+                    onDiscussionClick = { id ->
+                        navigator?.push(DetailDiscussionScreen(id))
                     })
             }
 
