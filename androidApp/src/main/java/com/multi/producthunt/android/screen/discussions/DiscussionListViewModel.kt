@@ -40,7 +40,12 @@ class DiscussionListViewModel(
         get() = _scrollUp.asStateFlow()
 
     init {
-        mutableState.update { it.copy(isRefreshing = true) }
+        mutableState.update {
+            it.copy(
+                isRefreshing = true,
+                isAuthorized = authorizationUseCase.isAuthorized()
+            )
+        }
         collectQuery()
         loadData()
     }
@@ -78,7 +83,6 @@ class DiscussionListViewModel(
                     it.copy(
                         isRefreshing = false,
                         pagingList = discussionUseCase.getDiscussionPagingData(query),
-                        isAuthorized = authorizationUseCase.isAuthorized()
                     )
                 }
             }

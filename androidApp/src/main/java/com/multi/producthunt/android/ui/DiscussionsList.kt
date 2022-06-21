@@ -95,7 +95,7 @@ private fun LazyListScope.placeholderDiscussionList(
     list: List<DiscussionItemUI>
 ) {
     this.items(list) { discussion ->
-        Box(modifier = discussionRowModifier) {
+        Box {
             DiscussionRow(discussion, placeHolderVisible = true, onDiscussionClick = {})
         }
     }
@@ -106,7 +106,7 @@ private fun LazyListScope.discussionRow(
     onDiscussionClick: (id: Int) -> Unit
 ) {
     this.items(list) { discussion ->
-        Box(modifier = Modifier) {
+        Box {
             if (discussion != null) {
                 DiscussionRow(
                     discussion,
