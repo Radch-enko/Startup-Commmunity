@@ -4,14 +4,13 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.kodein.rememberScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -25,6 +24,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 class AddDiscussionScreen() : AndroidScreen() {
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         val viewModel: AddDiscussionViewModel = rememberScreenModel()
@@ -49,22 +49,32 @@ class AddDiscussionScreen() : AndroidScreen() {
                 ProgressBar()
             }
             else -> {
-                Box(
-                    modifier = Modifier
-                        .systemBarsPadding()
-                        .imePadding()
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    AddDiscussionForm(
-                        title = state.title,
-                        description = state.description,
-                        topics = state.topics,
-                        isValid = state.isFormValid(),
-                        isTopicsValid = state.isTopicsValid(),
-                        handleEvent = viewModel::sendEvent
+                Scaffold(topBar = {
+                    DefaultTopAppBar(
+                        modifier = Modifier.statusBarsPadding(),
+                        title = stringResource(MR.strings.creating_of_discussion.resourceId),
+                        onBack = { navigator?.pop() }
                     )
+                }) { innerPadding ->
+                    Box(modifier = Modifier.padding(innerPadding)) {
+                        Box(
+                            modifier = Modifier
+                                .imePadding()
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState())
+                        ) {
+                            AddDiscussionForm(
+                                title = state.title,
+                                description = state.description,
+                                topics = state.topics,
+                                isValid = state.isFormValid(),
+                                isTopicsValid = state.isTopicsValid(),
+                                handleEvent = viewModel::sendEvent
+                            )
+                        }
+                    }
                 }
+
             }
         }
 
@@ -95,14 +105,6 @@ class AddDiscussionScreen() : AndroidScreen() {
                 .fillMaxSize()
                 .padding(16.dp),
         ) {
-            Text(
-                text = stringResource(MR.strings.creating_of_discussion.resourceId),
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Black
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
             OutlinedTextFieldDefault(
                 value = title,
                 onValueChange = { handleEvent(AddDiscussionViewModel.Event.TitleChanged(it)) },

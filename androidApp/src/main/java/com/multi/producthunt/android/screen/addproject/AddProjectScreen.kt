@@ -5,43 +5,17 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.outlined.AddCircle
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.BottomEnd
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -63,20 +37,13 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.multi.producthunt.MR
 import com.multi.producthunt.android.R
 import com.multi.producthunt.android.screen.detail.DetailProjectScreen
-import com.multi.producthunt.android.ui.ButtonDefault
-import com.multi.producthunt.android.ui.CustomChip
-import com.multi.producthunt.android.ui.DeleteButton
-import com.multi.producthunt.android.ui.ErrorDialog
-import com.multi.producthunt.android.ui.OutlinedButtonDefault
-import com.multi.producthunt.android.ui.OutlinedTextFieldDefault
-import com.multi.producthunt.android.ui.ProgressBar
-import com.multi.producthunt.android.ui.Requirement
-import com.multi.producthunt.android.ui.TitleMedium
+import com.multi.producthunt.android.ui.*
 import com.multi.producthunt.ui.models.SelectableTopicUI
 import kotlinx.coroutines.flow.collectLatest
 
 class AddProjectScreen(private val projectToRedact: Int = 0) : AndroidScreen() {
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         val viewModel: AddProjectViewModel = rememberScreenModel(arg = projectToRedact)
@@ -106,28 +73,37 @@ class AddProjectScreen(private val projectToRedact: Int = 0) : AndroidScreen() {
                 ProgressBar()
             }
             else -> {
-                Box(
-                    modifier = Modifier
-                        .systemBarsPadding()
-                        .imePadding()
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    AddProjectForm(
-                        name = state.name,
-                        tagline = state.tagline,
-                        description = state.description,
-                        ownerLink = state.ownerLink,
-                        thumbnail = state.thumbnail,
-                        media = state.media,
-                        topics = state.topics,
-                        isValid = state.isFormValid(),
-                        isThumbnailValid = state.thumbnail != null,
-                        isMediaValid = state.media.isNotEmpty(),
-                        isRedact = state.isRedact,
-                        isTopicsValid = state.isTopicsValid(),
-                        handleEvent = viewModel::sendEvent
+                Scaffold(topBar = {
+                    DefaultTopAppBar(
+                        modifier = Modifier.statusBarsPadding(),
+                        title = null,
+                        onBack = { navigator?.pop() }
                     )
+                }) { innerPadding ->
+                    Box(modifier = Modifier.padding(innerPadding)) {
+                        Box(
+                            modifier = Modifier
+                                .imePadding()
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState())
+                        ) {
+                            AddProjectForm(
+                                name = state.name,
+                                tagline = state.tagline,
+                                description = state.description,
+                                ownerLink = state.ownerLink,
+                                thumbnail = state.thumbnail,
+                                media = state.media,
+                                topics = state.topics,
+                                isValid = state.isFormValid(),
+                                isThumbnailValid = state.thumbnail != null,
+                                isMediaValid = state.media.isNotEmpty(),
+                                isRedact = state.isRedact,
+                                isTopicsValid = state.isTopicsValid(),
+                                handleEvent = viewModel::sendEvent
+                            )
+                        }
+                    }
                 }
             }
         }

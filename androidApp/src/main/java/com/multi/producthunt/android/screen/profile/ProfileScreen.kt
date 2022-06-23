@@ -342,10 +342,17 @@ class ProfileScreen(
                 imageLoader = getImageLoader(LocalContext.current)
             )
         }
-
+        val navigator = LocalNavigator.current
         Surface(modifier = Modifier.fillMaxSize(), color = shadow) {
-            AnimatedVisibility(isRedact) {
-                Box(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                if (id != 0) {
+                    BackButton(
+                        onBack = { navigator?.pop() }, modifier = Modifier
+                            .statusBarsPadding()
+                            .padding(16.dp)
+                    )
+                }
+                AnimatedVisibility(isRedact) {
                     IconButton(
                         onClick = onCoverUploaded,
                         modifier = Modifier
