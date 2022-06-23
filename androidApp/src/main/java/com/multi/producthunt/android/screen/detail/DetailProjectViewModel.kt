@@ -6,6 +6,7 @@ import android.net.Uri
 import androidx.core.content.ContextCompat.startActivity
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
+import com.multi.producthunt.domain.repository.ReportingRepository
 import com.multi.producthunt.domain.repository.StartupsRepository
 import com.multi.producthunt.domain.usecase.AuthorizationUseCase
 import com.multi.producthunt.domain.usecase.GetStartupsUseCase
@@ -24,7 +25,8 @@ class DetailProjectViewModel(
     private val id: Int,
     private val startupsRepository: StartupsRepository,
     private val useCase: GetStartupsUseCase,
-    private val authorizationUseCase: AuthorizationUseCase
+    private val authorizationUseCase: AuthorizationUseCase,
+    private val reportingRepository: ReportingRepository
 ) :
     StateScreenModel<DetailProjectViewModel.State>(State(DetailProjectUI.Empty)) {
 
@@ -38,14 +40,18 @@ class DetailProjectViewModel(
 
     sealed class Event {
         object Retry : Event()
+        object DismissError : Event()
         class OnCommentChange(val comment: String) : Event()
         class OnVisitClick(val context: Context) : Event()
         object OnVoteClick : Event()
         object SendComment : Event()
+        class ReportComment(val id: Int) : Event()
     }
 
     sealed class Effect {
         object ScrollToBottom : Effect()
+        object Reported : Effect()
+        object Back : Effect()
     }
 
     private val mutableEffect = MutableSharedFlow<Effect>()
@@ -61,6 +67,27 @@ class DetailProjectViewModel(
             }
             Event.OnVoteClick -> doVote()
             Event.SendComment -> sendComment()
+            is Event.ReportComment -> reportComment(event.id)
+            Event.DismissError -> dismissError()
+        }
+    }
+
+    private fun dismissError() = coroutineScope.launch {
+        mutableState.update {
+            it.copy(error = null)
+        }
+        mutableEffect.emit(Effect.Back)
+    }
+
+    private fun reportComment(id: Int) = coroutineScope.launch {
+        reportingRepository.reportComment(id).collectLatest { response ->
+            when (response) {
+                is ApiResult.Error -> mutableState.update { it.copy(error = response.exception) }
+                is ApiResult.Success -> {
+                    mutableEffect.emit(Effect.Reported)
+                    sendEvent(Event.Retry)
+                }
+            }
         }
     }
 

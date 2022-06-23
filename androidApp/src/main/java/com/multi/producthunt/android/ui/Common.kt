@@ -10,10 +10,10 @@ import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.*
-import androidx.compose.material3.R
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -89,7 +89,8 @@ fun DetailProjectTopic(topicUI: TopicUI) {
 fun ProjectComments(
     comments: List<UiComment>,
     makerId: Int,
-    onCommentatorClick: (id: Int) -> Unit
+    onCommentatorClick: (id: Int) -> Unit,
+    onReport: (id: Int) -> Unit,
 ) {
     comments.forEach { uiComment ->
         Comment(
@@ -99,9 +100,11 @@ fun ProjectComments(
             uiComment.user.headline.orEmpty(),
             makerId == uiComment.user.id,
             uiComment.createdAt,
+            isReported = uiComment.isReported,
             onCommentatorClick = {
                 onCommentatorClick(uiComment.user.id)
-            }
+            },
+            onReport = { onReport(uiComment.id) }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -127,7 +130,9 @@ fun ProjectComments(
                             childComment.user.headline.orEmpty(),
                             makerId == uiComment.user.id,
                             childComment.createdAt,
-                            onCommentatorClick = {}
+                            isReported = childComment.isReported,
+                            onCommentatorClick = {},
+                            onReport = { onReport(uiComment.id) }
                         )
                     }
                 }
@@ -146,10 +151,20 @@ fun Comment(
     userHeadLine: String,
     isMaker: Boolean,
     createdAt: String?,
-    onCommentatorClick: () -> Unit
+    isReported: Boolean,
+    onCommentatorClick: () -> Unit,
+    onReport: () -> Unit,
 ) {
     Column(modifier = Modifier.padding(top = 20.dp)) {
-        CommentatorCard(avatar, userName, userHeadLine, isMaker, onCommentatorClick)
+        CommentatorCard(
+            avatar,
+            userName,
+            userHeadLine,
+            isMaker,
+            onCommentatorClick,
+            isReported,
+            onReport
+        )
 
         Text(
             text = text,
@@ -157,15 +172,46 @@ fun Comment(
             modifier = Modifier.padding(top = 15.dp)
         )
 
-        CommentButtons(createdAt)
+        if (createdAt != null) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                MediumText(text = createdAt, style = MaterialTheme.typography.bodySmall)
+            }
+        }
     }
 }
 
 @Composable
-fun CommentButtons(createdAt: String?) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-        if (createdAt != null) {
-            MediumText(text = createdAt, style = MaterialTheme.typography.bodySmall)
+fun CommentButtons(isReported: Boolean, onReport: () -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        var dropDownExpanded by remember {
+            mutableStateOf(false)
+        }
+        if (!isReported) {
+            IconButton(onClick = { dropDownExpanded = true }) {
+                Icon(Icons.Filled.MoreVert, contentDescription = null)
+                DropdownMenu(
+                    expanded = dropDownExpanded,
+                    onDismissRequest = { dropDownExpanded = false }) {
+                    DropdownMenuItem(text = {
+                        MediumText(
+                            text = stringResource(id = MR.strings.reportComment.resourceId),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }, onClick = {
+                        dropDownExpanded = false
+                        onReport()
+                    })
+                }
+            }
         }
     }
 }
@@ -176,7 +222,7 @@ fun CommentatorCard(
     userName: String,
     userHeadLine: String,
     isMaker: Boolean,
-    onCommentatorClick: () -> Unit
+    onCommentatorClick: () -> Unit, isReported: Boolean, onReport: () -> Unit
 ) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
         onCommentatorClick()
@@ -201,6 +247,8 @@ fun CommentatorCard(
 
             MediumText(text = userHeadLine)
         }
+
+        CommentButtons(isReported, onReport = onReport)
     }
 }
 

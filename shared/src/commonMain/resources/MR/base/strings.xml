@@ -102,7 +102,7 @@
     <string name="topics_required">Selected at least one topic</string>
     <string name="all_fields_filled">All fields are filled</string>
 
-    <string name="forgot_your_password">Forgot your password? </string>
+    <string name="forgot_your_password">Forgot your password?</string>
     <string name="contact_mail">stas.radchenko.den@gmail.com</string>
     <string name="contact_support">Contact support</string>
 
@@ -117,5 +117,11 @@
     <string name="creating_of_discussion">Create discussion</string>
 
     <string name="discussion_maker">Discussion started by</string>
+
+    <string name="successReport">Complaint sent</string>
+
+    <string name="more">More</string>
+
+    <string name="reportComment">Report</string>
 
 </resources>

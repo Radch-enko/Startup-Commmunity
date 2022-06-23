@@ -62,7 +62,7 @@ fun DetailProjectResponse.toDomain(): DetailProjectDomain {
         votesCount = this.votesCount,
         ownerLink = this.ownerLink,
         comments = this.comments.map {
-            CommentDomain(it.text, it.user.toDomain(), it.createdDate)
+            CommentDomain(it.id, it.text, it.user.toDomain(), it.createdDate, it.isReported)
         },
         maker = this.maker.toDomain(),
         createdDate = this.createdDate

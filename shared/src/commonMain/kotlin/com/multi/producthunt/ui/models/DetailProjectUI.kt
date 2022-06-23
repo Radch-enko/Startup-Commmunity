@@ -52,7 +52,8 @@ fun DetailProjectDomain.toDetailUI(): DetailProjectUI {
         ownerLink,
         comments.map {
             UiComment(
-                it.text,
+                id = it.id,
+                text = it.text,
                 createdAt = it.createdDate.toCommentDate(),
                 user = UiUserCard(
                     it.user.id,
@@ -61,7 +62,8 @@ fun DetailProjectDomain.toDetailUI(): DetailProjectUI {
                     headline = it.user.headline,
                     username = "@${it.user.username}"
                 ),
-                childComments = emptyList()
+                childComments = emptyList(),
+                isReported = it.isReported
             )
         },
         maker = UiUserCard(
