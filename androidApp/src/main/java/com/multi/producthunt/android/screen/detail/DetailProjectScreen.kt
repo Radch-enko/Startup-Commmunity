@@ -319,7 +319,7 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
                 onClick = onVisitClick, icon = Icons.Filled.Link, modifier = Modifier.weight(1f),
                 enabled = visitEnable
             )
-            Spacer(modifier = Modifier.width(32.dp))
+            Spacer(modifier = Modifier.width(8.dp))
             ButtonDefault(
                 text = stringResource(id = isVotedText.resourceId) + " $votes",
                 onClick = {

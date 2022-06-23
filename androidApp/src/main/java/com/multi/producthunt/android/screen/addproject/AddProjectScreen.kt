@@ -12,8 +12,8 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.BottomEnd
@@ -38,6 +38,7 @@ import com.multi.producthunt.MR
 import com.multi.producthunt.android.R
 import com.multi.producthunt.android.screen.detail.DetailProjectScreen
 import com.multi.producthunt.android.ui.*
+import com.multi.producthunt.android.ui.theme.blueBayoux
 import com.multi.producthunt.ui.models.SelectableTopicUI
 import kotlinx.coroutines.flow.collectLatest
 
@@ -83,6 +84,7 @@ class AddProjectScreen(private val projectToRedact: Int = 0) : AndroidScreen() {
                     Box(modifier = Modifier.padding(innerPadding)) {
                         Box(
                             modifier = Modifier
+                                .navigationBarsPadding()
                                 .imePadding()
                                 .fillMaxSize()
                                 .verticalScroll(rememberScrollState())
@@ -413,13 +415,15 @@ class AddProjectScreen(private val projectToRedact: Int = 0) : AndroidScreen() {
             }
 
             IconButton(
-                modifier = Modifier.align(BottomEnd),
+                modifier = Modifier
+                    .size(35.dp)
+                    .align(BottomEnd),
                 onClick = onClick
             ) {
                 Icon(
-                    Icons.Outlined.AddCircle,
+                    Icons.Filled.AddCircle,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimary
+                    tint = blueBayoux
                 )
             }
         }
