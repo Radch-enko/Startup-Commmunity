@@ -106,7 +106,7 @@ buildkonfig {
         buildConfigField(
             STRING,
             "BASE_URL",
-            "https://dev-product-hunt-projects.herokuapp.com/"
+            "https://product-hunt-projects.herokuapp.com/"
         )
         buildConfigField(
             STRING,
