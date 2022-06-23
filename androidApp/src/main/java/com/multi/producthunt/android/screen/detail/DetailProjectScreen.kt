@@ -1,5 +1,6 @@
 package com.multi.producthunt.android.screen.detail
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
@@ -38,6 +39,10 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
 
         val state by viewModel.state.collectAsState()
         val scroll = rememberLazyListState()
+        val context = LocalContext.current
+        val successReport = stringResource(id = MR.strings.successReport.resourceId)
+        val navigator = LocalNavigator.current
+
         when {
             state.isLoading -> {
                 ProgressBar()
@@ -57,7 +62,7 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
             ErrorDialog(
                 error = it,
                 dismissError = {
-                    viewModel.sendEvent(DetailProjectViewModel.Event.Retry)
+                    viewModel.sendEvent(DetailProjectViewModel.Event.DismissError)
                 })
         }
 
@@ -66,6 +71,12 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
                 when (effect) {
                     DetailProjectViewModel.Effect.ScrollToBottom -> {
                         scroll.animateScrollToItem(scroll.layoutInfo.totalItemsCount)
+                    }
+                    DetailProjectViewModel.Effect.Reported -> {
+                        Toast.makeText(context, successReport, Toast.LENGTH_SHORT).show()
+                    }
+                    DetailProjectViewModel.Effect.Back -> {
+                        navigator?.pop()
                     }
                 }
             }
@@ -244,7 +255,15 @@ class DetailProjectScreen(private val id: Int) : AndroidScreen() {
                                                     )
                                                 })
                                         )
-                                    })
+                                    },
+                                    onReport = { commentId ->
+                                        handleEvent(
+                                            DetailProjectViewModel.Event.ReportComment(
+                                                commentId
+                                            )
+                                        )
+                                    }
+                                )
                             }
                         }
                     }

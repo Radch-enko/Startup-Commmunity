@@ -137,4 +137,11 @@ interface ProjectsApiService {
     fun commentForDiscussion(
         @Body body: CreateDiscussionCommentBody
     ): Flow<ApiResult<DetailDiscussionResponse>>
+
+    @Headers(["Content-Type: application/json"])
+    @POST("report")
+    fun reportForComment(
+        @Query("commentId") commentId: Int,
+        @Query("isDiscussionComment") isDiscussionComment: Boolean
+    ): Flow<ApiResult<SuccessResponse>>
 }

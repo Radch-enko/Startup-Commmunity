@@ -53,6 +53,7 @@ val viewModelModule = DI.Module("viewModelModule") {
             instance(),
             instance(),
             instance(),
+            instance(),
         )
     }
     bind<UserProjectsListViewModel>() with factory { params: Int ->
@@ -92,6 +93,7 @@ val viewModelModule = DI.Module("viewModelModule") {
     bind<DetailDiscussionViewModel>() with factory { params: Int ->
         DetailDiscussionViewModel(
             params,
+            instance(),
             instance(),
             instance(),
         )

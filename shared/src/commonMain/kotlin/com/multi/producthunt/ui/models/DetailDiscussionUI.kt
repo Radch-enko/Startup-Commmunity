@@ -45,6 +45,7 @@ fun DetailDiscussionDomain.toUI(): DetailDiscussionUI {
         replies = this.replies,
         comments = this.comments.map {
             UiComment(
+                id = it.id,
                 text = it.text,
                 user = UiUserCard(
                     id = it.user.id,
@@ -54,7 +55,8 @@ fun DetailDiscussionDomain.toUI(): DetailDiscussionUI {
                     username = "@${it.user.username}"
                 ),
                 createdAt = it.createdDate.toFullDate(),
-                childComments = emptyList()
+                childComments = emptyList(),
+                isReported = it.isReported
             )
         }
     )

@@ -1,5 +1,6 @@
 package com.multi.producthunt.android.screen.detail_discussion
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,6 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -38,6 +40,10 @@ class DetailDiscussionScreen(private val discussionId: Int) : Screen {
 
         val state by viewModel.state.collectAsState()
         val scroll = rememberLazyListState()
+        val context = LocalContext.current
+        val navigator = LocalNavigator.current
+        val successReport = stringResource(id = MR.strings.successReport.resourceId)
+
         when {
             state.isLoading -> {
                 ProgressBar()
@@ -57,7 +63,7 @@ class DetailDiscussionScreen(private val discussionId: Int) : Screen {
             ErrorDialog(
                 error = it,
                 dismissError = {
-                    viewModel.sendEvent(DetailDiscussionViewModel.Event.Retry)
+                    viewModel.sendEvent(DetailDiscussionViewModel.Event.DismissError)
                 })
         }
 
@@ -66,6 +72,12 @@ class DetailDiscussionScreen(private val discussionId: Int) : Screen {
                 when (effect) {
                     DetailDiscussionViewModel.Effect.ScrollToBottom -> {
                         scroll.animateScrollToItem(scroll.layoutInfo.totalItemsCount)
+                    }
+                    DetailDiscussionViewModel.Effect.Reported -> {
+                        Toast.makeText(context, successReport, Toast.LENGTH_SHORT).show()
+                    }
+                    DetailDiscussionViewModel.Effect.Back -> {
+                        navigator?.pop()
                     }
                 }
             }
@@ -214,6 +226,13 @@ class DetailDiscussionScreen(private val discussionId: Int) : Screen {
                                                     )
                                                 })
                                         )
+                                    },
+                                    onReport = { commentId ->
+                                        handleEvent(
+                                            DetailDiscussionViewModel.Event.ReportComment(
+                                                commentId
+                                            )
+                                        )
                                     })
                             }
                         }
@@ -262,7 +281,7 @@ class DetailDiscussionScreen(private val discussionId: Int) : Screen {
                 maker.username,
                 maker.headline.orEmpty(),
                 true,
-                onCommentatorClick = { onMakerClick(maker.id) })
+                onCommentatorClick = { onMakerClick(maker.id) }, false, onReport = {})
         }
     }
 }

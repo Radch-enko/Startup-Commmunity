@@ -30,9 +30,11 @@ fun Flow<ApiResult<DetailDiscussionResponse>>.toDomain(deviceLang: String?): Flo
                 replies = data.replies,
                 comments = data.comments.map {
                     CommentDomain(
+                        id = it.id,
                         text = it.text,
                         user = it.user.toDomain(),
-                        createdDate = it.createdDate
+                        createdDate = it.createdDate,
+                        isReported = it.isReported
                     )
                 }
             )

@@ -3,6 +3,7 @@ package com.multi.producthunt.network.service
 import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.network.model.response.ErrorResponse
 import de.jensklingenberg.ktorfit.adapter.ResponseConverter
+import io.github.aakira.napier.Napier
 import io.ktor.client.call.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
@@ -39,12 +40,14 @@ class ResultConverter : ResponseConverter {
                         }
                         else -> {
                             val errorResponse: ErrorResponse? = response.call.body()
+
                             ApiResult.Error(
                                 exception = errorResponse?.detail ?: response.status.description
                             )
                         }
                     }
                 } catch (exception: Exception) {
+                    Napier.e("ResultConverter", exception.cause)
                     ApiResult.Error("Something went wrong, please try again later")
                 }
             )
