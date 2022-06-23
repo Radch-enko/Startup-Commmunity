@@ -1,6 +1,8 @@
 package com.multi.producthunt.utils
 
 import io.github.aakira.napier.Napier
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
 
 fun String.toCommentDate(): String? {
@@ -18,17 +20,38 @@ fun String.toCommentDate(): String? {
     }
 }
 
-fun String.toFullDate(): String? {
+fun String.toFullDate(): String {
     return try {
         val localDateTime = this.substringBefore(".").toLocalDateTime()
 
-        "${localDateTime.dayOfMonth} ${localDateTime.month.name[0]}${
-            localDateTime.month.name.substring(
-                1
-            ).lowercase()
-        } ${localDateTime.year}"
+        val monthDisplay = localDateTime.month.number.let {
+            if (it < 10) {
+                "0$it"
+            } else {
+                it.toString()
+            }
+        }
+
+        "${localDateTime.dayOfMonth}.$monthDisplay.${localDateTime.year}"
     } catch (e: Exception) {
         Napier.e("CommentDateCast", e)
-        null
+        "Incorrect date"
+    }
+}
+
+fun LocalDate.toFullDate(): String {
+    return try {
+        val monthDisplay = this.month.number.let {
+            if (it < 10) {
+                "0$it"
+            } else {
+                it.toString()
+            }
+        }
+
+        "${this.dayOfMonth}.$monthDisplay.${this.year}"
+    } catch (e: Exception) {
+        Napier.e("CommentDateCast", e)
+        "Incorrect date"
     }
 }

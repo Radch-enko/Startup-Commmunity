@@ -3,18 +3,13 @@ package com.multi.producthunt.android.screen.timeline
 import cafe.adriel.voyager.core.model.StateScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope
 import com.kuuurt.paging.multiplatform.PagingData
-import com.multi.producthunt.android.ui.toTitle
 import com.multi.producthunt.domain.usecase.AuthorizationUseCase
 import com.multi.producthunt.domain.usecase.GetStartupsUseCase
 import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.ui.models.ProjectUI
+import com.multi.producthunt.utils.toFullDate
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
@@ -98,7 +93,7 @@ class TimelineScreenViewModel(
         mutableState.update {
             it.copy(
                 isRefreshing = true,
-                title = currentDate.toTitle()
+                title = currentDate.toFullDate()
             )
         }
 
@@ -107,7 +102,7 @@ class TimelineScreenViewModel(
         mutableState.update {
             it.copy(
                 isRefreshing = false,
-                title = date.toTitle(),
+                title = date.toFullDate(),
                 pagingList = useCase.getStartupsPagingData(date = date),
                 isAuthorized = authorizationUseCase.isAuthorized()
             )
