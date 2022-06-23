@@ -14,11 +14,7 @@ import com.multi.producthunt.network.model.ApiResult
 import com.multi.producthunt.ui.models.SelectableTopicUI
 import com.multi.producthunt.ui.models.toSelectableUI
 import io.github.aakira.napier.Napier
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class AddProjectViewModel(
@@ -94,7 +90,8 @@ class AddProjectViewModel(
                                 ownerLink = ownerLink.orEmpty(),
                                 thumbnail = thumbnail?.toUri(),
                                 media = media.mapNotNull { media -> media?.url?.toUri() },
-                                topics = it.topics.map { selectableTopicUi ->
+                                topics = it.topics,
+                                selectedTopics = it.topics.map { selectableTopicUi ->
                                     selectableTopicUi.selected =
                                         topics.map { it.id }.contains(selectableTopicUi.id)
                                     selectableTopicUi
@@ -109,6 +106,9 @@ class AddProjectViewModel(
     }
 
     private fun loadTopics() = coroutineScope.launch {
+        mutableState.update {
+            it.copy(isLoading = true)
+        }
         topicsRepository.getTopics().collectLatest { response ->
             when (response) {
                 is ApiResult.Error -> {

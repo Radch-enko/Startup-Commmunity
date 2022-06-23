@@ -157,13 +157,13 @@ fun Comment(
 ) {
     Column(modifier = Modifier.padding(top = 20.dp)) {
         CommentatorCard(
-            avatar,
-            userName,
-            userHeadLine,
-            isMaker,
-            onCommentatorClick,
-            isReported,
-            onReport
+            avatar = avatar,
+            userName = userName,
+            userHeadLine = userHeadLine,
+            isMaker = isMaker,
+            onCommentatorClick = onCommentatorClick,
+            isReported = isReported,
+            onReport = onReport
         )
 
         Text(
@@ -222,6 +222,7 @@ fun CommentatorCard(
     userName: String,
     userHeadLine: String,
     isMaker: Boolean,
+    isMoreButtonVisible: Boolean = true,
     onCommentatorClick: () -> Unit, isReported: Boolean, onReport: () -> Unit
 ) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
@@ -248,7 +249,9 @@ fun CommentatorCard(
             MediumText(text = userHeadLine)
         }
 
-        CommentButtons(isReported, onReport = onReport)
+        if (isMoreButtonVisible) {
+            CommentButtons(isReported, onReport = onReport)
+        }
     }
 }
 

@@ -277,10 +277,11 @@ class DetailDiscussionScreen(private val discussionId: Int) : Screen {
             Spacer(modifier = Modifier.height(16.dp))
 
             CommentatorCard(
-                maker.avatar,
-                maker.username,
-                maker.headline.orEmpty(),
-                true,
+                avatar = maker.avatar,
+                userName = maker.username,
+                userHeadLine = maker.headline.orEmpty(),
+                isMaker = true,
+                isMoreButtonVisible = false,
                 onCommentatorClick = { onMakerClick(maker.id) }, false, onReport = {})
         }
     }
