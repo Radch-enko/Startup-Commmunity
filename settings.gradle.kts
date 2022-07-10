@@ -7,6 +7,6 @@ pluginManagement {
 }
 enableFeaturePreview("VERSION_CATALOGS")
 
-rootProject.name = "Product_Hunt"
+rootProject.name = "Startup Community"
 include(":androidApp")
 include(":shared")

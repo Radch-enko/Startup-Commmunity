@@ -95,12 +95,12 @@ android {
 }
 
 multiplatformResources {
-    multiplatformResourcesPackage = "com.multi.producthunt"
+    multiplatformResourcesPackage = "startup.community.shared"
     iosBaseLocalizationRegion = "en"
 }
 
 buildkonfig {
-    packageName = "com.multi.producthunt"
+    packageName = "startup.community.shared"
 
     defaultConfigs {
         buildConfigField(

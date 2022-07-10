@@ -1,0 +1,43 @@
+package startup.community.android.ui.theme
+
+import androidx.compose.ui.graphics.Color
+
+val flamePea = Color(0xFFD85637)
+val mountainMeadow = Color(0xFF1BB27F)
+val blueBayoux = Color(0xFF4C597B)
+val zircon = Color(0xFFF5F8FF)
+val white = Color(0xFFFFFFFF)
+val black = Color(0xFF000000)
+val shadow = Color(0x953F3F3F)
+
+val gold = Color(0xFFFFD700)
+val silver = Color(0xFFC0C0C0)
+val bronze = Color(0xFFAF6650)
+
+
+val md_theme_light_primary = Color(0xFF00629d)
+val md_theme_light_onPrimary = Color(0xFFffffff)
+val md_theme_light_primaryContainer = Color(0xFFcde5ff)
+val md_theme_light_onPrimaryContainer = Color(0xFF001d34)
+val md_theme_light_secondary = Color(0xFFab361a)
+val md_theme_light_onSecondary = Color(0xFFffffff)
+val md_theme_light_secondaryContainer = Color(0xFFffdad0)
+val md_theme_light_onSecondaryContainer = Color(0xFF3d0500)
+val md_theme_light_tertiary = Color(0xFF385ca9)
+val md_theme_light_onTertiary = Color(0xFFffffff)
+val md_theme_light_tertiaryContainer = Color(0xFFd8e2ff)
+val md_theme_light_onTertiaryContainer = Color(0xFF0e1b36)
+val md_theme_light_error = Color(0xFFba1b1b)
+val md_theme_light_errorContainer = Color(0xFFffdad4)
+val md_theme_light_onError = Color(0xFFffffff)
+val md_theme_light_onErrorContainer = Color(0xFF410001)
+val md_theme_light_background = Color(0xFFfdfcff)
+val md_theme_light_onBackground = Color(0xFF1a1c1e)
+val md_theme_light_surface = Color(0xFFfdfcff)
+val md_theme_light_onSurface = Color(0xFF1a1c1e)
+val md_theme_light_surfaceVariant = Color(0xFFdee3eb)
+val md_theme_light_onSurfaceVariant = Color(0xFF42474d)
+val md_theme_light_outline = Color(0xFF72777f)
+val md_theme_light_inverseOnSurface = Color(0xFFf0f0f3)
+val md_theme_light_inverseSurface = Color(0xFF2f3033)
+val md_theme_light_inversePrimary = Color(0xFF96cbff)
